@@ -14,7 +14,7 @@ export default function welcome() {
     <ImageBackground source={require('./assets/background.jpeg')} style={{flex: 1}}>
     <View style={styles.container}>
     <Image style={{width:300, height:300}} source={require('./assets/logo.png')} /> 
-      <Text h1 style={{marginTop:120, color:'#FFFF', fontFamily: 'Kohinoor Telugu'}}>Bienvenue ! </Text>
+      <Text h1 style={{marginTop:120, color:'#FFFF', fontFamily: 'Kohinoor Telugu'}}>Welcome ! </Text>
       <Button      
            title="Suivant"
            type="outline"
@@ -30,20 +30,20 @@ export default function welcome() {
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight:17 }}
         />
         <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Laisse moi en apprendre un peu plus sur toi...{"\n"}{"\n"}</Text>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom:30 }}>Tout d'abord, selectionne tes préférences : </Text>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Let me learn more about you...{"\n"}{"\n"}</Text>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom:30 }}>First, select your preferences : </Text>
             <View style={styles.prefalim}>
               <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
                 <Image style={{width:100, height:100}}
                   source={require('./assets/noGluten.png')}
                 />
-                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Sans Gluten</Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Gluten free</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
                 <Image style={{width:100, height:100}}
                   source={require('./assets/noMeat.png')}
                 />
-                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Végétarien</Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegetarian</Text>
               </TouchableOpacity>
               </View>
               <View style={styles.prefalim}>
@@ -51,13 +51,13 @@ export default function welcome() {
                 <Image style={{width:100, height:100}}
                   source={require('./assets/noMilk.png')}
                 />
-                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Sans Lactose</Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Lactiose free</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
                 <Image style={{width:100, height:100}}
                   source={require('./assets/vegetalien.png')}
                 />
-                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Végétalien</Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
               </TouchableOpacity>
             </View>
         <Button
