@@ -4,6 +4,8 @@ const userSchema = mongoose.Schema({
     username: String,
     email: String,
     password: String,
+    avatar: String,
+    list_id:[{ type: mongoose.Schema.Types.ObjectId, ref: 'list' }],
     token: String,
     salt: String, 
 })
