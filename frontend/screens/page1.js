@@ -54,7 +54,7 @@ export default function welcome() {
                 <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
                 <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
                 <Button
-                    title="Suivant"
+                    title="Next"
                     type="outline"
                     buttonStyle={{ borderColor: 'white', marginTop: 220, padding: 10 }}
                     titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
