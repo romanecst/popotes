@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, ImageBackground, TouchableOpacity,} from 'react-native';
+import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage} from 'react-native';
 import {Text, Button, Overlay} from 'react-native-elements';
 
 export default function welcome() {
 
   const [visible, setVisible] = useState(false);
+  const [glutenFree, setGlutenFree] = useState(false);
+
 
   const toggleOverlay = () => {
     setVisible(!visible);
   };
 
+function favoriteAlim(diet) {
+    if(diet === 'gluten free'){
+    AsyncStorage.setItem('gluten free','true')
+} 
+};
+
   return (
-    <ImageBackground source={require('./assets/background.jpeg')} style={{flex: 1}}>
+    <ImageBackground source={require('../assets/background.jpeg')} style={{flex: 1}}>
     <View style={styles.container}>
-    <Image style={{width:300, height:300}} source={require('./assets/logo.png')} /> 
+    <Image style={{width:300, height:300}} source={require('../assets/logo.png')} /> 
       <Text h1 style={{marginTop:120, color:'#FFFF', fontFamily: 'Kohinoor Telugu'}}>Welcome ! </Text>
       <Button      
            title="Suivant"
@@ -33,15 +41,16 @@ export default function welcome() {
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Let me learn more about you...{"\n"}{"\n"}</Text>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom:30 }}>First, select your preferences : </Text>
             <View style={styles.prefalim}>
-              <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
-                <Image style={{width:100, height:100}}
-                  source={require('./assets/noGluten.png')}
+              <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={()=> favoriteAlim('gluten free')}>
+                <Image 
+                  style={{width:100, height:100}}
+                  source={require('../assets/noGluten.png')}
                 />
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Gluten free</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
                 <Image style={{width:100, height:100}}
-                  source={require('./assets/noMeat.png')}
+                  source={require('../assets/noMeat.png')}
                 />
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegetarian</Text>
               </TouchableOpacity>
@@ -49,13 +58,13 @@ export default function welcome() {
               <View style={styles.prefalim}>
               <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
                 <Image style={{width:100, height:100}}
-                  source={require('./assets/noMilk.png')}
+                  source={require('../assets/noMilk.png')}
                 />
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Lactiose free</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.picto} activeOpacity={0.3}>
                 <Image style={{width:100, height:100}}
-                  source={require('./assets/vegetalien.png')}
+                  source={require('../assets/vegetalien.png')}
                 />
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
               </TouchableOpacity>
