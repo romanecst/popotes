@@ -61,15 +61,8 @@ export default function welcome({navigation}) {
                     onPress={toggleOverlay}
                 />
                 <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
-                    <Button
-                        title="skip"
-                        onPress={() => navigation.navigate('CreateGroup')}
-                        type="clear"
-                        buttonStyle={{ borderColor: '#dfe6e9', justifyContent: 'flex-end' }}
-                        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight: 17 }}
-                    />
                     <View style={styles.overlay}>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Let me learn more about you...{"\n"}{"\n"}</Text>
+                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Hello,{"\n"}let me learn more about you...{"\n"}{"\n"}</Text>
                         <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, select your preferences : </Text>
                         <View style={styles.prefalim}>
                             <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { favoriteAlim('gluten free'); setGlutenFree(!glutenFree) }}>
