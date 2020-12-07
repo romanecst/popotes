@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Stack} from 'react-native';
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -8,21 +8,21 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 import { FontAwesome } from '@expo/vector-icons';
 
-import page1 from './screens/page1';
-import page2 from './screens/page2';
-import page3 from './screens/page3';
-import page8 from './screens/page8';
-import page6 from './screens/page6';
-import page10 from './screens/page10';
-import page12 from './screens/page12';
+import Welcome from './screens/Welcome';
+import CreateGroup from './screens/CreateGroup';
+import homePage from './screens/homePage';
+import Map from './screens/Map';
+import Favorite from './screens/Favorite';
+import Profil from './screens/Profil';
+import GlobalGroup from './screens/GlobalGroup';
 
 
 var BottomNavigator = createBottomTabNavigator({
-  Favorite: page6,
-  RecapGroup: page12,
-  Home: page3,
-  Map: page8,
-  Profil: page10
+  Favorite: Favorite,
+  GlobalGroup: GlobalGroup,
+  Home: homePage,
+  Map: Map,
+  Profil: Profil
 },
 // {
 //   backBehavior: 'history', 
@@ -31,10 +31,10 @@ var BottomNavigator = createBottomTabNavigator({
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ tintColor }) => {
       var iconName;
-      var biblio;
+      
       if (navigation.state.routeName == 'Favorite') {
         iconName = 'heart-o';
-      } else if (navigation.state.routeName == 'RecapGroup') {
+      } else if (navigation.state.routeName == 'GlobalGroup') {
         iconName = "users";
       }else if (navigation.state.routeName == 'Home') {
         iconName = 'home';
@@ -58,17 +58,20 @@ var BottomNavigator = createBottomTabNavigator({
 })
 
 var StackNavigator = createStackNavigator({
-  Welcome: page1,
-  Group: page2,
+  Welcome: Welcome,
+  CreateGroup: CreateGroup,
   Retour: BottomNavigator
-});
+},
+);
 
 
 var Navigation = createAppContainer(StackNavigator);
 
  export default function App() {
   return (
+
    <Navigation/>
+ 
   );
 }
 
