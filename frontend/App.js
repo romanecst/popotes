@@ -61,6 +61,7 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   Retour: BottomNavigator
 },
+{headerMode:"none"}
 );
 
 
