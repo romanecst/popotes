@@ -63,6 +63,7 @@ export default function welcome() {
                 <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
                     <Button
                         title="skip"
+                        onPress={() => navigation.navigate('CreateGroup')}
                         type="clear"
                         buttonStyle={{ borderColor: '#dfe6e9', justifyContent: 'flex-end' }}
                         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight: 17 }}
@@ -102,6 +103,7 @@ export default function welcome() {
                         </View>
                         <Button
                             title="Next"
+                            onPress={() => navigation.navigate('CreateGroup')}
                             type="clear"
                             buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
                             titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}

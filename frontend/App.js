@@ -1,21 +1,78 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Welcome from './screens/page1';
+import { StyleSheet, Text, View, Stack} from 'react-native';
 
-export default function App() {
+import {createAppContainer } from 'react-navigation';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {createStackNavigator} from 'react-navigation-stack';
+
+import { FontAwesome } from '@expo/vector-icons';
+
+import Welcome from './screens/Welcome';
+import CreateGroup from './screens/CreateGroup';
+import homePage from './screens/homePage';
+import Map from './screens/Map';
+import Favorite from './screens/Favorite';
+import Profil from './screens/Profil';
+import GlobalGroup from './screens/GlobalGroup';
+
+
+var BottomNavigator = createBottomTabNavigator({
+  Favorite: Favorite,
+  GlobalGroup: GlobalGroup,
+  Home: homePage,
+  Map: Map,
+  Profil: Profil
+},
+// {
+//   backBehavior: 'history', 
+// }, 
+{
+  defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ tintColor }) => {
+      var iconName;
+      
+      if (navigation.state.routeName == 'Favorite') {
+        iconName = 'heart-o';
+      } else if (navigation.state.routeName == 'GlobalGroup') {
+        iconName = "users";
+      }else if (navigation.state.routeName == 'Home') {
+        iconName = 'home';
+      }else if (navigation.state.routeName == 'Map') {
+        iconName = 'map-o';
+      }else if (navigation.state.routeName == 'Profil') {
+          iconName = 'user';
+      }
+      return <FontAwesome name={iconName} size={25} color={tintColor} />;
+    },
+  }),
+  tabBarOptions: {
+    activeTintColor: '#009788',
+    inactiveTintColor: '#FFFFFF',
+    style: {
+      backgroundColor: '#111224',
+    }
+  }  
+ 
+
+})
+
+var StackNavigator = createStackNavigator({
+  Welcome: Welcome,
+  CreateGroup: CreateGroup,
+  Retour: BottomNavigator
+},
+);
+
+
+var Navigation = createAppContainer(StackNavigator);
+
+ export default function App() {
   return (
-   
-      <Welcome/>
 
+   <Navigation/>
+ 
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
 
