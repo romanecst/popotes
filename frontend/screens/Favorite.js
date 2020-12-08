@@ -19,27 +19,28 @@ export default function Favorite({ navigation }) {
 
 
         <View style={{ flex: 1, backgroundColor: '#fff2df' }}>
+            
             <Header
                 containerStyle={{backgroundColor:'#febf63', height:90, paddingTop:50}}
                 leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
                 centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
-                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" />}
+                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
             />
            
            <SearchBar 
             // backgroundColor="white"
-            containerStyle= {{width:"70%", borderRadius:20, backgroundColor:'#fff2df', borderTopColor:'#fff2df', borderBottomColor: '#fff2df', marginLeft:59}}
+            containerStyle= {{width:"70%", borderRadius:20, backgroundColor:'#fff2df', borderTopColor:'#fff2df', borderBottomColor: '#fff2df', marginLeft:59, marginTop:10}}
             inputContainerStyle= {{borderRadius: 50, backgroundColor:"white"}}
             lightTheme={true}
             placeholder="Search"
             onChangeText= {updateSearch}
             value={searchTxt}/>
 
-            <ScrollView style={{ flex: 1, marginTop: 50 }}>
+            <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
                     <View style={styles.container}>
                         <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
-                        <Text style={styles.text} >** TITLE RECIPES **</Text>
+                        <Text style={styles.text} >** TITLE RECIPES**</Text>
                         <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
                         <Entypo name="cross" size={24} color="black" />
                         </View>
@@ -97,6 +98,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fbfafa',
         width: 180,
         height: 150,
-        fontSize: 15
+        fontSize: 15,
+        paddingTop:66,
+        paddingLeft:15
     }
 });

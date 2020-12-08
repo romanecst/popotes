@@ -16,6 +16,8 @@ import Map from './screens/Map';
 import Favorite from './screens/Favorite';
 import Profil from './screens/Profil';
 import GlobalGroup from './screens/GlobalGroup';
+import List from './screens/List';
+
 
 
 var BottomNavigator = createBottomTabNavigator({
@@ -23,7 +25,7 @@ var BottomNavigator = createBottomTabNavigator({
   GlobalGroup: GlobalGroup,
   Home: homePage,
   Map: Map,
-  Profil: Profil
+  Profil: Profil,
 },
 // {
 //   backBehavior: 'history', 
@@ -55,26 +57,20 @@ var BottomNavigator = createBottomTabNavigator({
     }
   }  
  
-
 })
 
 var StackNavigator = createStackNavigator({
   Welcome: Welcome,
   CreateGroup: CreateGroup,
-  Retour: BottomNavigator
+  List: List,
+  Retour: BottomNavigator,
+  
 },
 {headerMode:"none"}
 );
 
-<Header
-leftComponent={{ icon: 'menu', color: '#fff' }}
-centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
-rightComponent={{ icon: 'home', color: '#fff' }}
-  />
-
-
-
 var Navigation = createAppContainer(StackNavigator);
+
 
  export default function App() {
   return (
