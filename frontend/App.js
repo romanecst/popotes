@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Stack} from 'react-native';
+import { StyleSheet, Text, View, Stack, Button} from 'react-native';
 import { Header } from 'react-native-elements';
 
 
@@ -74,7 +74,8 @@ var Navigation = createAppContainer(StackNavigator);
 
  export default function App() {
   return (
-
+    
+   
    <Navigation/>
    
   );
