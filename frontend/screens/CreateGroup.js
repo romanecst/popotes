@@ -45,7 +45,6 @@ export default function CreateGroup({navigation}) {
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

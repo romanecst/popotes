@@ -1,5 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Stack, Button} from 'react-native';
+import { Header } from 'react-native-elements';
+
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -14,6 +16,8 @@ import Map from './screens/Map';
 import Favorite from './screens/Favorite';
 import Profil from './screens/Profil';
 import GlobalGroup from './screens/GlobalGroup';
+import List from './screens/List';
+
 
 
 var BottomNavigator = createBottomTabNavigator({
@@ -21,7 +25,7 @@ var BottomNavigator = createBottomTabNavigator({
   GlobalGroup: GlobalGroup,
   Home: homePage,
   Map: Map,
-  Profil: Profil
+  Profil: Profil,
 },
 // {
 //   backBehavior: 'history', 
@@ -46,34 +50,34 @@ var BottomNavigator = createBottomTabNavigator({
     },
   }),
   tabBarOptions: {
-    activeTintColor: '#009788',
-    inactiveTintColor: '#FFFFFF',
+    activeTintColor: '#5d5c5c',
+    inactiveTintColor: '#ece9e9',
     style: {
-      backgroundColor: '#111224',
-      title: "Homde"
+      backgroundColor: '#fbfafa',
     }
   }  
  
-
 })
 
 var StackNavigator = createStackNavigator({
   Welcome: Welcome,
   CreateGroup: CreateGroup,
-  Retour: BottomNavigator
+  List: List,
+  Retour: BottomNavigator,
+  
 },
 {headerMode:"none"}
 );
 
-
 var Navigation = createAppContainer(StackNavigator);
+
 
  export default function App() {
   return (
     
    
    <Navigation/>
- 
+   
   );
 }
 

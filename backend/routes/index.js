@@ -13,6 +13,53 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/find', async function(req, res, next) {
+  var recipes = await recipesModel.find();
+  res.json(recipes);
+});
+
+router.post('/filters', async function(req, res, next) {
+
+  console.log(req.body)
+
+  var filters;
+
+  if(req.body.time === 'quick'){
+    filters = {
+      readyInMinutes: {$lte: 30},
+      cuisines: {$all: [`${req.body.cuisine}`]},
+      cheap: req.body.price,
+      veryHealthy: req.body.healthy
+    };
+  }else{
+    filters = {
+      readyInMinutes: {$gt: 30},
+      cuisines: {$all: [`${req.body.cuisine}`]},
+      cheap: req.body.price,
+      veryHealthy: req.body.healthy
+    };
+  }
+
+  let len = Object.keys(req.body).length;
+
+  let empty = {};
+
+
+  for(var i = 0; i<len; i++){
+    if (req.body[Object.keys(req.body)[i]] !== '' ){
+      empty[Object.keys(filters)[i]] = filters[Object.keys(filters)[i]];
+    }
+  }
+
+  console.log('EMP',empty)
+
+  var result = await recipesModel.find(empty);
+
+  console.log('RES',result);
+  
+  res.json(result);
+});
+
 router.get('/save', function(req, res, next) {
   var options = {
     method: 'GET',
