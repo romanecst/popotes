@@ -56,20 +56,13 @@ export default function welcome({navigation}) {
                 <Button
                     title="Next"
                     type="outline"
-                    buttonStyle={{ borderColor: 'white', marginTop: 220, padding: 10 }}
+                    buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
                     titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
                     onPress={toggleOverlay}
                 />
                 <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
-                    <Button
-                        title="skip"
-                        onPress={() => navigation.navigate('CreateGroup')}
-                        type="clear"
-                        buttonStyle={{ borderColor: '#dfe6e9', justifyContent: 'flex-end' }}
-                        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight: 17 }}
-                    />
                     <View style={styles.overlay}>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Let me learn more about you...{"\n"}{"\n"}</Text>
+                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Hello,{"\n"}let me learn more about you...{"\n"}{"\n"}</Text>
                         <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, select your preferences : </Text>
                         <View style={styles.prefalim}>
                             <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { favoriteAlim('gluten free'); setGlutenFree(!glutenFree) }}>
@@ -103,10 +96,11 @@ export default function welcome({navigation}) {
                         </View>
                         <Button
                             title="Next"
-                            onPress={() => navigation.navigate('CreateGroup')}
+                            onPress={() => {navigation.navigate('CreateGroup');setVisible(false)}}
                             type="clear"
                             buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
                             titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
                         />
                     </View>
                 </Overlay>
