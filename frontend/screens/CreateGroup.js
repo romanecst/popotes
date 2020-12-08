@@ -25,17 +25,18 @@ export default function CreateGroup({navigation}) {
           type="clear"
           buttonStyle={{ borderColor: '#dfe6e9', justifyContent: 'flex-end' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight:3 }}
+          onPress={() => {navigation.navigate('Home');setVisible(true)}}
+
         />
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Bienvenue dans la fonction, créer un groupe.{"\n"}Créer un groupe permet de partager ses courses avec ses amis {"\n"}{"\n"} ** video/screen de présentation**{"\n"}{"\n"}</Text>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom:30 }}>N'hésitez pas à créer votre premier groupe ! cliquez sur "créer un groupe" et laissez vous guider ! </Text>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Welcome to the function, create a group.{"\n"}Creating a group allows you to share your shop with friends {"\n"}{"\n"} ** video/screen de présentation**{"\n"}{"\n"}</Text>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom:30 }}>Don't hesitate to create your first group! click on "create a group" and let yourself be guided!</Text>
           <Button
-          title="CREER UN GROUPE"
+          title="CREATE A GROUP"
           type="clear"
           buttonStyle={{justifyContent: 'center'}}
-          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', paddingRight:40}}
+          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
+          onPress={() => {navigation.navigate('GlobalGroup');setVisible(true)}}
         />
-        </View>
         </View>
       </Overlay>
          </View>
