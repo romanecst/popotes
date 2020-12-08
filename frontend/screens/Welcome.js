@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Text, Button, Overlay } from 'react-native-elements';
 
-export default function welcome() {
+export default function welcome({navigation}) {
 
     const [visible, setVisible] = useState(false);
     const [glutenFree, setGlutenFree] = useState(false);
@@ -103,7 +103,7 @@ export default function welcome() {
                         </View>
                         <Button
                             title="Next"
-                            onPress={() => navigation.navigate('CreateGroup')}
+                            onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
                             type="clear"
                             buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
                             titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}

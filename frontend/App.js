@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Stack} from 'react-native';
+import { StyleSheet, Text, View, Stack, Button} from 'react-native';
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -50,6 +50,7 @@ var BottomNavigator = createBottomTabNavigator({
     inactiveTintColor: '#FFFFFF',
     style: {
       backgroundColor: '#111224',
+      title: "Homde"
     }
   }  
  
@@ -61,6 +62,24 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   Retour: BottomNavigator
 },
+{
+headerMode: 'none', 
+ },
+// {
+//    navigationOptions : {
+//      headerRight:()=> (
+//        <Button
+//        title="Home"
+//        color="red"/>
+      
+//      )
+//    }
+//  }
+
+          // name="CreateGroup",
+          // component={CreateGroup},
+          // options={{ title: 'CreateGroup' }},
+      
 );
 
 
@@ -68,7 +87,8 @@ var Navigation = createAppContainer(StackNavigator);
 
  export default function App() {
   return (
-
+    
+   
    <Navigation/>
  
   );
