@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image } from 'react-native';
 import {Button, Overlay, Card, SearchBar} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -17,7 +17,44 @@ export default function homePage({navigation}) {
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
 
-    const [searchTxt, setSearchTxt] = useState('')
+   const [searchTxt, setSearchTxt] = useState('')
+   const [like, setLike] = useState(false)
+   const [listRecipe, setListRecipe] = useState([])
+
+useEffect(() => {
+    // AsyncStorage.getItem("listStorage", 
+            // function(error, data){
+            //   var userData = JSON.parse(data);
+            //   setlistRecipe(userData)
+            //   setPseudoOk(true)
+            //   console.log("test userData",userData, "test pseudo", pseudo);
+            async function loadData(){
+                var rawReponse = await fetch('/find');
+                var response= await rawReponse.json();
+            }
+              loadData();
+    
+  }, []);
+
+
+
+   var colorHeart;
+   var colorLike = () => {
+    setLike(!like);
+    // AsyncStorage.setItem("firstName", "John")
+
+  }
+
+  
+
+  if(like===true){
+    colorHeart = {color:'#FF0000'}
+} else {
+   colorHeart = {color:'black'}
+}
+console.log(like)
+
+
 
     function updateSearch(search){
         setSearchTxt(search)
@@ -27,12 +64,14 @@ export default function homePage({navigation}) {
   const toggleOverlay = () => {
     setVisible(!visible);
   };
+// Romane IP: http://172.17.1.197:3000/filters
+
 
     var Filters = async() => {
         var rawResult = await fetch('http://172.17.1.197:3000/filters', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}`
+            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
         });
         var result = await rawResult.json();
         console.log(result);
@@ -68,7 +107,7 @@ export default function homePage({navigation}) {
 
             <Text h4 style={{textAlign: 'center'}}>Recette du jour</Text>
 
-            <ScrollView style={{marginTop: 25}} horizontal={true}>
+            <ScrollView style={{marginTop: 25, height:150}} horizontal={true}>
                 <View>
                 <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
                 </View>
@@ -85,14 +124,21 @@ export default function homePage({navigation}) {
                     <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
                     <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
                     <View style={styles.View}>
-                    <IconFontAwesome
+                         <IconFontAwesome
                         name="heart"
                         size={20}
-                        color="#1e272e"/>
-                    <IconFontAwesome
+                        style= {colorHeart}
+                        onPress={() => {colorLike()}}/>
+                        
+                    
+                       
+                        <IconFontAwesome
                         name="list"
                         size={20}
-                        color="#1e272e"/>
+                        color="#1e272e"
+                        onPress={() => {colorLike()}}/>
+                        
+                        
                         </View>
                     </Card>
                 </View>
@@ -115,10 +161,12 @@ export default function homePage({navigation}) {
                     <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
                     <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
                     <View style={styles.View}>
+                    
                     <IconFontAwesome
                         name="heart"
                         size={20}
                         color="#1e272e"/>
+                        
                     <IconFontAwesome
                         name="list"
                         size={20}
