@@ -46,11 +46,11 @@ var BottomNavigator = createBottomTabNavigator({
     },
   }),
   tabBarOptions: {
-    activeTintColor: '#009788',
-    inactiveTintColor: '#FFFFFF',
+    activeTintColor: '#5d5c5c',
+    inactiveTintColor: '#ece9e9',
     style: {
-      backgroundColor: '#111224',
-      title: "Homde"
+      backgroundColor: '#fbfafa',
+     
     }
   }  
  
