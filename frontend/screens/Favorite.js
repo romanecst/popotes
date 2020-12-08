@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fbfafa',
+        fontFamily: 'Kohinoor Telugu',
         width: 180,
         height: 150,
         fontSize: 15,

@@ -1,9 +1,13 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
-import {Card, SearchBar} from 'react-native-elements'
+import { StyleSheet, Text, View, Button, ScrollView, Image, TouchableOpacity } from 'react-native';
+import {Card, SearchBar, Header} from 'react-native-elements'
 import { Ionicons } from '@expo/vector-icons';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconIonic from 'react-native-vector-icons/Ionicons';
+
+import { AntDesign } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 export default function homePage({navigation}) {
 
@@ -18,9 +22,17 @@ export default function homePage({navigation}) {
 
 
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#ade498'}}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
+
+            <Header
+                containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
+                leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
+                centerComponent={{ text: 'HOMEPAGE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
+                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
+            />
+
             <SearchBar 
-            containerStyle= {{width:"70%", borderRadius:20, backgroundColor: '#ade498', borderTopColor: '#ade498', borderBottomColor: '#ade498'}}
+            containerStyle= {{width:"70%", borderRadius:20, backgroundColor: '#eefaea', borderTopColor: '#eefaea', borderBottomColor: '#eefaea'}}
             inputContainerStyle= {{borderRadius: 50, backgroundColor:"white"}}
             lightTheme={true}
             placeholder="Search"
@@ -30,9 +42,9 @@ export default function homePage({navigation}) {
             <Text h4 style={{textAlign: 'center'}}>Recette du jour</Text>
 
             <ScrollView style={{marginTop: 25}} horizontal={true}>
-                <View>
-                <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
-                </View>
+            <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
+                <Image source={require('../assets/tarte.jpg')} style={styles.image} />   
+            </TouchableOpacity>
                 <View>
                 <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
                 </View>

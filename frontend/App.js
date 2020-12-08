@@ -17,6 +17,8 @@ import Favorite from './screens/Favorite';
 import Profil from './screens/Profil';
 import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
+import Recipe from './screens/Recipe';
+
 
 
 
@@ -63,6 +65,7 @@ var StackNavigator = createStackNavigator({
   Welcome: Welcome,
   CreateGroup: CreateGroup,
   List: List,
+  Recipe: Recipe,
   Retour: BottomNavigator,
   
 },
