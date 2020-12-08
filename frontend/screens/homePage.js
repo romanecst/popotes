@@ -32,7 +32,7 @@ export default function homePage({navigation}) {
         var rawResult = await fetch('http://172.17.1.197:3000/filters', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}`
+            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
         });
         var result = await rawResult.json();
         console.log(result);
