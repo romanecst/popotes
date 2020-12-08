@@ -1,16 +1,87 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
+import { Header } from 'react-native-elements';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
+export default function Favorite({ navigation }) {
 
-export default function Favorite({navigation}) {
+    
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#e67e22'}}>
-            <Text>Je suis sur la page Favorite</Text>
-            
-      </View>
-    );
-  
 
+
+        <View style={{ flex: 1, backgroundColor: '#fff2df' }}>
+            <Header
+                containerStyle={{backgroundColor:'#febf63', height:90, paddingTop:50}}
+                leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
+                centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
+                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" />}
+            />
+            <ScrollView style={{ flex: 1, marginTop: 50 }}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+                    <View style={styles.container}>
+                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
+                        <Text style={styles.text} >** TITLE RECIPES **</Text>
+                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
+                        <Entypo name="cross" size={24} color="black" />
+                        </View>
+                    </View>
+                    <View style={styles.container}>
+                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
+                        <Text style={styles.text} >** TITLE RECIPES **</Text>
+                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
+                        <Entypo name="cross" size={24} color="black" />
+                        </View>
+                    </View>
+                    <View style={styles.container}>
+                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
+                        <Text style={styles.text} >** TITLE RECIPES **</Text>
+                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
+                        <Entypo name="cross" size={24} color="black" />
+                        </View>
+                    </View>
+                    <View style={styles.container}>
+                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
+                        <Text style={styles.text} >** TITLE RECIPES **</Text>
+                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
+                        <Entypo name="cross" size={24} color="black" />
+                        </View>
+                    </View>
+                    <View style={styles.container}>
+                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
+                        <Text style={styles.text} >** TITLE RECIPES **</Text>
+                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
+                        <Entypo name="cross" size={24} color="black" />
+                        </View>
+                    </View>
+                    
+                </View>
+            </ScrollView>
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10
+    }, picture: {
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 0,
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 0,
+        width: 150,
+        height: 150,
+    }, text: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fbfafa',
+        width: 180,
+        height: 150,
+        fontSize: 15
+    }
+});

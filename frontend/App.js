@@ -1,5 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Stack} from 'react-native';
+import { Header } from 'react-native-elements';
+
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -46,10 +48,10 @@ var BottomNavigator = createBottomTabNavigator({
     },
   }),
   tabBarOptions: {
-    activeTintColor: '#009788',
-    inactiveTintColor: '#FFFFFF',
+    activeTintColor: '#5d5c5c',
+    inactiveTintColor: '#ece9e9',
     style: {
-      backgroundColor: '#111224',
+      backgroundColor: '#fbfafa',
     }
   }  
  
@@ -64,6 +66,13 @@ var StackNavigator = createStackNavigator({
 {headerMode:"none"}
 );
 
+<Header
+leftComponent={{ icon: 'menu', color: '#fff' }}
+centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+rightComponent={{ icon: 'home', color: '#fff' }}
+  />
+
+
 
 var Navigation = createAppContainer(StackNavigator);
 
@@ -71,7 +80,7 @@ var Navigation = createAppContainer(StackNavigator);
   return (
 
    <Navigation/>
- 
+   
   );
 }
 
