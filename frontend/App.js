@@ -62,24 +62,7 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   Retour: BottomNavigator
 },
-{
-headerMode: 'none', 
- },
-// {
-//    navigationOptions : {
-//      headerRight:()=> (
-//        <Button
-//        title="Home"
-//        color="red"/>
-      
-//      )
-//    }
-//  }
-
-          // name="CreateGroup",
-          // component={CreateGroup},
-          // options={{ title: 'CreateGroup' }},
-      
+{headerMode:"none"}
 );
 
 
