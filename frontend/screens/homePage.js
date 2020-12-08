@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
-import {Card, SearchBar} from 'react-native-elements'
+import React, {useState, useEffect} from 'react';
+import { AsyncStorage, StyleSheet, Text, View,  ScrollView, Image } from 'react-native';
+import {Card, SearchBar, Button} from 'react-native-elements'
 import { Ionicons } from '@expo/vector-icons';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import IconIonic from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,43 @@ import IconIonic from 'react-native-vector-icons/Ionicons';
 export default function homePage({navigation}) {
 
    const [searchTxt, setSearchTxt] = useState('')
+   const [like, setLike] = useState(false)
+   const [listRecipe, setListRecipe] = useState([])
+
+useEffect(() => {
+    // AsyncStorage.getItem("listStorage", 
+            // function(error, data){
+            //   var userData = JSON.parse(data);
+            //   setlistRecipe(userData)
+            //   setPseudoOk(true)
+            //   console.log("test userData",userData, "test pseudo", pseudo);
+            async function loadData(){
+                var rawReponse = await fetch('/find');
+                var response= await rawReponse.json();
+            }
+              loadData();
+    
+  }, []);
+
+
+
+   var colorHeart;
+   var colorLike = () => {
+    setLike(!like);
+    // AsyncStorage.setItem("firstName", "John")
+
+  }
+
+  var 
+
+  if(like===true){
+    colorHeart = {color:'#FF0000'}
+} else {
+   colorHeart = {color:'black'}
+}
+console.log(like)
+
+
 
     function updateSearch(search){
         setSearchTxt(search)
@@ -29,7 +66,7 @@ export default function homePage({navigation}) {
 
             <Text h4 style={{textAlign: 'center'}}>Recette du jour</Text>
 
-            <ScrollView style={{marginTop: 25}} horizontal={true}>
+            <ScrollView style={{marginTop: 25, height:150}} horizontal={true}>
                 <View>
                 <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
                 </View>
@@ -44,19 +81,26 @@ export default function homePage({navigation}) {
                     title="Filters"
                     type="outline"
                 />
-            <ScrollView contentContainerStyle={{ maxHeight:100 }} horizontal={true}>
+            <ScrollView contentContainerStyle={{ height:230 }} horizontal={true}>
                 <View>
                     <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
                     <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
                     <View style={styles.View}>
-                    <IconFontAwesome
+                         <IconFontAwesome
                         name="heart"
                         size={20}
-                        color="#1e272e"/>
-                    <IconFontAwesome
+                        style= {colorHeart}
+                        onPress={() => {colorLike()}}/>
+                        
+                    
+                       
+                        <IconFontAwesome
                         name="list"
                         size={20}
-                        color="#1e272e"/>
+                        color="#1e272e"
+                        onPress={() => {colorLike()}}/>
+                        
+                        
                         </View>
                     </Card>
                 </View>
@@ -79,10 +123,12 @@ export default function homePage({navigation}) {
                     <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
                     <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
                     <View style={styles.View}>
+                    
                     <IconFontAwesome
                         name="heart"
                         size={20}
                         color="#1e272e"/>
+                        
                     <IconFontAwesome
                         name="list"
                         size={20}

@@ -53,7 +53,7 @@ export default function welcome({navigation}) {
             <View style={styles.container}>
                 <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
                 <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
-                <Buttongit 
+                <Button
                     title="Next"
                     type="outline"
                     buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
