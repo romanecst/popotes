@@ -24,7 +24,7 @@ export default function homePage() {
         var rawResult = await fetch('http://172.17.1.197:3000/filters', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}`
+            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
         });
         var result = await rawResult.json();
         console.log(result);
@@ -124,15 +124,6 @@ export default function homePage() {
                         <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
                     </TouchableOpacity>
                 </View>
-                {/* <Text>Food Restrictions</Text>
-                <Picker
-                    selectedValue={selectedValuePrice}
-                    style={{ height: 200, width: 300}}
-                    onValueChange={(itemValue, itemIndex) => setSelectedValuePrice(itemValue)}
-                >
-                    <Picker.Item label="Select" value="" />
-                    <Picker.Item label="" value="true" />
-                </Picker> */}
                 </ScrollView>
                 </View>
                 <Button title="Apply Filters" onPress={()=>{Filters(); toggleOverlay()}}/>
