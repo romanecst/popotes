@@ -1,6 +1,6 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView } from 'react-native';
-import { Header } from 'react-native-elements';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, Button, Image, ScrollView} from 'react-native';
+import { Header, SearchBar } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { AntDesign } from '@expo/vector-icons';
@@ -9,7 +9,12 @@ import { Entypo } from '@expo/vector-icons';
 
 export default function Favorite({ navigation }) {
 
-    
+    const [searchTxt, setSearchTxt] = useState('')
+
+    function updateSearch(search){
+        setSearchTxt(search)}
+
+
     return (
 
 
@@ -20,6 +25,16 @@ export default function Favorite({ navigation }) {
                 centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" />}
             />
+           
+           <SearchBar 
+            // backgroundColor="white"
+            containerStyle= {{width:"70%", borderRadius:20, backgroundColor:'#fff2df', borderTopColor:'#fff2df', borderBottomColor: '#fff2df', marginLeft:59}}
+            inputContainerStyle= {{borderRadius: 50, backgroundColor:"white"}}
+            lightTheme={true}
+            placeholder="Search"
+            onChangeText= {updateSearch}
+            value={searchTxt}/>
+
             <ScrollView style={{ flex: 1, marginTop: 50 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
                     <View style={styles.container}>
