@@ -67,11 +67,16 @@ export default function Recipe({ navigation }) {
                     </View>
                 </View>
                 <View style={styles.title}>
-             {/* ************TITRE INGREDIENT *************/}
-                    <Text style={{ fontSize: 20 }}>**INGREDIENT : **{"\n"}{"\n"}</Text>
+         
+                    <Text style={{ fontSize: 20 }}>**INGREDIENTS : **{"\n"}{"\n"}</Text>
              {/* ************NOMBRE INGREDIENT *************/}
                     <Text style={{ fontSize: 12 }}>oeuf : 2</Text>
                     <Text style={{ fontSize: 12 }}>ciboulette : 20 g</Text>
+                </View>
+                <View style={styles.title}>
+                    <Text style={{ fontSize: 20 }}>**DESCRIPTION : **{"\n"}{"\n"}</Text>
+             {/* ************DESCRIPTION *************/}
+                    <Text style={{ fontSize: 12 }}>mettre la farine dans un bol ...etc</Text>
                 </View>
                 
             </ScrollView>
