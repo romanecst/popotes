@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { Header, SearchBar, Button } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -7,14 +7,15 @@ import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-export default function Recipe({ navigation }) {
+import {connect} from 'react-redux';
 
-    const [searchTxt, setSearchTxt] = useState('')
+function Recipe({ navigation, recipeInfo }) {
+    const[servings, setServings] = useState(recipeInfo.servings);
 
-    function updateSearch(search) {
-        setSearchTxt(search)
-    }
-
+    var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
+        var amount = (servings*ingredient.amount)/recipeInfo.servings;
+        return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLongd}</Text>
+    });
 
     return (
 
@@ -30,26 +31,27 @@ export default function Recipe({ navigation }) {
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={styles.container}>
-                    <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
+                    <Image style={styles.picture} source={{uri:recipeInfo.image}} />
                 </View>
                 {/* ************* TITRE ********** */}
                 <View style={styles.title}>
-                    <Text style={{ fontSize: 20 }}>**TITLE RECIPE**</Text>
+                    <Text style={{ fontSize: 20 }}>{recipeInfo.title}</Text>
                 </View>
                 <View >
                     <View style={styles.detail1}>
                         {/* ************ DUREE RECETTE ************ */}
-                        <Text> Préparation : 10 min </Text>
+                        <Text> Préparation : {recipeInfo.readyInMinutes} </Text>
                     </View>
                     <View style={styles.detail1}>
                         {/* ************ NOMBRE DE PERSONNE RECETTE ************ */}
-                        <Text> Nombre de personne : 6 </Text>
+                        <Text> Nombre de personne : {servings}</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
                         <View style={styles.plus}>
                       {/* ************BOUTON + ************ */}
                             <Button
                                 title="+"
+                                onPress={()=>setServings(servings+1)}
                                 type="clear"
                                 buttonStyle={{ borderColor: 'white' }}
                                 titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
@@ -59,6 +61,7 @@ export default function Recipe({ navigation }) {
                      {/* ************BOUTON - ************ */}
                             <Button
                                 title="-"
+                                onPress={()=>setServings(servings-1)}
                                 type="clear"
                                 buttonStyle={{ borderColor: 'white' }}
                                 titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
@@ -70,8 +73,7 @@ export default function Recipe({ navigation }) {
          
                     <Text style={{ fontSize: 20 }}>**INGREDIENTS : **{"\n"}{"\n"}</Text>
              {/* ************NOMBRE INGREDIENT *************/}
-                    <Text style={{ fontSize: 12 }}>oeuf : 2</Text>
-                    <Text style={{ fontSize: 12 }}>ciboulette : 20 g</Text>
+                {ingredients}
                 </View>
                 <View style={styles.title}>
                     <Text style={{ fontSize: 20 }}>**DESCRIPTION : **{"\n"}{"\n"}</Text>
@@ -83,6 +85,15 @@ export default function Recipe({ navigation }) {
         </View>
     );
 }
+
+function mapStateToProps(state) {
+    return { recipeInfo: state.recipe }
+  }
+    
+  export default connect(
+    mapStateToProps, 
+    null
+  )(Recipe);
 
 const styles = StyleSheet.create({
     container: {

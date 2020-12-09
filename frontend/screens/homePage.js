@@ -124,7 +124,7 @@ var Search = async() => {
     };
 
     var newList = listRecipe.map(function(recipe, i){
-        return <RecipeHome key={i} image={recipe.image} title={recipe.title} />
+        return <RecipeHome key={i} image={recipe.image} title={recipe.title} recipeInfo={recipe}/>
     })
 
     

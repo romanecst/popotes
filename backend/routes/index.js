@@ -93,7 +93,7 @@ router.get('/save', function(req, res, next) {
     for( var i = 0; i< recipes.length; i++){
       var newRecipe = new recipesModel ({
         title: recipes[i].title,
-        instruction: recipes[i].instruction,
+        instructions: recipes[i].instructions,
         image: recipes[i].image,
         vegetarian: recipes[i].vegetarian,
         vegan: recipes[i].vegan, 
