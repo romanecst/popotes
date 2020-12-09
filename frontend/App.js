@@ -1,11 +1,7 @@
 import React from 'react';
-<<<<<<< HEAD
-import { StyleSheet, Text, View, Stack, Button} from 'react-native';
+import { StyleSheet, Text, View, Stack, Button, Group} from 'react-native';
 import { Header } from 'react-native-elements';
 
-=======
-import { StyleSheet, Text, View, Stack, Group} from 'react-native';
->>>>>>> users
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -19,27 +15,20 @@ import Favorite from './screens/Favorite';
 import Profil from './screens/Profil';
 import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
-<<<<<<< HEAD
 import Recipe from './screens/Recipe';
 
 
 
-=======
 import GroupI from './screens/Group';
->>>>>>> users
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
   GlobalGroup: GlobalGroup,
   Home: homePage,
   Map: Map,
-<<<<<<< HEAD
-  Profil: Profil,
-=======
   Profil: Profil, 
   List:List,
   GroupI: GroupI,
->>>>>>> users
 },
 // {
 //   backBehavior: 'history', 

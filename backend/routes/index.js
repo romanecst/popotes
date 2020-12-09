@@ -13,8 +13,17 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.post('/search', async function(req, res, next) {
+  var regex = `${req.body.search}.*`
+  var recipes = await recipesModel.find(
+    {title: {$regex: regex, $options: 'i'}}
+  );
+  res.json(recipes);
+});
+
 router.get('/find', async function(req, res, next) {
-  var recipes = await recipesModel.find();
+  //limit à enlever pour recevoir toute la bdd
+  var recipes = await recipesModel.find().limit( 30 );
   res.json(recipes);
 });
 

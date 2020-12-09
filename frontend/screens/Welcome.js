@@ -78,7 +78,7 @@ return (
                         </TouchableOpacity>
                     </View>
                     <View style={styles.prefalim}>
-                        <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => {favoriteAlim('Lactose free');setLactoseFree(!lactoseFree)}}>
+                        <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => {favoriteAlim('lactose free');setLactoseFree(!lactoseFree)}}>
                             <Image style={lactose}
                                 source={require('../assets/noMilk.png')}
                             />

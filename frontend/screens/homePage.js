@@ -21,60 +21,89 @@ export default function homePage({navigation}) {
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
 
+    const [hello, setHello] = useState(false);
+
    const [searchTxt, setSearchTxt] = useState('')
   
    const [listRecipe, setListRecipe] = useState([])
 
 useEffect(() => {
-    // AsyncStorage.getItem("listStorage", 
-            // function(error, data){
-            //   var userData = JSON.parse(data);
-            //   setlistRecipe(userData)
-            //   setPseudoOk(true)
-            //   console.log("test userData",userData, "test pseudo", pseudo);
-            async function loadData(){
-                var rawReponse = await fetch('http://172.17.1.129:3000/find');
-                var response= await rawReponse.json();
-                // console.log(response[0].image)
-                setListRecipe(response)
+
+    const Preferences = async()=>{
+        var preferences = ['gluten free','vegetarian','lactose free','vegan'];
+        var ifTrue = false;
+        for (let i = 0; i<preferences.length; i++){
+            await AsyncStorage.getItem(preferences[i], 
+            function(error, data){
+            if(data === 'true'){
+                ifTrue = true;
+                if(preferences[i]==='gluten free'){
+                    setGlutenFree(true);
+                    console.log('GLUTEN',data);
+                }else if(preferences[i]==='vegetarian'){
+                    setVegetarian(true);
+                    console.log('VEGE',data);
+                }else if(preferences[i]==='lactose free'){
+                    setLactoseFree(true);
+                    console.log('LACTOSE',data);
+                }else{
+                    setVegan(true);
+                    console.log('VEGAN',data);
+                }
             }
-              loadData();
+            })
+        };
+        if(ifTrue){
+            setHello(true);
+        }else{
+            var rawReponse = await fetch('http://172.17.1.197:3000/find');
+            var response= await rawReponse.json();
+            setListRecipe(response);
+        }
+    };
+
+    Preferences();
     
+        
   }, []);
 
+  // Romane IP: http://172.17.1.197:3000/filters
+// Leila IP: http://172.17.1.129:3000/filters
 
+  var Filters = async() => {
+    var rawResult = await fetch('http://172.17.1.197:3000/filters', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
+    });
+    var result = await rawResult.json();
+    console.log(result);
+    setListRecipe(result);
+}
 
- 
-    // AsyncStorage.setItem("firstName", "John")
+var Search = async() => {
+    var rawResult = await fetch('http://172.17.1.197:3000/search', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `search=${searchTxt}`
+    });
+    var result = await rawResult.json();
+    console.log(result);
+    setListRecipe(result);
+}
 
-  
-
-  
-
-
-
-
-    function updateSearch(search){
-        setSearchTxt(search)
-    }
+  useEffect(()=>{
+    console.log(glutenFree,vegetarian,lactoseFree,vegan);
+    if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
+        Filters();
+    }  
+  },[hello])
 
 
   const toggleOverlay = () => {
     setVisible(!visible);
   };
-// Romane IP: http://172.17.1.197:3000/filters
-// Leila IP: http://172.17.1.129:3000/filters
 
-
-    var Filters = async() => {
-        var rawResult = await fetch('http://172.17.1.129:3000/filters', {
-            method: 'POST',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
-        });
-        var result = await rawResult.json();
-        console.log(result);
-    }
 
     var gluten = { width: 100, height: 100 };
     var vegeta = { width: 100, height: 100 };
@@ -102,7 +131,7 @@ useEffect(() => {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
-
+            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
                 leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
@@ -115,10 +144,11 @@ useEffect(() => {
             inputContainerStyle= {{borderRadius: 50, backgroundColor:"white"}}
             lightTheme={true}
             placeholder="Search"
-            onChangeText= {updateSearch}
+            onChangeText= {(value) => setSearchTxt(value)} 
             value={searchTxt}/>
+            <Button title="Search" onPress={()=>Search()}/>
 
-            <Text h4 style={{textAlign: 'center'}}>Recette du jour</Text>
+            <Text style={{textAlign: 'center', fontSize:25}}>Recette du jour</Text>
 
             <ScrollView style={{marginTop: 25}} horizontal={true}>
             <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
@@ -132,7 +162,7 @@ useEffect(() => {
                 </View>    
             </ScrollView>
             <Button title="Filters" onPress={toggleOverlay}/>
-            <ScrollView contentContainerStyle={{ maxHeight:100 }} horizontal={true}>
+            
                {newList} 
                 
             </ScrollView>
