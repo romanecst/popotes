@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image } from 'react-native';
 import {Button, Overlay, Card, SearchBar} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import IconIonic from 'react-native-vector-icons/Ionicons';
+import RecipeHome from './recipeHome';
 
 
 export default function homePage({navigation}) {
@@ -18,7 +19,7 @@ export default function homePage({navigation}) {
     const [vegan, setVegan] = useState(false);
 
    const [searchTxt, setSearchTxt] = useState('')
-   const [like, setLike] = useState(false)
+  
    const [listRecipe, setListRecipe] = useState([])
 
 useEffect(() => {
@@ -40,15 +41,13 @@ useEffect(() => {
 
 
 
-   var colorHeart;
-   var colorLike = () => {
-    setLike(!like);
+ 
     // AsyncStorage.setItem("firstName", "John")
 
-  }
+  
 
   
-console.log(like)
+
 
 
 
@@ -93,34 +92,7 @@ console.log(like)
     };
 
     var newList = listRecipe.map(function(recipe, i){
-        if(like===true){
-    colorHeart = {color:'#FF0000'}
-} else {
-   colorHeart = {color:'black'}
-}
-        return <View key={i}>
-        <Card containerStyle= {{width:200, height:190, borderRadius:20}}>
-        <Image source={{uri:recipe.image}} style={styles.small}/> 
-    <Text style={{ textAlign: "center"}}>{recipe.title}</Text>
-        <View style={styles.View}>
-             <IconFontAwesome
-            name="heart"
-            size={20}
-            style= {colorHeart}
-            onPress={() => {colorLike()}}/>
-            
-        
-           
-            <IconFontAwesome
-            name="list"
-            size={20}
-            color="#1e272e"
-            onPress={() => {colorLike()}}/>
-            
-            
-            </View>
-        </Card>
-    </View>
+        return <RecipeHome key={i} image={recipe.image} title={recipe.title} />
     })
 
     
