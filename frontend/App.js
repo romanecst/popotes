@@ -1,12 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Stack} from 'react-native';
+import { StyleSheet, Text, View, Stack, Group} from 'react-native';
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
-
 import { FontAwesome } from '@expo/vector-icons';
-
 import Welcome from './screens/Welcome';
 import CreateGroup from './screens/CreateGroup';
 import homePage from './screens/homePage';
@@ -14,14 +12,17 @@ import Map from './screens/Map';
 import Favorite from './screens/Favorite';
 import Profil from './screens/Profil';
 import GlobalGroup from './screens/GlobalGroup';
-
+import List from './screens/List';
+import GroupI from './screens/Group';
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
   GlobalGroup: GlobalGroup,
   Home: homePage,
   Map: Map,
-  Profil: Profil
+  Profil: Profil, 
+  List:List,
+  GroupI: GroupI,
 },
 // {
 //   backBehavior: 'history', 

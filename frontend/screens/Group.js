@@ -1,16 +1,21 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { useState } from "react";
+import { View,Text, Button} from "react-native";
+import {Avatar} from 'react-native-elements';
 
-import { Ionicons } from '@expo/vector-icons';
 
-
-export default function Group({navigation}) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#e67e22'}}>
-            <Text>Je suis sur la page Recap groupe </Text>
-            
-      </View>
-    );
+export default function Group() {
   
+  return (
+    <View style={{ backgroundColor: "red", width: "100%", height: "100%" }}>
 
+
+
+
+<Text style={{marginTop:450, marginLeft:120,flexDirection:"column",flexDirection:"row"}}>
+vous etes sur la page groupe
+ </Text>
+
+</View>
+);
 }
+;
