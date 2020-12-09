@@ -9,12 +9,7 @@ import { Entypo } from '@expo/vector-icons';
 
 export default function Recipe({ navigation }) {
 
-    const [searchTxt, setSearchTxt] = useState('')
-
-    function updateSearch(search) {
-        setSearchTxt(search)
-    }
-
+    
 
     return (
 
