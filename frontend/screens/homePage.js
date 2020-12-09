@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {Button, Overlay, Card, SearchBar, Header} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import IconIonic from 'react-native-vector-icons/Ionicons';
+import RecipeHome from './recipeHome';
 
 import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
@@ -21,7 +22,7 @@ export default function homePage({navigation}) {
     const [vegan, setVegan] = useState(false);
 
    const [searchTxt, setSearchTxt] = useState('')
-   const [like, setLike] = useState(false)
+  
    const [listRecipe, setListRecipe] = useState([])
 
 useEffect(() => {
@@ -32,8 +33,10 @@ useEffect(() => {
             //   setPseudoOk(true)
             //   console.log("test userData",userData, "test pseudo", pseudo);
             async function loadData(){
-                var rawReponse = await fetch('/find');
+                var rawReponse = await fetch('http://172.17.1.129:3000/find');
                 var response= await rawReponse.json();
+                // console.log(response[0].image)
+                setListRecipe(response)
             }
               loadData();
     
@@ -41,19 +44,13 @@ useEffect(() => {
 
 
 
-   var colorHeart;
-   var colorLike = () => {
-    setLike(!like);
+ 
     // AsyncStorage.setItem("firstName", "John")
 
-  }
+  
 
-  if(like===true){
-    colorHeart = {color:'#FF0000'}
-} else {
-   colorHeart = {color:'black'}
-}
-console.log(like)
+  
+
 
 
 
@@ -66,10 +63,11 @@ console.log(like)
     setVisible(!visible);
   };
 // Romane IP: http://172.17.1.197:3000/filters
+// Leila IP: http://172.17.1.129:3000/filters
 
 
     var Filters = async() => {
-        var rawResult = await fetch('http://172.17.1.197:3000/filters', {
+        var rawResult = await fetch('http://172.17.1.129:3000/filters', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
@@ -95,6 +93,12 @@ console.log(like)
     if (vegan) {
         vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
     };
+
+    var newList = listRecipe.map(function(recipe, i){
+        return <RecipeHome key={i} image={recipe.image} title={recipe.title} />
+    })
+
+    
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
@@ -129,75 +133,8 @@ console.log(like)
             </ScrollView>
             <Button title="Filters" onPress={toggleOverlay}/>
             <ScrollView contentContainerStyle={{ maxHeight:100 }} horizontal={true}>
-                <View>
-                    <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
-                    <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
-                    <View style={styles.View}>
-                         <IconFontAwesome
-                        name="heart"
-                        size={20}
-                        style= {colorHeart}
-                        onPress={() => {colorLike()}}/>
-                        
-                    
-                       
-                        <IconFontAwesome
-                        name="list"
-                        size={20}
-                        color="#1e272e"
-                        onPress={() => {colorLike()}}/>
-                        
-                        
-                        </View>
-                    </Card>
-                </View>
-                <View>
-                    <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
-                    <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
-                    <View style={styles.View}>
-                    <IconFontAwesome
-                        name="heart"
-                        size={20}
-                        color="#1e272e"/>
-                    <IconFontAwesome
-                        name="list"
-                        size={20}
-                        color="#1e272e"/>
-                        </View>
-                    </Card>
-                </View>
-                <View>
-                    <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
-                    <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
-                    <View style={styles.View}>
-                    
-                    <IconFontAwesome
-                        name="heart"
-                        size={20}
-                        color="#1e272e"/>
-                        
-                    <IconFontAwesome
-                        name="list"
-                        size={20}
-                        color="#1e272e"/>
-                        </View>
-                    </Card>
-                </View>
-                <View>
-                    <Card containerStyle= {{width:200, height:170, borderRadius:20}}>
-                    <Image source={require('../assets/tarte.jpg')} style={styles.small}/> 
-                    <View style={styles.View}>
-                    <IconFontAwesome
-                        name="heart"
-                        size={20}
-                        color="#1e272e"/>
-                    <IconFontAwesome
-                        name="list"
-                        size={20}
-                        color="#1e272e"/>
-                        </View>
-                    </Card>
-                </View>
+               {newList} 
+                
             </ScrollView>
       
                 
