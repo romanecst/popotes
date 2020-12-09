@@ -17,6 +17,16 @@ import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
+import RecipeHome from './screens/recipeHome';
+
+import recipe from './reducers/recipeInfo';
+
+import {Provider} from 'react-redux';
+
+import {createStore, combineReducers}  from 'redux';
+
+const store = createStore(combineReducers({recipe}));
+
 
 
 import GroupI from './screens/Group';
@@ -68,6 +78,7 @@ var StackNavigator = createStackNavigator({
   List: List,
   Recipe: Recipe,
   GlobalList: GlobalList,
+  RecipeHome: RecipeHome,
   Retour: BottomNavigator,
   
 },
@@ -80,8 +91,9 @@ var Navigation = createAppContainer(StackNavigator);
  export default function App() {
   return (
     
-   
+  <Provider store={store}>
    <Navigation/>
+   </Provider>
    
   );
 }

@@ -28,9 +28,18 @@ describe('test route fiters', function(){
         await request(app).post('/filters')
         .send({cuisine: '', time:''})
         .expect({result:{
-            // cuisines: {$all: ['French']}
-            // readyInMinutes: {$lte: 30}
+            cuisines: {$all: ['French']},
+            readyInMinutes: {$lte: 30}
           }})
+    done()
+    })
+})
+
+describe('test route search', function(){
+    test('test post search', async (done) => {
+        await request(app).post('/search')
+        .send({search: 'Eggs'})
+        .expect({recipes:{}})
     done()
     })
 })
