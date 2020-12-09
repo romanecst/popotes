@@ -4,7 +4,7 @@ import { CheckBox } from 'react-native-elements';
 
 import { Entypo } from '@expo/vector-icons';
 
-export default function Ingredients (){
+export default function Recette (){
 
     const [checked, setChecked] = useState();
 

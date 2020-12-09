@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Switch, ScrollView } from 'react-native';
 import { ListItem, Header, Button } from "react-native-elements";
 import { CheckBox } from 'react-native-elements';
@@ -15,6 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
 import Ingredient from './ingredientcheck';
+import Recette from './recettecheck';
 
 export default function Map({ navigation }) {
 
@@ -23,8 +24,26 @@ export default function Map({ navigation }) {
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     //  bouton radio // 
 
+    if (isEnabled) {
+        var ingredient =
+            <ScrollView style={{ height: 300 }}>
+                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **CATEGORIE** : </Text>
+                <Ingredient />
+                <Ingredient />
+                <Ingredient />
+            </ScrollView>
+        var trier = "recette"
+    } else {
+        var ingredient =
+            <ScrollView style={{ height: 300 }}>
+                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **RECETTES** : </Text>
+                <Recette />
+                <Recette />
+                <Recette />
+            </ScrollView>
+        var trier = "ingredient"
 
-
+    }
 
 
     return (
@@ -38,7 +57,7 @@ export default function Map({ navigation }) {
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Trier par recette </Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Trier par {trier} </Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#febf63" }}
                     thumbColor={isEnabled ? "#FFF2DF" : "#f4f3f4"}
@@ -52,11 +71,11 @@ export default function Map({ navigation }) {
 
                 {/* ------------------------- CATEGOEIRE / INGREDIENT / QUANTITE ou GRAMMAGE ---------------DEBUT--------- */}
                 <View>
-                    <ScrollView style={{ height: 300 }}>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 10 }}> **CATEGORIE** : </Text>
-                        <Ingredient />
-                    </ScrollView>
+
+                    {ingredient}
+
                 </View>
+
                 {/* ------------------------- CATEGOEIRE / INGREDIENT / QUANTITE ou GRAMMAGE ---------------FIN---------- */}
             </View>
             <View style={{ flexDirection: 'row', marginHorizontal: 20, justifyContent: 'center' }}>
@@ -67,18 +86,18 @@ export default function Map({ navigation }) {
                     <Octicons name="checklist" size={26} color="black" />
                 </View>
             </View>
-                <Button
-                    title="Store close to you"
-                    buttonStyle={{ borderColor: 'white', marginHorizontal: 70, borderRadius:30, backgroundColor:'#febf63', justifyContent:'space-between', paddingLeft:20, paddingRight:20, marginBottom:10 }}
-                    titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-                    icon={<Fontisto name="shopping-store" size={20} color="white" />}
-                />
-                <Button
-                    title="Share with the group"
-                    buttonStyle={{ borderColor: 'white', marginHorizontal: 30, borderRadius:30, backgroundColor:'white', justifyContent:'space-between', padding:25, paddingHorizontal:45 }}
-                    titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
-                    icon={<MaterialCommunityIcons name="account-group" size={36} color="black" />}
-                />
+            <Button
+                title="Store close to you"
+                buttonStyle={{ borderColor: 'white', marginHorizontal: 70, borderRadius: 30, backgroundColor: '#febf63', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}
+                titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
+                icon={<Fontisto name="shopping-store" size={20} color="white" />}
+            />
+            <Button
+                title="Share with the group"
+                buttonStyle={{ borderColor: 'white', marginHorizontal: 30, borderRadius: 30, backgroundColor: 'white', justifyContent: 'space-between', padding: 25, paddingHorizontal: 45 }}
+                titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
+                icon={<MaterialCommunityIcons name="account-group" size={36} color="black" />}
+            />
         </View>
     );
 }
@@ -112,7 +131,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
         width: 168,
-        marginBottom:15
+        marginBottom: 15
 
     }, okList: {
         alignItems: "center",
@@ -125,8 +144,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
         width: 165,
-        marginBottom:15,
-        marginLeft:3
+        marginBottom: 15,
+        marginLeft: 3
 
     }
 });
