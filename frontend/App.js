@@ -16,7 +16,7 @@ import Profil from './screens/Profil';
 import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
 import Recipe from './screens/Recipe';
-
+import GlobalList from './screens/GlobalList';
 
 
 import GroupI from './screens/Group';
@@ -67,6 +67,7 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
+  GlobalList: GlobalList,
   Retour: BottomNavigator,
   
 },

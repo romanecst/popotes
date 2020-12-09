@@ -14,7 +14,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-export default function Profil({ }) {
+export default function Profil({navigation}) {
   const [visible, setVisible] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
   const [vegetarian, setVegetarian] = useState(false);
@@ -78,12 +78,12 @@ export default function Profil({ }) {
 
   return (
 
-    <View style={{ backgroundColor: "#e5f8f8" }}>
+    <View style={{flex:1, backgroundColor: "#e5f8f8" }}>
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
         leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
-        centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
 
