@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image } from 'react-native';
 import {Button, Overlay, Card, SearchBar} from 'react-native-elements';
 
@@ -13,9 +13,25 @@ import { withNavigation } from 'react-navigation';
 function RecipeHome(props){
     const [like, setLike] = useState(false)
 
-function colorLike(){
-    setLike(!like)
+function colorLike(userDataRecipe){
+    // var recipeList = AsyncStorage.getItem("recipeList")
+    // recipeList.push()
+    // AsyncStorage.setItem("recipeList", JSON.stringify(userDataRecipe))
+    setLike(!like);
+    
 }
+
+var saveList = async function SaveRecipe(){
+    await AsyncStorage.getItem("recipeList",
+   function(err, data) { 
+       var userData = JSON.parse(data); 
+     console.log('test USERData', userData);
+       })}
+
+saveList();
+
+
+ 
 
 var colorHeart;
 
@@ -36,7 +52,7 @@ var colorHeart;
             name="heart"
             size={20}
             style= {colorHeart}
-            onPress={() => {colorLike()}}/>
+            onPress={() => {colorLike(userDataRecipe) }}/>
             
         
            

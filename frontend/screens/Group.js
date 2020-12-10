@@ -5,12 +5,27 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  TextInput
 } from "react-native";
-import { Input, Button } from "react-native-elements";
+import { Input, Button, Overlay } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
+import {connect} from 'react-redux';
 
-export default function Group() {
+ function Group(props) {
+
+  const [visible, setVisible] = useState(false);
+  const [nameGroup, setNameGroup] = useState("")
+
+  function createGroup(){
+   setVisible(!visible);
+  console.log('ca click');}
+
+  // function valider(){
+  //   console.log('nameGroup', nameGroup)
+  // }
+
+
   return (
     <View style={{ backgroundColor: "#ADE498", width: "100%", height: "100%" }}>
       <View style={{ marginTop: 100 }}>
@@ -25,7 +40,53 @@ export default function Group() {
             {/* -------------------------CREATION DE NOUVEAU GROUPE ---------------------------------- */}
             Creer un Groupe
           </Text>
-          <Ionicons name="ios-add-circle-outline" size={154} color="black" />
+          <Ionicons name="ios-add-circle-outline" size={154} color="black"
+           onPress={() => {createGroup()}}
+              />
+            <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50}} isVisible={visible} onBackdropPress={createGroup} >
+            
+            <Button
+          title="Return"
+          type="clear"
+          buttonStyle={{ borderColor: '#dfe6e9', justifyContent: 'flex-end' }}
+          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight:17 }}
+        />
+        <TextInput 
+              Style={{ 
+            height:16,
+            width:250,
+            alignItems: "stretch",
+            textAlign: "center",
+            marginTop: 50,
+            borderRadius: 50,
+            marginLeft: 20,
+            marginRight: 20,
+          }}
+          placeholder="Group Name"
+          onChangeText={(value)=>{setNameGroup(value)}}
+          value= {nameGroup}
+          />
+
+          <Button
+         
+          title = " Valider "
+          color = " # 841584 "
+          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+          onPress = {() =>{props.checkNameGroup(nameGroup)}}
+        />
+
+          <Button
+          title="Liste"
+          type="route"
+          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+        />
+
+          <View style={styles.overlay}>
+         </View>
+           
+            </Overlay>
         </View>
 
         <Text
@@ -129,12 +190,39 @@ export default function Group() {
             />
           </View>
 
-
-
-
-
         </ScrollView>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+  width: 290,
+  margin:18,
+  justifyContent: 'center',
+}, prefalim: {
+  alignItems: 'center',
+  justifyContent:'center',
+  flexDirection:'row',
+}, picto: {
+  alignItems: 'center',
+  justifyContent:'center',
+  margin:15,
+}
+});
+
+
+function mapDispatchToProps(dispatch) {
+  return {
+    checkNameGroup: function(nomDuGroupe) { 
+      dispatch( {type: 'nameGroup', nomDuGroupe:nomDuGroupe }) 
+    }
+  }
+};
+
+export default connect(
+    null, 
+    mapDispatchToProps
+)(Group);
+

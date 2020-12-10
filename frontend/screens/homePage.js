@@ -24,8 +24,9 @@ export default function homePage({navigation}) {
     const [hello, setHello] = useState(false);
 
    const [searchTxt, setSearchTxt] = useState('')
-  
    const [listRecipe, setListRecipe] = useState([])
+   const [recipeHome, setRecipeHome] = useState([]);
+   
 
 useEffect(() => {
 
@@ -72,7 +73,11 @@ useEffect(() => {
 // Nico IP: http://172.17.1.53:3000/filters
 
   var Filters = async() => {
+<<<<<<< HEAD
     var rawResult = await fetch('http://172.17.1.53:3000/filters', {
+=======
+    var rawResult = await fetch('http://172.17.1.129:3000/filters', {
+>>>>>>> groupe
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
@@ -82,6 +87,9 @@ useEffect(() => {
     setListRecipe(result);
 }
 
+    function updateSearch(search){
+        setSearchTxt(search)
+    }
 var Search = async() => {
     var rawResult = await fetch('http://172.17.1.53:3000/search', {
         method: 'POST',
@@ -132,7 +140,7 @@ var Search = async() => {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
-            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}>
+            <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
                 leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
@@ -163,7 +171,7 @@ var Search = async() => {
                 </View>    
             </ScrollView>
             <Button title="Filters" onPress={toggleOverlay}/>
-            
+           
                {newList} 
                 
             </ScrollView>
