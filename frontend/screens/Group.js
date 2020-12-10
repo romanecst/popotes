@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TextInput
 } from "react-native";
-import { Input, Button, Overlay } from "react-native-elements";
+import { Input, Button, Overlay, Avatar } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import {connect} from 'react-redux';
@@ -21,9 +21,19 @@ import {connect} from 'react-redux';
    setVisible(!visible);
   console.log('ca click');}
 
-  // function valider(){
-  //   console.log('nameGroup', nameGroup)
-  // }
+  var saveGroup = async function save(){
+    var rawResponse = await fetch("http://172.17.1.129:3000/group", {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body: `avatarGroupFromFront=lalalala&nameGroupFromFront=${nameGroup}`
+                });
+    var response = await rawResponse.json();
+    console.log("test de réponses", response)
+  }
+  function save(){
+    saveGroup();
+    console.log('passage par la riute 2 ?')
+  }
 
 
   return (
@@ -44,7 +54,10 @@ import {connect} from 'react-redux';
            onPress={() => {createGroup()}}
               />
             <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50}} isVisible={visible} onBackdropPress={createGroup} >
-            
+            <Avatar 
+            rounded
+            size={90}
+            source={{uri:"https://cdn.radiofrance.fr/s3/cruiser-production/2020/01/498986bd-e296-46b8-aa8d-054f57636fec/801x410_untitled_collage_2_8.jpg"}}></Avatar>
             <Button
           title="Return"
           type="clear"
@@ -73,7 +86,7 @@ import {connect} from 'react-redux';
           color = " # 841584 "
           buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress = {() =>{props.checkNameGroup(nameGroup)}}
+          onPress = {() =>{props.checkNameGroup(nameGroup); save()}}
         />
 
           <Button
