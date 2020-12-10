@@ -6,34 +6,12 @@ import {Button, Overlay, Card, SearchBar} from 'react-native-elements';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
+import {connect} from 'react-redux';
+import { withNavigation } from 'react-navigation';
 
 
-export default function RecipeLike(props){
-
-    const [like, setLike] = useState(false);
-    const [recipeHome, setRecipeHome] = useState([]);
-
-    // useEffect(() => {
-    //        async function SaveRecipe(){
-    //          await AsyncStorage.getItem("recipeList",
-    //         function(err, data) {                
-    //           var userData = JSON.parse(data); 
-    //           console.log('test USERDATA lalalal', userData);
-             
-    //         //   setRecipeHome(userData)
-                
-    //         } )
-    //     }
-    //     SaveRecipe()
-    // },[])
-
-    useEffect(() => {
-        setRecipeHome([...recipeHome, userData])
-        // AsyncStorage.setItem("recipeList", JSON.stringify(recipeHome));
-        console.log("test recipe Home lEILA ", recipeHome)
- },[recipeHome])
-
-var userDataRecipe = {picture: props.image, title:props.title}
+function RecipeHome(props){
+    const [like, setLike] = useState(false)
 
 function colorLike(userDataRecipe){
     // var recipeList = AsyncStorage.getItem("recipeList")
@@ -65,8 +43,10 @@ var colorHeart;
         return (
         <View >
         <Card containerStyle= {{width:200, height:190, borderRadius:20}}>
-        <Image source={{uri:props.image}} style={styles.small}/> 
-    <Text style={{ textAlign: "center"}}>{props.title}</Text>
+        <TouchableOpacity onPress={()=>{props.goToRecipe(props.recipeInfo); props.navigation.navigate('Recipe')}}>
+            <Image source={{uri:props.image}} style={styles.small}/> 
+            <Text style={{ textAlign: "center"}}>{props.title}</Text>
+        </TouchableOpacity>
         <View style={styles.View}>
              <IconFontAwesome
             name="heart"
@@ -80,23 +60,39 @@ var colorHeart;
             name="list"
             size={20}
             color="#1e272e"
-            onPress={() => {colorLike()}}/>
+            />
             
             
             </View>
         </Card>
     </View>
-         ) }
-         const styles = StyleSheet.create({
-        small: {
-                width: 170,
-                height: 100,
-                borderRadius:20,
-             
-             },
-         View:{
-            flexDirection:'row',
-            justifyContent:'space-between',
-            marginTop: 20,
-        }
-    })
+) 
+}
+         
+
+function mapDispatchToProps(dispatch) {
+return {
+    goToRecipe: function(info) { 
+        dispatch( {type: 'recipeInfo', recipeInfo: info} ) 
+    }
+}
+}
+
+export default connect(
+    null, 
+    mapDispatchToProps
+)(withNavigation(RecipeHome));
+
+const styles = StyleSheet.create({
+    small: {
+            width: 170,
+            height: 100,
+            borderRadius:20,
+         
+         },
+     View:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        marginTop: 20,
+    }
+})
