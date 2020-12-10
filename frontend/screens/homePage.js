@@ -73,11 +73,7 @@ useEffect(() => {
 // Nico IP: http://172.17.1.53:3000/filters
 
   var Filters = async() => {
-<<<<<<< HEAD
-    var rawResult = await fetch('http://172.17.1.53:3000/filters', {
-=======
     var rawResult = await fetch('http://172.17.1.129:3000/filters', {
->>>>>>> groupe
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
