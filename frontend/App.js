@@ -18,14 +18,18 @@ import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/recipeHome';
+import Signup from './screens/Signup';
+import Signin from './screens/Signin';
 
 import recipe from './reducers/recipeInfo';
+import token from './reducers/token'
+
 
 import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe}));
+const store = createStore(combineReducers({recipe, token}));
 
 
 
@@ -80,6 +84,7 @@ var StackNavigator = createStackNavigator({
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
   Retour: BottomNavigator,
+  Map : Map,
   
 },
 {headerMode:"none"}
