@@ -20,12 +20,13 @@ import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/recipeHome';
 
 import recipe from './reducers/recipeInfo';
+import nameGroup from './reducers/nameGroup';
 
 import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe}));
+const store = createStore(combineReducers({recipe, nameGroup}));
 
 
 

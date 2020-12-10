@@ -72,7 +72,7 @@ useEffect(() => {
 // Leila IP: http://172.17.1.129:3000/filters
 
   var Filters = async() => {
-    var rawResult = await fetch('http://172.17.1.197:3000/filters', {
+    var rawResult = await fetch('http://172.17.1.129:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
@@ -135,7 +135,7 @@ var Search = async() => {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
-            
+            <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
                 leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
@@ -166,7 +166,7 @@ var Search = async() => {
                 </View>    
             </ScrollView>
             <Button title="Filters" onPress={toggleOverlay}/>
-            <ScrollView contentContainerStyle={{ height:300 }} horizontal={true}>
+           
                {newList} 
                 
             </ScrollView>
