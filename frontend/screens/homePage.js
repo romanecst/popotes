@@ -53,7 +53,7 @@ useEffect(() => {
         if(ifTrue){
             setPref(true);
         }else{
-            var rawReponse = await fetch('http://172.17.1.129:3000/find');
+            var rawReponse = await fetch('http://172.17.1.71:3000/find');
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -70,7 +70,7 @@ useEffect(() => {
 // Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-    var rawResult = await fetch('http://172.17.1.129:3000/filters', {
+    var rawResult = await fetch('http://172.17.1.71:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
@@ -83,7 +83,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
 var Search = async() => {
-    var rawResult = await fetch('http://172.17.1.129:3000/search', {
+    var rawResult = await fetch('http://172.17.1.71:3000/search', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `search=${searchTxt}`
@@ -131,22 +131,29 @@ var Search = async() => {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
-            <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
                 leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
                 centerComponent={{ text: 'HOMEPAGE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
             />
-
+            <View style={{flexDirection:'row', alignItems:'center'}}>          
             <SearchBar 
-            containerStyle= {{width:"70%", borderRadius:20, backgroundColor: '#eefaea', borderTopColor: '#eefaea', borderBottomColor: '#eefaea'}}
-            inputContainerStyle= {{borderRadius: 50, backgroundColor:"white"}}
+            containerStyle= {{width:"70%", backgroundColor: '#eefaea30', borderTopColor: '#eefaea', borderBottomColor: '#eefaea'}}
+            inputContainerStyle= {styles.search}
             lightTheme={true}
             placeholder="Search"
             onChangeText= {(value) => setSearchTxt(value)} 
             value={searchTxt}/>
-            <Button title="Search" onPress={()=>Search()}/>
+            <Button 
+            title="Yumi!" 
+            buttonStyle={styles.bouton}
+            titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu', paddingBottom:3, paddingTop:3}}
+            onPress={()=>Search()}/>
+            </View>
+
+            <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
+
 
             <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu'}}>Today's pick</Text>
 
@@ -247,7 +254,6 @@ var Search = async() => {
             
         </View>
     )
-
 }
 
 const styles = StyleSheet.create({
@@ -288,5 +294,18 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         marginTop: 20 
+    }, search: { 
+        backgroundColor: 'white', 
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius: 0,
+        borderTopLeftRadius: 40,
+        borderTopRightRadius: 0,
+    }, bouton: {
+        borderColor:'white', 
+        backgroundColor:'#ade498', 
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 40,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 40,
     }
   });
