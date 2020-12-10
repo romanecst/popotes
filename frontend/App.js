@@ -18,6 +18,7 @@ import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/recipeHome';
+import OverlayCheck from './screens/overlayCheckIngredient'
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
 
@@ -82,8 +83,10 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
+  OverlayCheck:OverlayCheck,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
+
   Retour: BottomNavigator,
   Map : Map,
   

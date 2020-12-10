@@ -67,6 +67,7 @@ useEffect(() => {
   // Romane IP: http://172.17.1.197:3000/filters
 // Leila IP: http://172.17.1.129:3000/filters
 // Nico IP: http://172.17.1.53:3000/filters
+// Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
     var rawResult = await fetch('http://172.17.1.197:3000/filters', {

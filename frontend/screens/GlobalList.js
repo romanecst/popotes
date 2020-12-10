@@ -28,6 +28,8 @@ export default function Map({ navigation }) {
         var ingredient =
             <ScrollView style={{ height: 300 }}>
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **CATEGORIE** : </Text>
+
+     {/* code dans le composant "ingredientcheck" */}
                 <Ingredient />
                 <Ingredient />
                 <Ingredient />
@@ -37,8 +39,6 @@ export default function Map({ navigation }) {
         var ingredient =
             <ScrollView style={{ height: 300 }}>
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **RECETTES** : </Text>
-                <Recette />
-                <Recette />
                 <Recette />
             </ScrollView>
         var trier = "ingredient"
@@ -57,7 +57,7 @@ export default function Map({ navigation }) {
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Trier par {trier} </Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu'}}> Trier par {trier} </Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#febf63" }}
                     thumbColor={isEnabled ? "#FFF2DF" : "#f4f3f4"}
@@ -87,12 +87,14 @@ export default function Map({ navigation }) {
                 </View>
             </View>
             <Button
+                iconRight={true}
                 title="Store close to you"
                 buttonStyle={{ borderColor: 'white', marginHorizontal: 70, borderRadius: 30, backgroundColor: '#febf63', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}
                 titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
                 icon={<Fontisto name="shopping-store" size={20} color="white" />}
             />
             <Button
+                iconRight={true}
                 title="Share with the group"
                 buttonStyle={{ borderColor: 'white', marginHorizontal: 30, borderRadius: 30, backgroundColor: 'white', justifyContent: 'space-between', padding: 25, paddingHorizontal: 45 }}
                 titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
@@ -105,11 +107,12 @@ export default function Map({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "center",
+        justifyContent: "space-between",
         alignItems: 'center',
         flexDirection: "row",
         marginTop: 15,
-        marginBottom: 15
+        marginBottom: 15,
+        marginHorizontal:90
     }, ingredients: {
         backgroundColor: 'white',
         marginHorizontal: 20,
@@ -132,7 +135,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 0,
         width: 168,
         marginBottom: 15
-
     }, okList: {
         alignItems: "center",
         justifyContent: "center",
@@ -146,6 +148,5 @@ const styles = StyleSheet.create({
         width: 165,
         marginBottom: 15,
         marginLeft: 3
-
     }
 });
