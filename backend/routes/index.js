@@ -8,11 +8,13 @@ var axios = require("axios").default;
 
 const recipesModel = require('../models/recipes');
 const userModel = require('../models/users');
+const groupModel = require('../models/group')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+
 
 router.post('/search', async function(req, res, next) {
   var regex = `${req.body.search}.*`
@@ -203,6 +205,21 @@ router.post('/sign-in', async function(req,res,next){
   res.json({result, user, error, token})
 })
 
+
+router.post('/group', async function(req, res, next) {
+  
+  
+  var newGroup = new groupModel ({
+    name: req.body.nameGroupFromFront,
+    avatar: "./assets/bouf.jpg",
+    group_token:uid2(32),
+   });
+
+   var groupSave = await newGroup.save();
+console.log("test groupe",  groupSave);
+
+  res.json();
+});
 
 
 module.exports = router;
