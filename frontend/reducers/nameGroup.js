@@ -1,11 +1,9 @@
-export default function(listNameGroup = [], action) {
+export default function(addnameGroup = "", action){
   
     if(action.type == 'nameGroup') {
-var newListNameGroup = [...listNameGroup, action.nomDuGroupe]
-console.log(newListNameGroup)
-      return newListNameGroup;
+      return action.addnameGroup;
     } else {
-      return listNameGroup;
+      return addnameGroup;
     }
     
   }

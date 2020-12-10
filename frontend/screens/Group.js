@@ -16,10 +16,11 @@ import {connect} from 'react-redux';
 
   const [visible, setVisible] = useState(false);
   const [nameGroup, setNameGroup] = useState("")
+  const [tokenGroup, setTokenGroup] = useState("")
 
-  function createGroup(){
+  function createGroup(props){
    setVisible(!visible);
-  console.log('ca click');}
+  }
 
   var saveGroup = async function save(){
     var rawResponse = await fetch("http://172.17.1.129:3000/group", {
@@ -28,11 +29,14 @@ import {connect} from 'react-redux';
                   body: `avatarGroupFromFront=lalalala&nameGroupFromFront=${nameGroup}`
                 });
     var response = await rawResponse.json();
-    console.log("test de réponses", response)
+    var token= response.groupSave.group_token
+    setTokenGroup(token)
+
+    // console.log("test de réponses.token", response.groupSave.group_token)
   }
   function save(){
     saveGroup();
-    console.log('passage par la riute 2 ?')
+    
   }
 
 
@@ -230,6 +234,9 @@ function mapDispatchToProps(dispatch) {
   return {
     checkNameGroup: function(nomDuGroupe) { 
       dispatch( {type: 'nameGroup', nomDuGroupe:nomDuGroupe }) 
+    },
+    checkTokenGroup: function(tokenGroup) { 
+      dispatch( {type: 'tokenGroup', tokenGroup:tokenGroup }) 
     }
   }
 };
