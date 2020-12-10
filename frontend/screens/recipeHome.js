@@ -52,7 +52,7 @@ if(likes != undefined){
             name="heart"
             size={20}
             style= {colorHeart}
-            onPress={() => {colorLike(userDataRecipe) }}/>
+            onPress={() => {colorLike() }}/>
             
         
            
