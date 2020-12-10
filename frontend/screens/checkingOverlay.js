@@ -14,5 +14,4 @@ return(
     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15 }}>  100g </Text>
     <CheckBox checked={checked} checkedColor='#ADE498' onPress={() => { setChecked(!checked) }} />
 </View>
-
 )}

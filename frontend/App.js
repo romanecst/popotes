@@ -18,10 +18,8 @@ import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/recipeHome';
-
-import OverlayCheck from './screens/overlayCheckIngredient'
-
 import recipe from './reducers/recipeInfo';
+import OverlayCheck from './screens/overlayCheckIngredient'
 
 import {Provider} from 'react-redux';
 
@@ -41,7 +39,6 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: Profil, 
   List:List,
   GroupI: GroupI,
-  OverlayCheck:OverlayCheck,
 },
 // {
 //   backBehavior: 'history', 
@@ -80,8 +77,10 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
+  OverlayCheck:OverlayCheck,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
+
   Retour: BottomNavigator,
   
 },

@@ -3,23 +3,16 @@ import { Button, Overlay } from 'react-native-elements';
 import { StyleSheet, Text, View, Switch, ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import {withNavigation} from 'react-navigation';
 import Checking from './checkingOverlay';
 
 import { AntDesign, Fontisto, Entypo, Octicons, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function OverlayCheck() {
-
-
-  const [visible, setVisible] = useState(false);
-
-  const toggleOverlay = () => {
-    setVisible(!visible);
-  };
+function OverlayCheck({navigation}) {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} isVisible={!visible} onBackdropPress={toggleOverlay} >
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} >
         <View style={styles.container}>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, marginHorizontal: 15 }}>You will add the ingredients to your shopping list:{"\n"}{"\n"}</Text>
           <Text style={{ fontFamily: 'Kohinoor Telugu', color: '#636e72', marginHorizontal: 50, fontSize:15 }}>check the ingredients you already have:</Text>
@@ -53,6 +46,7 @@ export default function OverlayCheck() {
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
+          onPress={() => { navigation.navigate('List') }}
         />
         </View>
       </Overlay>
@@ -76,3 +70,5 @@ const styles = StyleSheet.create({
     height: 300,
   }
 });
+
+export default withNavigation(OverlayCheck)

@@ -40,8 +40,6 @@ export default function Map({ navigation }) {
             <ScrollView style={{ height: 300 }}>
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **RECETTES** : </Text>
                 <Recette />
-                <Recette />
-                <Recette />
             </ScrollView>
         var trier = "ingredient"
 
@@ -59,7 +57,7 @@ export default function Map({ navigation }) {
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Trier par {trier} </Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu'}}> Trier par {trier} </Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#febf63" }}
                     thumbColor={isEnabled ? "#FFF2DF" : "#f4f3f4"}
@@ -109,11 +107,12 @@ export default function Map({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "center",
+        justifyContent: "space-between",
         alignItems: 'center',
         flexDirection: "row",
         marginTop: 15,
-        marginBottom: 15
+        marginBottom: 15,
+        marginHorizontal:90
     }, ingredients: {
         backgroundColor: 'white',
         marginHorizontal: 20,
@@ -136,7 +135,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 0,
         width: 168,
         marginBottom: 15
-
     }, okList: {
         alignItems: "center",
         justifyContent: "center",
@@ -150,6 +148,5 @@ const styles = StyleSheet.create({
         width: 165,
         marginBottom: 15,
         marginLeft: 3
-
     }
 });

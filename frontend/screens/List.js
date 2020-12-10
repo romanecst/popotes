@@ -21,7 +21,7 @@ import { Entypo } from '@expo/vector-icons';
 export default function Profil({ navigation }) {
   const list = [
     {
-      name: "Liste de Marseile ",
+      name: "Liste de Marseille ",
       avatar_url:
         "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
     },
@@ -62,7 +62,7 @@ export default function Profil({ navigation }) {
         <Text style={{ fontSize: 30 }}>Creer une liste</Text>
 
         {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
-        <Ionicons name="ios-add-circle-outline" size={134} color="black" onPress={() => { navigation.navigate('GlobalList') }}/>
+        <Ionicons name="ios-add-circle-outline" size={134} color="black"/>
       </View>
       <Text
         style={{
@@ -86,6 +86,8 @@ export default function Profil({ navigation }) {
         }}
       >
         {list.map((l, i) => (
+          <TouchableOpacity
+          onPress={() => { navigation.navigate('GlobalList') }}>
           <ListItem
             key={i}
             bottomDivider
@@ -106,6 +108,7 @@ export default function Profil({ navigation }) {
               <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
             </ListItem.Content>
           </ListItem>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>

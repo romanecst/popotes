@@ -9,13 +9,12 @@ import { Ionicons } from '@expo/vector-icons';
 import {connect} from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
+import OverlayCheck from './overlayCheckIngredient'
+
+
 
 function RecipeHome(props){
     const [like, setLike] = useState(false)
-
-function colorLike(){
-    setLike(!like)
-}
 
 var colorHeart;
 
@@ -49,6 +48,7 @@ var colorHeart;
             
             </View>
         </Card>
+
     </View>
 ) 
 }

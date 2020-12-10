@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import { Header, SearchBar, Button } from 'react-native-elements';
+import { Header, SearchBar, Button, Overlay } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
+
+import OverlayCheck from './overlayCheckIngredient'
+
 import { connect } from 'react-redux';
 
 function Recipe({ navigation, recipeInfo }) {
+    const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(recipeInfo.servings);
 
     var ingredients = recipeInfo.extendedIngredients.map(function (ingredient, i) {
         var amount = (servings * ingredient.amount) / recipeInfo.servings;
         return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLongd}</Text>
     });
+
+    const toggleOverlay = () => {
+        setVisible(!visible);
+    };
+
+    if(visible){
+       var overlay = <OverlayCheck />
+    }else{
+        var overlay = <View></View>
+    }
 
     return (
 
@@ -82,9 +96,10 @@ function Recipe({ navigation, recipeInfo }) {
                 </View>
                 <View style={{ flexDirection: 'row', marginHorizontal: 70, justifyContent: 'space-between', alignItems: 'center', marginBottom: 50 }}>
                     <AntDesign name="heart" size={24} color="black" />
-                    <FontAwesome name="list" size={24} color="black"/>
+                    <FontAwesome name="list" size={24} color="black" onPress={()=>toggleOverlay()} />
                 </View>
             </ScrollView>
+            {overlay}
         </View>
     );
 }
