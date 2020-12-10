@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const recipesSchema = mongoose.Schema({
     title: String,
-    instruction: String,
+    instructions: String,
     image: String,
     vegetarian: Boolean,
     vegan: Boolean, 

@@ -11,11 +11,14 @@ import {
   ScrollView,
 } from "react-native";
 
-import { Button, ListItem } from "react-native-elements";
+import { Button, ListItem, Header } from "react-native-elements";
 
 import { Ionicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { Fontisto } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
-export default function Profil({}) {
+export default function Profil({ navigation }) {
   const list = [
     {
       name: "Liste de Marseile ",
@@ -46,12 +49,20 @@ export default function Profil({}) {
   ];
 
   return (
-    <View style={{ backgroundColor: "#FFF2DF", width: "100%", height: "100%" }}>
+    <View style={{flex:1, backgroundColor: "#FFF2DF" }}>
+
+      <Header
+        containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white"  />}
+        centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+      />
+
       <View style={{ alignItems: "center", marginTop: 90 }}>
         <Text style={{ fontSize: 30 }}>Creer une liste</Text>
 
         {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
-        <Ionicons name="ios-add-circle-outline" size={134} color="black" />
+        <Ionicons name="ios-add-circle-outline" size={134} color="black" onPress={() => { navigation.navigate('GlobalList') }}/>
       </View>
       <Text
         style={{
