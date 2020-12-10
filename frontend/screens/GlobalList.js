@@ -28,6 +28,8 @@ export default function Map({ navigation }) {
         var ingredient =
             <ScrollView style={{ height: 300 }}>
                 <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **CATEGORIE** : </Text>
+
+     {/* code dans le composant "ingredientcheck" */}
                 <Ingredient />
                 <Ingredient />
                 <Ingredient />
