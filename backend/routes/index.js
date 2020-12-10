@@ -6,7 +6,8 @@ var SHA256 = require("crypto-js/sha256");
 var encBase64 = require("crypto-js/enc-base64");
 var axios = require("axios").default;
 
-const recipesModel = require('../models/recipes')
+const recipesModel = require('../models/recipes');
+const userModel = require('../models/users');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -114,5 +115,94 @@ router.get('/save', function(req, res, next) {
   });
   res.render('index', { title: 'Express Save' });
 });
+
+
+
+/* Road sign-up */
+router.post('/sign-up', async function(req,res,next){
+
+  var error = [];
+  var result = false;
+  var saveUser = null;
+  var token = null;
+
+
+  const searchUser = await userModel.findOne({
+    email: req.body.emailFromFront
+  })
+
+  if(searchUser != null){
+    error.push('User already exists')
+  }
+    
+  if(req.body.usernameFromFront == ''
+  || req.body.emailFromFront == ''
+  || req.body.passwordFromFront == ''
+  ){
+    error.push('Empty fields')
+  }
+
+  if(error.length == 0){
+
+    var salt = uid2(32)
+    var newUser = new userModel({
+      username: req.body.usernameFromFront,
+      email: req.body.emailFromFront,
+      password: SHA256(req.body.passwordFromFront+salt).toString(encBase64),
+      token: uid2(32),
+      salt: salt,
+    })
+
+    saveUser = await newUser.save();
+
+    if(saveUser){
+      result = true,
+      token = saveUser.token
+    }
+  }
+
+  res.json({result, saveUser, error, token})
+})
+
+
+/* Road sign-in */
+router.post('/sign-in', async function(req,res,next){
+
+  var error = [];
+  var result = false;
+  var user = null;
+  var token = null;
+
+  if(req.body.emailFromFront == ''
+  || req.body.passwordFromFront == ''
+  ){
+    error.push('Empty fields')
+  }
+
+  if(error.length == 0){
+    const user = await userModel.findOne({
+      email: req.body.emailFromFront,
+    })
+
+    if(user){
+      const passwordEncrypt = SHA256(req.body.passwordFromFront + user.salt).toString(encBase64)
+
+      if(passwordEncrypt == user.password){
+        result = true
+        token = user.token
+        console.log(token);
+      } else {
+        result = false
+        error.push('Incorrect password')
+      }
+    } else {
+      error.push('Incorrect email')
+    }
+  }
+
+  res.json({result, user, error, token})
+})
+
+
 
 module.exports = router;

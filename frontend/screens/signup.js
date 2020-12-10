@@ -3,13 +3,51 @@ import { Button, Overlay, Input, Avatar } from 'react-native-elements';
 import { StyleSheet, Text, View , Image} from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import {Icon} from 'react-native-vector-icons/FontAwesome';
+import {connect} from 'react-redux';
+import { withNavigation } from 'react-navigation';
 
 
-export default function App() {
+
+
+function Signup({navigation, addToken}) {
 
 
   const [visible, setVisible] = useState(true);
 
+  const [signUpUsername, setSignUpUsername] = useState('');
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+
+  const [userExists, setUserExists] = useState([]);
+
+  const [listErrorSignUp, setListErrorSignUp] = useState([]);
+
+
+  var handleSubmitSignUp = async () => {
+
+    const data = await fetch('http://172.17.1.53:3000/sign-up', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
+    })
+
+    const body = await data.json()
+    if(body.result == true){
+      addToken(body.token)
+      setUserExists(true)
+      navigation.navigate('List')
+
+    } else {
+      setListErrorSignUp(body.error)
+    }
+  }
+
+  var tabErrorsSignup = listErrorSignUp.map((error,i) => {
+    return(<Text>{error}</Text>)
+  })
+
+
+  
   const toggleOverlay = () => {
     setVisible(true);
   };
@@ -26,7 +64,6 @@ export default function App() {
                 size="large"
                 rounded
                 title="LW"
-                onPress={() => console.log("Works!")}
                 activeOpacity={1}
                 containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
             />
@@ -34,28 +71,54 @@ export default function App() {
                 containerStyle={styles.input}
                 placeholder='Username'
                 leftIcon={{ type: 'font-awesome', name: 'user' }}
+                onChangeText={(val) => setSignUpUsername(val)}
+                val = {signUpUsername}
             />
             <Input
                 containerStyle={styles.input}
                 placeholder='Email'
                 leftIcon={{ type: 'font-awesome', name: 'at' }}
+                onChangeText={(val) => setSignUpEmail(val)}
+                val = {signUpEmail}
             />
             <Input
                 containerStyle={styles.input}
                 placeholder='Password'
                 leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+                onChangeText={(val) => setSignUpPassword(val)}
+                val = {signUpPassword}
             />
+
+            {tabErrorsSignup}
+
         <Button
           title="Sign-up"
           type="clear"
           buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+          onPress={() => {handleSubmitSignUp()}}
         />
         </View>
       </Overlay>
     </View>
   );
 }
+
+
+function mapDispatchToProps(dispatch){
+  return {
+    addToken: function(token){
+      dispatch({type: 'addToken', token: token})
+    }
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withNavigation(Signup));
+
+
 
 const styles = StyleSheet.create({
     overlay: {
