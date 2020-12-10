@@ -24,12 +24,13 @@ import Signin from './screens/Signin';
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
 
+import nameGroup from './reducers/nameGroup';
 
 import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe, token}));
+const store = createStore(combineReducers({recipe, nameGroup, token}));
 
 
 
