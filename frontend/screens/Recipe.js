@@ -12,9 +12,14 @@ import {connect} from 'react-redux';
 function Recipe({ navigation, recipeInfo }) {
     const[servings, setServings] = useState(recipeInfo.servings);
 
+    var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
+
     var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
         var amount = (servings*ingredient.amount)/recipeInfo.servings;
-        return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLongd}</Text>
+        if(!Number.isInteger(amount)){
+            amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(2);
+        }
+    return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
     });
 
     return (
@@ -34,6 +39,7 @@ function Recipe({ navigation, recipeInfo }) {
                     <Image style={styles.picture} source={{uri:recipeInfo.image}} />
                 </View>
                 {/* ************* TITRE ********** */}
+                <View style={styles.container}>
                 <View style={styles.title}>
                     <Text style={{ fontSize: 20 }}>{recipeInfo.title}</Text>
                 </View>
@@ -78,7 +84,8 @@ function Recipe({ navigation, recipeInfo }) {
                 <View style={styles.title}>
                     <Text style={{ fontSize: 20 }}>**DESCRIPTION : **{"\n"}{"\n"}</Text>
              {/* ************DESCRIPTION *************/}
-                    <Text style={{ fontSize: 12 }}>mettre la farine dans un bol ...etc</Text>
+                    <Text style={{ fontSize: 12 }}>{instructions}</Text>
+                </View>
                 </View>
                 
             </ScrollView>
@@ -108,7 +115,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         fontFamily: 'Kohinoor Telugu',
-        marginLeft: 25,
         width: 320,
         borderRadius: 30,
         padding: 12,
@@ -116,7 +122,6 @@ const styles = StyleSheet.create({
     }, detail1: {
         fontFamily: 'Kohinoor Telugu',
         backgroundColor: 'white',
-        marginLeft: 25,
         width: 320,
         borderRadius: 30,
         padding: 12,
@@ -125,7 +130,6 @@ const styles = StyleSheet.create({
     }, plus: {
         fontFamily: 'Kohinoor Telugu',
         backgroundColor: 'white',
-        marginLeft: 25,
         width: 155,
         borderRadius: 30,
         marginBottom: 3,
