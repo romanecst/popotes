@@ -87,12 +87,14 @@ export default function Map({ navigation }) {
                 </View>
             </View>
             <Button
+                iconRight={true}
                 title="Store close to you"
                 buttonStyle={{ borderColor: 'white', marginHorizontal: 70, borderRadius: 30, backgroundColor: '#febf63', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}
                 titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
                 icon={<Fontisto name="shopping-store" size={20} color="white" />}
             />
             <Button
+                iconRight={true}
                 title="Share with the group"
                 buttonStyle={{ borderColor: 'white', marginHorizontal: 30, borderRadius: 30, backgroundColor: 'white', justifyContent: 'space-between', padding: 25, paddingHorizontal: 45 }}
                 titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}

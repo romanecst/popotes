@@ -19,6 +19,8 @@ import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/recipeHome';
 
+import OverlayCheck from './screens/overlayCheckIngredient'
+
 import recipe from './reducers/recipeInfo';
 
 import {Provider} from 'react-redux';
@@ -39,6 +41,7 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: Profil, 
   List:List,
   GroupI: GroupI,
+  OverlayCheck:OverlayCheck,
 },
 // {
 //   backBehavior: 'history', 

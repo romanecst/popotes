@@ -18,7 +18,7 @@ export default function CreateGroup({navigation}) {
         <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
         <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
-        <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50}} isVisible={!visible} onBackdropPress={toggleOverlay} >
+        <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50}} isVisible={!visible} >
         <View style={styles.overlay}>
         <Button
           title="skip"
