@@ -22,16 +22,16 @@ export default function homePage({navigation}) {
     const [vegan, setVegan] = useState(false);
 
    const [searchTxt, setSearchTxt] = useState('')
-  
    const [listRecipe, setListRecipe] = useState([])
+   const [recipeHome, setRecipeHome] = useState([]);
+   
 
 useEffect(() => {
+
     // AsyncStorage.getItem("listStorage", 
             // function(error, data){
             //   var userData = JSON.parse(data);
             //   setlistRecipe(userData)
-            //   setPseudoOk(true)
-            //   console.log("test userData",userData, "test pseudo", pseudo);
             async function loadData(){
                 var rawReponse = await fetch('http://172.17.1.129:3000/find');
                 var response= await rawReponse.json();
@@ -41,16 +41,6 @@ useEffect(() => {
               loadData();
     
   }, []);
-
-
-
- 
-    // AsyncStorage.setItem("firstName", "John")
-
-  
-
-  
-
 
 
 
@@ -132,7 +122,7 @@ useEffect(() => {
                 </View>    
             </ScrollView>
             <Button title="Filters" onPress={toggleOverlay}/>
-            <ScrollView contentContainerStyle={{ maxHeight:100 }} horizontal={true}>
+            <ScrollView contentContainerStyle={{ height:300 }} horizontal={true}>
                {newList} 
                 
             </ScrollView>

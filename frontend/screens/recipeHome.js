@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image } from 'react-native';
 import {Button, Overlay, Card, SearchBar} from 'react-native-elements';
 
@@ -7,13 +7,53 @@ import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
 
+
 export default function RecipeLike(props){
 
-    const [like, setLike] = useState(false)
+    const [like, setLike] = useState(false);
+    const [recipeHome, setRecipeHome] = useState([]);
 
-function colorLike(){
-    setLike(!like)
+    // useEffect(() => {
+    //        async function SaveRecipe(){
+    //          await AsyncStorage.getItem("recipeList",
+    //         function(err, data) {                
+    //           var userData = JSON.parse(data); 
+    //           console.log('test USERDATA lalalal', userData);
+             
+    //         //   setRecipeHome(userData)
+                
+    //         } )
+    //     }
+    //     SaveRecipe()
+    // },[])
+
+    useEffect(() => {
+        setRecipeHome([...recipeHome, userData])
+        // AsyncStorage.setItem("recipeList", JSON.stringify(recipeHome));
+        console.log("test recipe Home lEILA ", recipeHome)
+ },[recipeHome])
+
+var userDataRecipe = {picture: props.image, title:props.title}
+
+function colorLike(userDataRecipe){
+    // var recipeList = AsyncStorage.getItem("recipeList")
+    // recipeList.push()
+    // AsyncStorage.setItem("recipeList", JSON.stringify(userDataRecipe))
+    setLike(!like);
+    
 }
+
+var saveList = async function SaveRecipe(){
+    await AsyncStorage.getItem("recipeList",
+   function(err, data) { 
+       var userData = JSON.parse(data); 
+     console.log('test USERData', userData);
+       })}
+
+saveList();
+
+
+ 
 
 var colorHeart;
 
@@ -32,7 +72,7 @@ var colorHeart;
             name="heart"
             size={20}
             style= {colorHeart}
-            onPress={() => {colorLike()}}/>
+            onPress={() => {colorLike(userDataRecipe) }}/>
             
         
            
