@@ -25,13 +25,13 @@ import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
 
 import nameGroup from './reducers/nameGroup';
+import recipeList from './reducers/recipeList';
 
 import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe, nameGroup, token}));
-
+const store = createStore(combineReducers({recipe, nameGroup, token, recipeList}));
 
 
 import GroupI from './screens/Group';
