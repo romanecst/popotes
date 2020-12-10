@@ -32,8 +32,6 @@ router.get('/find', async function(req, res, next) {
 
 router.post('/filters', async function(req, res, next) {
 
-  console.log(req.body)
-
   var filters;
 
   if(req.body.time === 'quick'){
@@ -71,11 +69,8 @@ router.post('/filters', async function(req, res, next) {
     }
   }
 
-  console.log('EMP',empty)
-
   var result = await recipesModel.find(empty);
 
-  console.log('RES',result);
   
   res.json(result);
 });
@@ -84,14 +79,14 @@ router.get('/save', function(req, res, next) {
   var options = {
     method: 'GET',
     url: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random',
-    params: {number: '40'},
+    params: {number: '45'},
     headers: {
       'x-rapidapi-key': '4267f086a5msh5279f0cd7ea484ap11e19djsnbb7a043890d4',
       'x-rapidapi-host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com'
     }
   };
   axios.request(options).then(async function (response) {
-    console.log('SUCCESS',response.data);
+    console.log('SUCCESS');
     var recipes = response.data.recipes;
     for( var i = 0; i< recipes.length; i++){
       var newRecipe = new recipesModel ({

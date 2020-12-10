@@ -21,7 +21,7 @@ export default function homePage({navigation}) {
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
 
-    const [hello, setHello] = useState(false);
+    const [pref, setPref] = useState(false);
 
    const [searchTxt, setSearchTxt] = useState('')
    const [listRecipe, setListRecipe] = useState([])
@@ -40,22 +40,18 @@ useEffect(() => {
                 ifTrue = true;
                 if(preferences[i]==='gluten free'){
                     setGlutenFree(true);
-                    console.log('GLUTEN',data);
                 }else if(preferences[i]==='vegetarian'){
                     setVegetarian(true);
-                    console.log('VEGE',data);
                 }else if(preferences[i]==='lactose free'){
                     setLactoseFree(true);
-                    console.log('LACTOSE',data);
                 }else{
                     setVegan(true);
-                    console.log('VEGAN',data);
                 }
             }
             })
         };
         if(ifTrue){
-            setHello(true);
+            setPref(true);
         }else{
             var rawReponse = await fetch('http://172.17.1.129:3000/find');
             var response= await rawReponse.json();
@@ -79,7 +75,6 @@ useEffect(() => {
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
     });
     var result = await rawResult.json();
-    console.log(result);
     setListRecipe(result);
 }
 
@@ -93,16 +88,15 @@ var Search = async() => {
         body: `search=${searchTxt}`
     });
     var result = await rawResult.json();
-    console.log(result);
     setListRecipe(result);
 }
 
   useEffect(()=>{
-    console.log(glutenFree,vegetarian,lactoseFree,vegan);
+    console.log('PREFERENCE ALIMENTAIRE',glutenFree,vegetarian,lactoseFree,vegan);
     if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
         Filters();
     }  
-  },[hello])
+  },[pref])
 
 
   const toggleOverlay = () => {
