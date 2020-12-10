@@ -57,7 +57,7 @@ useEffect(() => {
         if(ifTrue){
             setHello(true);
         }else{
-            var rawReponse = await fetch('http://172.17.1.53:3000/find');
+            var rawReponse = await fetch('http://172.17.1.129:3000/find');
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -73,11 +73,7 @@ useEffect(() => {
 // Nico IP: http://172.17.1.53:3000/filters
 
   var Filters = async() => {
-<<<<<<< HEAD
-    var rawResult = await fetch('http://172.17.1.53:3000/filters', {
-=======
     var rawResult = await fetch('http://172.17.1.129:3000/filters', {
->>>>>>> groupe
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
@@ -91,7 +87,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
 var Search = async() => {
-    var rawResult = await fetch('http://172.17.1.53:3000/search', {
+    var rawResult = await fetch('http://172.17.1.129:3000/search', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `search=${searchTxt}`
