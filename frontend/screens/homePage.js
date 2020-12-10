@@ -149,7 +149,7 @@ var Search = async() => {
             value={searchTxt}/>
             <Button title="Search" onPress={()=>Search()}/>
 
-            <Text style={{textAlign: 'center', fontSize:25}}>Recette du jour</Text>
+            <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu'}}>Today's pick</Text>
 
             <ScrollView style={{marginTop: 25}} horizontal={true}>
             <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
