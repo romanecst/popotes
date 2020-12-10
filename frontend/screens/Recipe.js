@@ -3,17 +3,15 @@ import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { Header, SearchBar, Button } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { AntDesign } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 function Recipe({ navigation, recipeInfo }) {
-    const[servings, setServings] = useState(recipeInfo.servings);
+    const [servings, setServings] = useState(recipeInfo.servings);
 
-    var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
-        var amount = (servings*ingredient.amount)/recipeInfo.servings;
+    var ingredients = recipeInfo.extendedIngredients.map(function (ingredient, i) {
+        var amount = (servings * ingredient.amount) / recipeInfo.servings;
         return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLongd}</Text>
     });
 
@@ -31,56 +29,61 @@ function Recipe({ navigation, recipeInfo }) {
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={styles.container}>
-                    <Image style={styles.picture} source={{uri:recipeInfo.image}} />
+                    <Image style={styles.picture} source={{ uri: recipeInfo.image }} />
                 </View>
                 {/* ************* TITRE ********** */}
-                <View style={styles.title}>
-                    <Text style={{ fontSize: 20 }}>{recipeInfo.title}</Text>
-                </View>
-                <View >
-                    <View style={styles.detail1}>
-                        {/* ************ DUREE RECETTE ************ */}
-                        <Text> Préparation : {recipeInfo.readyInMinutes} </Text>
+                <View style={styles.container}>
+                    <View style={styles.title}>
+                        <Text style={{ fontSize: 20 }}>{recipeInfo.title}</Text>
                     </View>
-                    <View style={styles.detail1}>
-                        {/* ************ NOMBRE DE PERSONNE RECETTE ************ */}
-                        <Text> Nombre de personne : {servings}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.plus}>
-                      {/* ************BOUTON + ************ */}
-                            <Button
-                                title="+"
-                                onPress={()=>setServings(servings+1)}
-                                type="clear"
-                                buttonStyle={{ borderColor: 'white' }}
-                                titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
-                            />
+                    <View >
+                        <View style={styles.detail1}>
+                            {/* ************ DUREE RECETTE ************ */}
+                            <Text> Préparation : {recipeInfo.readyInMinutes} </Text>
                         </View>
-                        <View style={styles.moin}>
-                     {/* ************BOUTON - ************ */}
-                            <Button
-                                title="-"
-                                onPress={()=>setServings(servings-1)}
-                                type="clear"
-                                buttonStyle={{ borderColor: 'white' }}
-                                titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
-                            />
+                        <View style={styles.detail1}>
+                            {/* ************ NOMBRE DE PERSONNE RECETTE ************ */}
+                            <Text> Nombre de personne : {servings}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View style={styles.plus}>
+                                {/* ************BOUTON + ************ */}
+                                <Button
+                                    title="+"
+                                    onPress={() => setServings(servings + 1)}
+                                    type="clear"
+                                    buttonStyle={{ borderColor: 'white' }}
+                                    titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
+                                />
+                            </View>
+                            <View style={styles.moin}>
+                                {/* ************BOUTON - ************ */}
+                                <Button
+                                    title="-"
+                                    onPress={() => setServings(servings - 1)}
+                                    type="clear"
+                                    buttonStyle={{ borderColor: 'white' }}
+                                    titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
+                                />
+                            </View>
                         </View>
                     </View>
+                    <View style={styles.title}>
+
+                        <Text style={{ fontSize: 20 }}>**INGREDIENTS : **{"\n"}{"\n"}</Text>
+                        {/* ************NOMBRE INGREDIENT *************/}
+                        {ingredients}
+                    </View>
+                    <View style={styles.title}>
+                        <Text style={{ fontSize: 20 }}>**DESCRIPTION : **{"\n"}{"\n"}</Text>
+                        {/* ************DESCRIPTION *************/}
+                        <Text style={{ fontSize: 12 }}>mettre la farine dans un bol ...etc</Text>
+                    </View>
                 </View>
-                <View style={styles.title}>
-         
-                    <Text style={{ fontSize: 20 }}>**INGREDIENTS : **{"\n"}{"\n"}</Text>
-             {/* ************NOMBRE INGREDIENT *************/}
-                {ingredients}
+                <View style={{ flexDirection: 'row', marginHorizontal: 70, justifyContent: 'space-between', alignItems: 'center', marginBottom: 50 }}>
+                    <AntDesign name="heart" size={24} color="black" />
+                    <FontAwesome name="list" size={24} color="black"/>
                 </View>
-                <View style={styles.title}>
-                    <Text style={{ fontSize: 20 }}>**DESCRIPTION : **{"\n"}{"\n"}</Text>
-             {/* ************DESCRIPTION *************/}
-                    <Text style={{ fontSize: 12 }}>mettre la farine dans un bol ...etc</Text>
-                </View>
-                
             </ScrollView>
         </View>
     );
@@ -88,12 +91,12 @@ function Recipe({ navigation, recipeInfo }) {
 
 function mapStateToProps(state) {
     return { recipeInfo: state.recipe }
-  }
-    
-  export default connect(
-    mapStateToProps, 
+}
+
+export default connect(
+    mapStateToProps,
     null
-  )(Recipe);
+)(Recipe);
 
 const styles = StyleSheet.create({
     container: {
@@ -108,7 +111,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         fontFamily: 'Kohinoor Telugu',
-        marginLeft: 25,
         width: 320,
         borderRadius: 30,
         padding: 12,
@@ -116,7 +118,6 @@ const styles = StyleSheet.create({
     }, detail1: {
         fontFamily: 'Kohinoor Telugu',
         backgroundColor: 'white',
-        marginLeft: 25,
         width: 320,
         borderRadius: 30,
         padding: 12,
@@ -125,8 +126,7 @@ const styles = StyleSheet.create({
     }, plus: {
         fontFamily: 'Kohinoor Telugu',
         backgroundColor: 'white',
-        marginLeft: 25,
-        width: 155,
+        width: 157,
         borderRadius: 30,
         marginBottom: 3,
         justifyContent: "flex-start",
@@ -134,12 +134,12 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 0,
         borderTopLeftRadius: 40,
         borderTopRightRadius: 0,
-        marginBottom:50,
+        marginBottom: 50,
     }, moin: {
         fontFamily: 'Kohinoor Telugu',
         backgroundColor: 'white',
-        marginLeft: 5,
-        width: 155,
+        marginLeft: 3,
+        width: 157,
         borderRadius: 30,
         marginBottom: 3,
         justifyContent: "flex-start",
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 40,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 40,
-        marginBottom:50,
+        marginBottom: 50,
     }
 });
 
