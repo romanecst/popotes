@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage} from 'react-native';
 import { Header, SearchBar } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -7,13 +7,54 @@ import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-export default function Favorite({ navigation }) {
+import {connect} from 'react-redux';
 
-    const [searchTxt, setSearchTxt] = useState('')
+import { withNavigationFocus } from 'react-navigation';
+
+function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe}) {
+
+    const [searchTxt, setSearchTxt] = useState('');
+
+    useEffect(()=>{
+        async function loadData(){
+            await AsyncStorage.getItem("favorites", 
+            function(error, data){
+                if(data !== null && data !==undefined){
+                    var recetteLocal = JSON.parse(data);
+                    if(recetteLocal.length !== 0){
+                        recetteLocal.forEach(element => {
+                            addRecipe(element);
+                        });  
+                    }
+                }
+            })
+        }
+        loadData();
+    },[])
+
+
+if(!isFocused){
+    const SaveData = async() => {
+        if(recipeList.length !== 0){
+            await AsyncStorage.setItem("favorites", JSON.stringify(recipeList));
+        }
+    }
+    SaveData();
+}
+
 
     function updateSearch(search){
         setSearchTxt(search)}
 
+    var favourites = recipeList.map(function(recipe, i){
+        return <View key={i} style={styles.container}>
+        <Image style={styles.picture} source={{uri: recipe.image}} />
+        <Text style={styles.text} >{recipe.title}</Text>
+        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
+        <Entypo name="cross" size={24} color="black" onPress={()=>deleteRecipe(recipe.title)}/>
+        </View>
+    </View>
+    })
 
     return (
 
@@ -38,47 +79,35 @@ export default function Favorite({ navigation }) {
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-                    <View style={styles.container}>
-                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
-                        <Text style={styles.text} >** TITLE RECIPES**</Text>
-                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
-                        <Entypo name="cross" size={24} color="black" />
-                        </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
-                        <Text style={styles.text} >** TITLE RECIPES **</Text>
-                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
-                        <Entypo name="cross" size={24} color="black" />
-                        </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
-                        <Text style={styles.text} >** TITLE RECIPES **</Text>
-                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
-                        <Entypo name="cross" size={24} color="black" />
-                        </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
-                        <Text style={styles.text} >** TITLE RECIPES **</Text>
-                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
-                        <Entypo name="cross" size={24} color="black" />
-                        </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Image style={styles.picture} source={require('../assets/bouf.jpg')} />
-                        <Text style={styles.text} >** TITLE RECIPES **</Text>
-                        <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
-                        <Entypo name="cross" size={24} color="black" />
-                        </View>
-                    </View>
-                    
+                    {favourites}
                 </View>
             </ScrollView>
         </View>
     );
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        addRecipe: function(info) { 
+            dispatch( {type: 'recipeList', recipeInfo: info} ) 
+        },
+        deleteRecipe: function(info) { 
+            dispatch( {type: 'recipeListDel', title: info} ) 
+        }
+    }
+    }
+
+function mapStateToProps(state) {
+    return { recipeList: state.recipeList }
+  }
+    
+
+var favScreen = connect(
+mapStateToProps, 
+mapDispatchToProps
+)(Favorite);
+
+export default withNavigationFocus(favScreen);
 
 const styles = StyleSheet.create({
     container: {

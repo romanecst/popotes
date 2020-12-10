@@ -16,12 +16,9 @@ const toggleOverlay = () => {
 // LOCAL STORAGE ================>
 function favoriteAlim(diet) {
     AsyncStorage.getItem(diet, function (error, data) {
-        console.log(data);
         if (data === null || data === 'false') {
-            console.log('test IF', data);
             AsyncStorage.setItem(diet, 'true')
         } else {
-            console.log('test ELSE', data);
             AsyncStorage.setItem(diet, 'false')
         }
     })

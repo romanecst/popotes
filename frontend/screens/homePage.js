@@ -21,11 +21,12 @@ export default function homePage({navigation}) {
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
 
-    const [hello, setHello] = useState(false);
+    const [pref, setPref] = useState(false);
 
    const [searchTxt, setSearchTxt] = useState('')
-  
    const [listRecipe, setListRecipe] = useState([])
+   const [recipeHome, setRecipeHome] = useState([]);
+   
 
 useEffect(() => {
 
@@ -39,24 +40,20 @@ useEffect(() => {
                 ifTrue = true;
                 if(preferences[i]==='gluten free'){
                     setGlutenFree(true);
-                    console.log('GLUTEN',data);
                 }else if(preferences[i]==='vegetarian'){
                     setVegetarian(true);
-                    console.log('VEGE',data);
                 }else if(preferences[i]==='lactose free'){
                     setLactoseFree(true);
-                    console.log('LACTOSE',data);
                 }else{
                     setVegan(true);
-                    console.log('VEGAN',data);
                 }
             }
             })
         };
         if(ifTrue){
-            setHello(true);
+            setPref(true);
         }else{
-            var rawReponse = await fetch('http://172.17.1.71:3000/find');
+            var rawReponse = await fetch('http://172.17.1.129:3000/find');
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -69,35 +66,38 @@ useEffect(() => {
 
   // Romane IP: http://172.17.1.197:3000/filters
 // Leila IP: http://172.17.1.129:3000/filters
+// Nico IP: http://172.17.1.53:3000/filters
+// Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-    var rawResult = await fetch('http://172.17.1.71:3000/filters', {
+    var rawResult = await fetch('http://172.17.1.129:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
     });
     var result = await rawResult.json();
-    console.log(result);
     setListRecipe(result);
 }
 
+    function updateSearch(search){
+        setSearchTxt(search)
+    }
 var Search = async() => {
-    var rawResult = await fetch('http://172.17.1.71:3000/search', {
+    var rawResult = await fetch('http://172.17.1.129:3000/search', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `search=${searchTxt}`
     });
     var result = await rawResult.json();
-    console.log(result);
     setListRecipe(result);
 }
 
   useEffect(()=>{
-    console.log(glutenFree,vegetarian,lactoseFree,vegan);
+    console.log('PREFERENCE ALIMENTAIRE',glutenFree,vegetarian,lactoseFree,vegan);
     if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
         Filters();
     }  
-  },[hello])
+  },[pref])
 
 
   const toggleOverlay = () => {
@@ -131,7 +131,7 @@ var Search = async() => {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
-            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}}>
+            <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
                 leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
@@ -148,7 +148,7 @@ var Search = async() => {
             value={searchTxt}/>
             <Button title="Search" onPress={()=>Search()}/>
 
-            <Text style={{textAlign: 'center', fontSize:25}}>Recette du jour</Text>
+            <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu'}}>Today's pick</Text>
 
             <ScrollView style={{marginTop: 25}} horizontal={true}>
             <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
@@ -162,7 +162,7 @@ var Search = async() => {
                 </View>    
             </ScrollView>
             <Button title="Filters" onPress={toggleOverlay}/>
-            
+           
                {newList} 
                 
             </ScrollView>

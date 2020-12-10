@@ -14,9 +14,14 @@ function Recipe({ navigation, recipeInfo }) {
     const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(recipeInfo.servings);
 
-    var ingredients = recipeInfo.extendedIngredients.map(function (ingredient, i) {
-        var amount = (servings * ingredient.amount) / recipeInfo.servings;
-        return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLongd}</Text>
+    var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
+
+    var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
+        var amount = (servings*ingredient.amount)/recipeInfo.servings;
+        if(!Number.isInteger(amount)){
+            amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(2);
+        }
+    return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
     });
 
     const toggleOverlay = () => {
