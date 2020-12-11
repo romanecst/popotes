@@ -11,36 +11,83 @@ import { Octicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import { connect } from 'react-redux';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import Ingredient from './ingredientcheck';
-import Recette from './recettecheck';
+import Ingredient from './components/ingredientcheck';
+import Recette from './components/recettecheck';
 
-export default function Map({ navigation }) {
+
+function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
     // bouton toggle // 
     const [isEnabled, setIsEnabled] = useState(false);
+    const [recipeList, setRecipeList] = useState([]);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    console.log(ingredientList)
+
+    var filteredIngredients = [];
+    for(var s=0; s<ingredientList.length; s++){
+        var list = ingredientList[s].filter( function( el ) {
+            return !checkList.includes( el.name );
+        } );
+        filteredIngredients.push(list);
+    }
+      {/* code dans le composant "ingredientcheck" */}
+    var ingredientsMap = filteredIngredients.map((array)=>{
+        var ingredients = array.map(function(el, i){
+            return <View key={i}><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {el.aisle} </Text>
+            <Ingredient name={el.name} amount={el.amount} measure={el.measure}/></View>
+
+            
+        })
+        return ingredients
+    })
+    var recipesMap = filteredIngredients.map((array)=>{
+        var recipeName = '';
+        var recipes = array.map(function(el, j){
+            recipeName = el.recipeName;
+            return  <Recette key={j} name={el.name} amount={el.amount} measure={el.measure}/> 
+        })
+    return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {recipeName} </Text>{recipes}</View>
+    })
     //  bouton radio // 
+    // useEffect(()=>{
+    // let finalList = []
+    // for(let i=0; i<ingredientList.length; i++){
+    //     let inList = false;
+    //     for(let j=0; j<checkList.length; j++) {
+    //         console.log('ingredient:', ingredientList[i].name, 'check:', checkList[j]);
+    //         if(ingredientList[i].name == checkList[j]){
+    //             inList = true;
+    //         }
+    //     };
+    //     if(!inList){
+    //         console.log('hello')
+    //         finalList.push(ingredientList[i])
+    //     }       
+    // };
+    // console.log('CHECK LIST',checkList);
+    // console.log('INGREDIENT LIST',ingredientList);
+    // console.log('FINAL LIST',finalList);
+    // },[])
+    // for(var j=0; j<checkList.length; j++) {
+    //     ingredientList.forEach(element => {
+    //         console.log('ELE',element)
+    //     });
+    // }
+    
+    
 
     if (isEnabled) {
-        var ingredient =
-            <ScrollView style={{ height: 300 }}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **CATEGORIE** : </Text>
-
-     {/* code dans le composant "ingredientcheck" */}
-                <Ingredient />
-                <Ingredient />
-                <Ingredient />
-            </ScrollView>
+        var ingredient = <ScrollView>{ingredientsMap}</ScrollView>    
         var trier = "recette"
     } else {
-        var ingredient =
-            <ScrollView style={{ height: 300 }}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> **RECETTES** : </Text>
-                <Recette />
-            </ScrollView>
+        var ingredient = <ScrollView >
+        {recipesMap}
+        </ScrollView>
         var trier = "ingredient"
 
     }
@@ -103,6 +150,15 @@ export default function Map({ navigation }) {
         </View>
     );
 }
+
+function mapStateToProps(state) {
+    return { ingredientList: state.ingredientList, checkList: state.checkList, recipeInfo: state.recipe}
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(GlobalList);
 
 
 const styles = StyleSheet.create({

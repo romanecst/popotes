@@ -17,25 +17,30 @@ import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
-import RecipeHome from './screens/recipeHome';
-import OverlayCheck from './screens/overlayCheckIngredient'
+import RecipeHome from './screens/components/recipeHome';
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
 
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
-
+import checkList from './reducers/checkList';
 import nameGroup from './reducers/nameGroup';
+import tokenGroup from './reducers/tokenGroup';
 import recipeList from './reducers/recipeList';
+import ingredientList from './reducers/ingredientList';
+
+import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
+import GroupI from './screens/Group';
+import MesGroupesP12 from './screens/MesGroupesP12';
+
 
 import {Provider} from 'react-redux';
+import GroupPopUpPartage from'./screens/GroupePopUpPartage'
 
 import {createStore, combineReducers}  from 'redux';
+import GroupePopUpPartage from './screens/GroupePopUpPartage';
 
-const store = createStore(combineReducers({recipe, nameGroup, token, recipeList}));
-
-
-import GroupI from './screens/Group';
+const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList}));
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
@@ -45,6 +50,9 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: Profil, 
   List:List,
   GroupI: GroupI,
+  MesGroupes:MesGroupes,
+  MesGroupesP12:MesGroupesP12,
+  GroupePopUpPartage:GroupePopUpPartage
 },
 // {
 //   backBehavior: 'history', 
@@ -83,7 +91,7 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
-  OverlayCheck:OverlayCheck,
+  // OverlayCheck:OverlayCheck,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
 

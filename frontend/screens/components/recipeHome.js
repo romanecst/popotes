@@ -12,9 +12,6 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Checking from './checkingOverlay';
 
 
-import OverlayCheck from './overlayCheckIngredient'
-
-
 
 
 

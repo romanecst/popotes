@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,33 +7,82 @@ import {
   StyleSheet,
   TextInput
 } from "react-native";
-import { Input, Button, Overlay, Avatar } from "react-native-elements";
+import { Input, Button, Overlay, Avatar, Image } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import {connect} from 'react-redux';
+import token from "../reducers/token";
+
+import { Camera } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
 
  function Group(props) {
 
   const [visible, setVisible] = useState(false);
   const [nameGroup, setNameGroup] = useState("")
+  const [tokenGroup, setTokenGroup] = useState("")
 
-  function createGroup(){
+  const [groupExists, setGroupExists] = useState(false);
+  const [listErrorGroup, setListErrorGroup] = useState([]);
+
+  const [hasPermission, setHasPermission] = useState(null);
+  const [image, setImage] = useState(null);
+
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        } else{
+          setHasPermission(true)
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log('essai permission result', result);
+    if (!result.cancelled) {
+      setImage(result.uri);}}
+
+  function createGroup(props){
    setVisible(!visible);
-  console.log('ca click');}
+  }
+  function back(props){
+    setVisible(false);
+   }
+
+//192.168.1.20 IP Leila Maison
 
   var saveGroup = async function save(){
-    var rawResponse = await fetch("http://172.17.1.129:3000/group", {
+    var rawResponse = await fetch("http://192.168.1.20:3000/group", {
                   method: 'POST',
                   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   body: `avatarGroupFromFront=lalalala&nameGroupFromFront=${nameGroup}`
                 });
     var response = await rawResponse.json();
-    console.log("test de réponses", response)
+    var token= response.groupSave.group_token;
+    
+    if (response.result==true){
+    setTokenGroup(token)
+    setGroupExists(true)
+    props.AddTokenGroup(token)
+    setVisible(false)
   }
-  function save(){
-    saveGroup();
-    console.log('passage par la riute 2 ?')
-  }
+  else {
+    setListErrorGroup(response.error)
+  }}
+
 
 
   return (
@@ -55,12 +104,28 @@ import {connect} from 'react-redux';
               />
             <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50}} isVisible={visible} onBackdropPress={createGroup} >
             <Avatar 
+            activeOpacity={0.2}
+            onPress={pickImage}
+            overlayContainerStyle={{}}
+            placeholderStyle={{}}
             rounded
-            size={90}
-            source={{uri:"https://cdn.radiofrance.fr/s3/cruiser-production/2020/01/498986bd-e296-46b8-aa8d-054f57636fec/801x410_untitled_collage_2_8.jpg"}}></Avatar>
+            showAccessory
+            size="small"
+            source={{ uri: "" }}
+            title="Insert"
+            titleStyle={{}}
+            rounded
+            showAccessory 
+            size={50}
+            >
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                   {image && <Image source={{ uri: image }} style={{ width: 100, height: 100 }} containerStyle={{borderRadius: 500}} />}
+            </View>
+            </Avatar>
             <Button
           title="Return"
           type="clear"
+          onPress={() => {back()}}
           buttonStyle={{ borderColor: '#dfe6e9', justifyContent: 'flex-end' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 11, paddingBottom: 20, paddingRight:17 }}
         />
@@ -86,7 +151,7 @@ import {connect} from 'react-redux';
           color = " # 841584 "
           buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress = {() =>{props.checkNameGroup(nameGroup); save()}}
+          onPress = {() =>{ props.checkNameGroup(nameGroup), saveGroup()}}
         />
 
           <Button
@@ -95,6 +160,8 @@ import {connect} from 'react-redux';
           buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
         />
+
+        <Text> Participants</Text>
 
           <View style={styles.overlay}>
          </View>
@@ -151,7 +218,7 @@ import {connect} from 'react-redux';
                 marginBottom: 10,
               }}
               titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-              icon={
+             icon={
                 <View style={{ marginLeft: 140 }}>
                   <Ionicons name="ios-trash" size={30} color="black" />
                 </View>
@@ -180,8 +247,6 @@ import {connect} from 'react-redux';
             />
           </View>
 
-
-
           <View
             style={{ textAlign: "center", marginLeft: 50, marginRight: 50 }}
           >
@@ -202,7 +267,6 @@ import {connect} from 'react-redux';
               }
             />
           </View>
-
         </ScrollView>
       </View>
     </View>
@@ -228,8 +292,11 @@ const styles = StyleSheet.create({
 
 function mapDispatchToProps(dispatch) {
   return {
-    checkNameGroup: function(nomDuGroupe) { 
-      dispatch( {type: 'nameGroup', nomDuGroupe:nomDuGroupe }) 
+    checkNameGroup: function(nameGroup) { 
+      dispatch({type: 'nameGroup', nameGroup:nameGroup }) 
+    },
+    AddTokenGroup: function(tokenGroup) { 
+      dispatch({type: 'tokenGroup', tokenGroup:tokenGroup }) 
     }
   }
 };

@@ -202,18 +202,46 @@ router.post('/sign-in', async function(req,res,next){
 
 
 router.post('/group', async function(req, res, next) {
-  
-  
-  var newGroup = new groupModel ({
-    name: req.body.nameGroupFromFront,
-    avatar: "./assets/bouf.jpg",
-    group_token:uid2(32),
-   });
+  console.log('je passe par ma route ')
 
-   var groupSave = await newGroup.save();
-console.log("test groupe",  groupSave);
+  var error = [];
+  var result = false;
+  var groupSave;
+  var token;
+  
 
-  res.json();
+  const groupSearch = await groupModel.findOne({
+    name: req.body.nameGroupFromFront})
+    
+    if(groupSearch!= null){
+      error.push('Group already exists'),
+      console.log('test différent de null')
+    }
+
+  if(req.body.nameGroupFromFront == ''){
+    result=false,
+    error.push('Empty fields'),
+    console.log('test si champ name vide') 
+  }
+  if(error.length == 0){
+   
+    var newGroup = new groupModel ({
+      name: req.body.nameGroupFromFront,
+      avatar: "./assets/bouf.jpg",
+      group_token:uid2(32),
+     });
+  
+    groupSave = await newGroup.save();
+  console.log("test groupeSave",  groupSave)}
+    
+    if(groupSave){
+      result = true,
+      token = groupSave.group_token,
+      console.log('tout est ok')
+  };
+  
+
+  res.json({result, token, error, groupSave});
 });
 
 

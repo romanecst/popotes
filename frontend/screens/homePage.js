@@ -4,7 +4,7 @@ import {Button, Overlay, Card, SearchBar, Header} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
 import IconIonic from 'react-native-vector-icons/Ionicons';
-import RecipeHome from './recipeHome';
+import RecipeHome from './components/recipeHome';
 
 import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
@@ -65,7 +65,7 @@ useEffect(() => {
   }, []);
 
   // Romane IP: http://172.17.1.197:3000/filters
-// Leila IP: http://172.17.1.129:3000/filters
+// Leila IP: http://172.17.1.129:3000/filters ; 192.168.1.20 maison
 // Nico IP: http://172.17.1.53:3000/filters
 // Remi IP: http://172.17.1.71:3000
 
