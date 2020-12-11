@@ -247,8 +247,6 @@ import Constants from 'expo-constants';
             />
           </View>
 
-
-
           <View
             style={{ textAlign: "center", marginLeft: 50, marginRight: 50 }}
           >
@@ -269,7 +267,6 @@ import Constants from 'expo-constants';
               }
             />
           </View>
-
         </ScrollView>
       </View>
     </View>

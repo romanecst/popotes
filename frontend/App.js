@@ -18,7 +18,6 @@ import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
-// import OverlayCheck from './screens/overlayCheckIngredient'
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
 
@@ -30,15 +29,18 @@ import tokenGroup from './reducers/tokenGroup';
 import recipeList from './reducers/recipeList';
 import ingredientList from './reducers/ingredientList';
 
+import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
+import GroupI from './screens/Group';
+import MesGroupesP12 from './screens/MesGroupesP12';
+
+
 import {Provider} from 'react-redux';
+import GroupPopUpPartage from'./screens/GroupePopUpPartage'
 
 import {createStore, combineReducers}  from 'redux';
+import GroupePopUpPartage from './screens/GroupePopUpPartage';
 
 const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList}));
-
-
-
-import GroupI from './screens/Group';
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
@@ -48,6 +50,9 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: Profil, 
   List:List,
   GroupI: GroupI,
+  MesGroupes:MesGroupes,
+  MesGroupesP12:MesGroupesP12,
+  GroupePopUpPartage:GroupePopUpPartage
 },
 // {
 //   backBehavior: 'history', 
