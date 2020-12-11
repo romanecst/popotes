@@ -17,7 +17,7 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
- function Groupe(props) {
+ function Group(props) {
 
   const [visible, setVisible] = useState(false);
   const [nameGroup, setNameGroup] = useState("")
@@ -304,5 +304,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     null, 
     mapDispatchToProps
-)(Groupe);
+)(Group);
 

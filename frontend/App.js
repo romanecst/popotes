@@ -20,7 +20,7 @@ import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
-import Groupe from './screens/Groupe';
+import Groupe from './screens/Group';
 
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
