@@ -11,13 +11,13 @@ import { Input, Button, Overlay, Avatar, Image } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import {connect} from 'react-redux';
-import token from "../reducers/token";
+
 
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
- function Group(props) {
+ function Groupe(props) {
 
   const [visible, setVisible] = useState(false);
   const [nameGroup, setNameGroup] = useState("")
@@ -27,7 +27,7 @@ import Constants from 'expo-constants';
   const [listErrorGroup, setListErrorGroup] = useState([]);
 
   const [hasPermission, setHasPermission] = useState(null);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
 
 
   useEffect(() => {
@@ -53,7 +53,7 @@ import Constants from 'expo-constants';
 
     console.log('essai permission result', result);
     if (!result.cancelled) {
-      setImage(result.uri);}}
+      setImage(result.uri)}}
 
   function createGroup(){
    setVisible(!visible);
@@ -68,7 +68,7 @@ import Constants from 'expo-constants';
     var rawResponse = await fetch("http://192.168.1.20:3000/group", {
                   method: 'POST',
                   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                  body: `avatarGroupFromFront=lalalala&nameGroupFromFront=${nameGroup}`
+                  body: `avatarGroupFromFront=${image}=${nameGroup}`
                 });
     var response = await rawResponse.json();
     var token= response.groupSave.group_token;
@@ -86,7 +86,7 @@ import Constants from 'expo-constants';
 
 
   return (
-    <View style={{ backgroundColor: "#ADE498", width: "100%", height: "100%" }}>
+    <View style={{ backgroundColor: "#ADE498", width: "100%", height: "100%"}}>
       <View style={{ marginTop: 100 }}>
         <View style={{ alignItems: "center" }}>
           <Text
@@ -111,15 +111,15 @@ import Constants from 'expo-constants';
             rounded
             showAccessory
             size="small"
-            source={{ uri: "" }}
-            title="Insert"
+            source={{uri: "" }}
+            title=""
             titleStyle={{}}
             rounded
             showAccessory 
             size={50}
             >
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                   {image && <Image source={{ uri: image }} style={{ width: 100, height: 100 }} containerStyle={{borderRadius: 500}} />}
+            <View style={{flex: 1, alignItems:"center", justifyContent:"center"}}>
+              {image ?<Image  source={{ uri: image }} style={{ width: 100, height: 100}} containerStyle={{borderRadius: 500}}/>: <Entypo name="add-user" size={24} color="black" />}
             </View>
             </Avatar>
             <Button
@@ -304,5 +304,5 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     null, 
     mapDispatchToProps
-)(Group);
+)(Groupe);
 
