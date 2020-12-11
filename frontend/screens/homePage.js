@@ -155,9 +155,9 @@ var Search = async() => {
             <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
 
 
-            <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu'}}>Today's pick</Text>
+            <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu', color:'grey'}}>Today's pick</Text>
 
-            <ScrollView style={{marginTop: 25}} horizontal={true}>
+            <ScrollView style={{marginTop: 8, marginBottom:15}} horizontal={true}>
             <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
                 <Image source={require('../assets/tarte.jpg')} style={styles.image} />   
             </TouchableOpacity>
@@ -168,10 +168,17 @@ var Search = async() => {
                 <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
                 </View>    
             </ScrollView>
-            <Button title="Filters" onPress={toggleOverlay}/>
-           
+            <Button title="Filters" onPress={toggleOverlay} 
+                    buttonStyle={styles.Filters}
+                    titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu', paddingBottom:3, paddingTop:3, paddingHorizontal:8}}
+            />
+
+           <View  style={{flexDirection:'row',flexWrap: 'wrap', justifyContent:'space-between', marginHorizontal:10}}>
+
                {newList} 
-                
+               
+            </View>
+
             </ScrollView>
       
                 
@@ -307,5 +314,10 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 40,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 40,
+    }, Filters: {
+        borderColor:'white', 
+        backgroundColor:'#ade498', 
+        borderRadius:30,
+        paddingHorizontal:15,
     }
   });
