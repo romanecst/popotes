@@ -21,6 +21,7 @@ import RecipeHome from './screens/components/recipeHome';
 // import OverlayCheck from './screens/overlayCheckIngredient'
 import Signup from './screens/signup';
 import Signin from './screens/Signin';
+import Groupe from './screens/Group';
 
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
@@ -42,6 +43,10 @@ import {createStore, combineReducers}  from 'redux';
 import GroupePopUpPartage from './screens/GroupePopUpPartage';
 
 const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList}));
+
+
+
+
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,

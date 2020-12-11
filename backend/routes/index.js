@@ -227,7 +227,7 @@ router.post('/group', async function(req, res, next) {
    
     var newGroup = new groupModel ({
       name: req.body.nameGroupFromFront,
-      avatar: "./assets/bouf.jpg",
+      avatar: req.body.avatarGroupFromFront,
       group_token:uid2(32),
      });
   
