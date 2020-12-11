@@ -54,18 +54,6 @@ import Constants from 'expo-constants';
     console.log('essai permission result', result);
     if (!result.cancelled) {
       setImage(result.uri);}}
-  // if (hasPermission) {
-  //   return (
-  //     <View style={{ flex: 1 }}>
-  //       <Camera style={{ flex: 1 }}>
-     
-  //       </Camera>   
-  //     </View>
-  //   )
-  // } 
-  // else {
-  //   return <View style={{ flex: 1 }}/>;
-  // }
 
   function createGroup(props){
    setVisible(!visible);
@@ -230,7 +218,7 @@ import Constants from 'expo-constants';
                 marginBottom: 10,
               }}
               titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-              icon={
+             icon={
                 <View style={{ marginLeft: 140 }}>
                   <Ionicons name="ios-trash" size={30} color="black" />
                 </View>
