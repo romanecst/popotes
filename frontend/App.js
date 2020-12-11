@@ -21,6 +21,7 @@ import RecipeHome from './screens/components/recipeHome';
 // import OverlayCheck from './screens/overlayCheckIngredient'
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
+import Groupe from './screens/Groupe';
 
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
@@ -38,7 +39,7 @@ const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, 
 
 
 
-import GroupI from './screens/Group';
+
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
@@ -47,7 +48,7 @@ var BottomNavigator = createBottomTabNavigator({
   Map: Map,
   Profil: Profil, 
   List:List,
-  GroupI: GroupI,
+  Groupe: Groupe,
 },
 // {
 //   backBehavior: 'history', 
