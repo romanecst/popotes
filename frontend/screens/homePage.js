@@ -53,7 +53,7 @@ useEffect(() => {
         if(ifTrue){
             setPref(true);
         }else{
-            var rawReponse = await fetch('http://172.17.1.197:3000/find');
+            var rawReponse = await fetch('http://172.17.1.71:3000/find');
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -65,12 +65,12 @@ useEffect(() => {
   }, []);
 
   // Romane IP: http://172.17.1.197:3000/filters
-// Leila IP: http://172.17.1.129:3000/filters
+// Leila IP: http://172.17.1.129:3000/filters ; 192.168.1.20 maison
 // Nico IP: http://172.17.1.53:3000/filters
 // Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-    var rawResult = await fetch('http://172.17.1.197:3000/filters', {
+    var rawResult = await fetch('http://172.17.1.71:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
@@ -83,7 +83,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
 var Search = async() => {
-    var rawResult = await fetch('http://172.17.1.197:3000/search', {
+    var rawResult = await fetch('http://172.17.1.71:3000/search', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `search=${searchTxt}`
@@ -155,9 +155,9 @@ var Search = async() => {
             <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: "center"}}>
 
 
-            <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu'}}>Today's pick</Text>
+            <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu', color:'grey'}}>Today's pick</Text>
 
-            <ScrollView style={{marginTop: 25}} horizontal={true}>
+            <ScrollView style={{marginTop: 8, marginBottom:15}} horizontal={true}>
             <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
                 <Image source={require('../assets/tarte.jpg')} style={styles.image} />   
             </TouchableOpacity>
@@ -168,10 +168,17 @@ var Search = async() => {
                 <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
                 </View>    
             </ScrollView>
-            <Button title="Filters" onPress={toggleOverlay}/>
-           
+            <Button title="Filters" onPress={toggleOverlay} 
+                    buttonStyle={styles.Filters}
+                    titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu', paddingBottom:3, paddingTop:3, paddingHorizontal:8}}
+            />
+
+           <View  style={{flexDirection:'row',flexWrap: 'wrap', justifyContent:'space-between', marginHorizontal:10}}>
+
                {newList} 
-                
+               
+            </View>
+
             </ScrollView>
       
                 
@@ -307,5 +314,10 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 40,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 40,
+    }, Filters: {
+        borderColor:'white', 
+        backgroundColor:'#ade498', 
+        borderRadius:30,
+        paddingHorizontal:15,
     }
   });

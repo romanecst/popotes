@@ -23,10 +23,10 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
     // bouton toggle // 
     const [isEnabled, setIsEnabled] = useState(false);
-    
+
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-    console.log(ingredientList)
+    // console.log(ingredientList)
 
     var filteredIngredients = [];
     for(var s=0; s<ingredientList.length; s++){
@@ -36,27 +36,33 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
         filteredIngredients.push(list);
     }
       {/* code dans le composant "ingredientcheck" */}
-    var category = []
-    for(var a=0; a<filteredIngredients.length; a++){
-        for(var b=0; b<filteredIngredients[a].length; b++){
-            if(!category.includes(filteredIngredients[a][b].aisle) && !category.includes('Others')){
-                if(filteredIngredients[a][b].aisle !== null){
-                    category.push({category:filteredIngredients[a][b].aisle, ingredients:[]})
-                }else{
-                    category.push({category:'Others', ingredients:[]})
-                }
-            }
-        }
-    }
-    console.log(category);
+    var category = {};
+    // for(var a=0; a<filteredIngredients.length; a++){
+    //     for(var b=0; b<filteredIngredients[a].length; b++){
+    //         if(!(filteredIngredients[a][b].aisle in category) && !('Others' in category)){
+    //             if(filteredIngredients[a][b].aisle !== null){
+    //                 category[filteredIngredients[a][b].aisle] = [];
+    //             }else{
+    //                 category['Others'] = [];
+    //             }
+    //         }
+    //     }
+    // }
+    // console.log(category);
 
     filteredIngredients.forEach((elem)=>{
         elem.forEach(function(el){
-            for(var c=0; c<category.length; c++){
-                if(category[c].category === el.aisle){
-                    category[c].ingredients.push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
-                }else if(category[c].category === 'Others' && el.aisle=== null){
-                    category[c].ingredients.push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+            if(!(el.aisle in category) && !('Others' in category)){
+                if(el.aisle !== null && el.aisle !=='?'){
+                    category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
+                }else{
+                    category['Others'] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
+                }
+            }else{
+                if(el.aisle in category){
+                    category[el.aisle].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+                }else if(el.aisle=== null || el.aisle ==='?'){
+                    category['Others'].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
                 }
             }
          })
@@ -64,9 +70,24 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
     console.log('CATTTTTT', category);
 
-    var displayByCategory = category.map(function(element){
-        return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{element.category}</Text>{element.ingredients}</View>
-    })
+    var displayByCategory = [];
+
+    for(const key in category){ 
+        console.log('INGRRRR',key);
+        displayByCategory.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{category[key]}</View>);
+    }
+
+    var test = ()=>{}
+        // console.log("KEYYYY",key, category[key])
+        // var ingredientsByCategory = category[key].map(function(element){
+        //     console.log('INGRRRR',key, element);
+        //     return element
+        // });
+       
+        // console.log('INGRRRR',ingredientsByCategory);
+        // displayByCategory.push(ingredientsByCategory);
+        // return ingredientsByCategory
+   
 
 
     var recipesMap = filteredIngredients.map((array)=>{
