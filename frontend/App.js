@@ -17,22 +17,23 @@ import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
-import RecipeHome from './screens/recipeHome';
-import OverlayCheck from './screens/overlayCheckIngredient'
+import RecipeHome from './screens/components/recipeHome';
+// import OverlayCheck from './screens/overlayCheckIngredient'
 import Signup from './screens/Signup';
 import Signin from './screens/Signin';
 
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
-
+import checkList from './reducers/checkList';
 import nameGroup from './reducers/nameGroup';
 import recipeList from './reducers/recipeList';
+import ingredientList from './reducers/ingredientList';
 
 import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe, nameGroup, token, recipeList}));
+const store = createStore(combineReducers({recipe, nameGroup, token, recipeList, checkList, ingredientList}));
 
 
 import GroupI from './screens/Group';
@@ -83,7 +84,7 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
-  OverlayCheck:OverlayCheck,
+  // OverlayCheck:OverlayCheck,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
 

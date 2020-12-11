@@ -4,14 +4,16 @@ import { CheckBox } from 'react-native-elements';
 
 import { Entypo } from '@expo/vector-icons';
 
-export default function Ingredients (){
+export default function Ingredients (props){
 
     const [checked, setChecked] = useState();
 
 return(
 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 12, marginLeft: 20 }}> ingredients : </Text>
-    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 12 }}>  100g </Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 200 }}>
+    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 12, marginLeft: 20 }}>{props.name}</Text>
+    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 12 }}> {props.amount} {props.measure}</Text>
+    </View>
     <CheckBox checked={checked} checkedColor='#ADE498' onPress={() => { setChecked(!checked) }} />
     <Entypo name="cross" size={24} color="black" />
 </View>

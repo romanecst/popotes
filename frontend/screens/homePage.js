@@ -4,7 +4,7 @@ import {Button, Overlay, Card, SearchBar, Header} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
 import IconIonic from 'react-native-vector-icons/Ionicons';
-import RecipeHome from './recipeHome';
+import RecipeHome from './components/recipeHome';
 
 import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';

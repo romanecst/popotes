@@ -13,7 +13,7 @@ function OverlayCheck({navigation}) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} >
-        <View style={styles.container}>
+        <View style={styles.containerOverlay}>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, marginHorizontal: 15 }}>You will add the ingredients to your shopping list:{"\n"}{"\n"}</Text>
           <Text style={{ fontFamily: 'Kohinoor Telugu', color: '#636e72', marginHorizontal: 50, fontSize:15 }}>check the ingredients you already have:</Text>
         </View>
@@ -46,7 +46,7 @@ function OverlayCheck({navigation}) {
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => { navigation.navigate('List') }}
+          onPress={() => { navigation.navigate('GlobalList') }}
         />
         </View>
       </Overlay>
@@ -55,7 +55,7 @@ function OverlayCheck({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerOverlay: {
     justifyContent: "center",
     alignItems: 'center',
     marginTop: 15,
