@@ -21,7 +21,7 @@ function Recipe({ navigation, recipeInfo, ingredientList }) {
         if(!Number.isInteger(ingredient.amount)){
             ingredient.amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(1);
         }
-    return {name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: recipeInfo.name}
+    return {name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: recipeInfo.title}
     });
 
     var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){

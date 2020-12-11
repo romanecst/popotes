@@ -19,7 +19,7 @@ import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
 // import OverlayCheck from './screens/overlayCheckIngredient'
-import Signup from './screens/Signup';
+import Signup from './screens/signup';
 import Signin from './screens/Signin';
 
 import recipe from './reducers/recipeInfo';

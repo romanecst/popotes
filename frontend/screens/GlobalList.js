@@ -23,7 +23,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
     // bouton toggle // 
     const [isEnabled, setIsEnabled] = useState(false);
-    const [recipeList, setRecipeList] = useState([]);
+    
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     console.log(ingredientList)
@@ -36,15 +36,39 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
         filteredIngredients.push(list);
     }
       {/* code dans le composant "ingredientcheck" */}
-    var ingredientsMap = filteredIngredients.map((array)=>{
-        var ingredients = array.map(function(el, i){
-            return <View key={i}><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {el.aisle} </Text>
-            <Ingredient name={el.name} amount={el.amount} measure={el.measure}/></View>
+    var category = []
+    for(var a=0; a<filteredIngredients.length; a++){
+        for(var b=0; b<filteredIngredients[a].length; b++){
+            if(!category.includes(filteredIngredients[a][b].aisle) && !category.includes('Others')){
+                if(filteredIngredients[a][b].aisle !== null){
+                    category.push({category:filteredIngredients[a][b].aisle, ingredients:[]})
+                }else{
+                    category.push({category:'Others', ingredients:[]})
+                }
+            }
+        }
+    }
+    console.log(category);
 
-            
-        })
-        return ingredients
+    filteredIngredients.forEach((elem)=>{
+        elem.forEach(function(el){
+            for(var c=0; c<category.length; c++){
+                if(category[c].category === el.aisle){
+                    category[c].ingredients.push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+                }else if(category[c].category === 'Others' && el.aisle=== null){
+                    category[c].ingredients.push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+                }
+            }
+         })
     })
+
+    console.log('CATTTTTT', category);
+
+    var displayByCategory = category.map(function(element){
+        return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{element.category}</Text>{element.ingredients}</View>
+    })
+
+
     var recipesMap = filteredIngredients.map((array)=>{
         var recipeName = '';
         var recipes = array.map(function(el, j){
@@ -82,10 +106,10 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
     
 
     if (isEnabled) {
-        var ingredient = <ScrollView>{ingredientsMap}</ScrollView>    
+        var ingredient = <ScrollView style={{height:380}}>{displayByCategory}</ScrollView>    
         var trier = "recette"
     } else {
-        var ingredient = <ScrollView >
+        var ingredient = <ScrollView style={{height:380}}>
         {recipesMap}
         </ScrollView>
         var trier = "ingredient"
