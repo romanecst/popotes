@@ -64,8 +64,9 @@ import Constants from 'expo-constants';
 
 //192.168.1.20 IP Leila Maison
 
+  /* Create group */
   var saveGroup = async function save(){
-    var rawResponse = await fetch("http://192.168.1.20:3000/group", {
+    var rawResponse = await fetch("http://172.17.1.53:3000/group", {
                   method: 'POST',
                   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   body: `avatarGroupFromFront=${image}=${nameGroup}`
@@ -82,6 +83,20 @@ import Constants from 'expo-constants';
   else {
     setListErrorGroup(response.error)
   }}
+
+
+  /* Deleted groupe */
+  var handleClickDelete = async () => {
+    console.log("click détecté")
+    var rawResponse = await fetch("http://172.17.1.53:3000/deleteGroup/:name",{
+                  method:'DELETE',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body:`groupName=${nameGroup}`
+    })
+    var response = await rawResponse.json()
+    console.log('test update',response)
+  }
+
 
 
 
@@ -209,6 +224,7 @@ import Constants from 'expo-constants';
             style={{ textAlign: "center", marginLeft: 50, marginRight: 50 }}
           >
             <Button
+            onPress= {() => handleClickDelete() }
               iconRight={true}
               title="Soirée chez Gilbert "
               buttonStyle={{ backgroundColor: "white" }}
@@ -220,7 +236,7 @@ import Constants from 'expo-constants';
               titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
              icon={
                 <View style={{ marginLeft: 140 }}>
-                  <Ionicons name="ios-trash" size={30} color="black" />
+                  <Ionicons name="ios-trash" size={30} color="black"  />
                 </View>
               }
             />

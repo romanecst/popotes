@@ -43,60 +43,58 @@ export default function welcome({ navigation }) {
         vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
     };
 
-    return (
-        <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
-                <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
-                <Button
-                    title="Next"
-                    type="outline"
-                    buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
-                    titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
-                    onPress={toggleOverlay}
-                />
-                <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} >
-                    <View style={styles.overlay}>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Hello,{"\n"}let me learn more about you...{"\n"}{"\n"}</Text>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, select your preferences : </Text>
-                        <View style={styles.prefalim}>
-                            <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { favoriteAlim('gluten free'); setGlutenFree(!glutenFree) }}>
-                                <Image
-                                    style={gluten}
-                                    source={require('../assets/noGluten.png')}
-                                />
-                                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Gluten free</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { favoriteAlim('vegetarian'); setVegetarian(!vegetarian) }}>
-                                <Image style={vegeta}
-                                    source={require('../assets/noMeat.png')}
-                                />
-                                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegetarian</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.prefalim}>
-                            <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { favoriteAlim('lactose free'); setLactoseFree(!lactoseFree) }}>
-                                <Image style={lactose}
-                                    source={require('../assets/noMilk.png')}
-                                />
-                                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Lactiose free</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => {
-                                favoriteAlim('vegan');
-                                setVegan(!vegan)
-                            }}>
-                                <Image style={vega}
-                                    source={require('../assets/vegetalien.png')}
-                                />
-                                <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <Button
-                            title="Next"
-                            onPress={() => { navigation.navigate('CreateGroup'); setVisible(false) }}
-                            type="clear"
-                            buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
-                            titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+return (
+    <ImageBackground source={require('../assets/Background.jpeg')} style={{ flex: 1 }}>
+        <View style={styles.container}>
+            <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
+            <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
+            <Button 
+                title="Next"
+                type="outline"
+                buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
+                titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
+                onPress={toggleOverlay}
+            />
+            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
+                <View style={styles.overlay}>
+                    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Hello,{"\n"}let me learn more about you...{"\n"}{"\n"}</Text>
+                    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, select your preferences : </Text>
+                    <View style={styles.prefalim}>
+                        <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { favoriteAlim('gluten free'); setGlutenFree(!glutenFree) }}>
+                            <Image
+                                style={gluten}
+                                source={require('../assets/noGluten.png')}
+                            />
+                            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Gluten free</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ favoriteAlim('vegetarian');setVegetarian(!vegetarian)}}>
+                            <Image style={vegeta}
+                                source={require('../assets/noMeat.png')}
+                            />
+                            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegetarian</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.prefalim}>
+                        <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => {favoriteAlim('lactose free');setLactoseFree(!lactoseFree)}}>
+                            <Image style={lactose}
+                                source={require('../assets/noMilk.png')}
+                            />
+                            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Lactiose free</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ favoriteAlim('vegan');
+                        setVegan(!vegan)}}>
+                            <Image style={vega}
+                                source={require('../assets/vegetalien.png')}
+                            />
+                            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Button
+                        title="Next"
+                        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
+                        type="clear"
+                        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
+                        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
 
                         />
                     </View>
