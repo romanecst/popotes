@@ -86,6 +86,8 @@ function RecipeHome(props) {
                 </View>
             </View>
 
+
+
             {/* ------------------------------ OVERLAY ------------------------------ */}
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                 <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} isVisible={visible} onBackdropPress={toggleOverlay}>

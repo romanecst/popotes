@@ -105,10 +105,10 @@ var Search = async() => {
   };
 
 
-    var gluten = { width: 100, height: 100 };
-    var vegeta = { width: 100, height: 100 };
-    var lactose = { width: 100, height: 100 };
-    var vega = { width: 100, height: 100 };
+    var gluten = {backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100 };
+    var vegeta = { backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100  };
+    var lactose = {backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100  };
+    var vega = { backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100  };
 
     if (glutenFree) {
         gluten = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
@@ -180,15 +180,14 @@ var Search = async() => {
             </View>
 
             </ScrollView>
-      
-                
-            <Overlay isVisible={visible} onBackdropPress={toggleOverlay} fullScreen={true} >
+            <Overlay isVisible={visible} onBackdropPress={toggleOverlay} fullScreen={true} overlayStyle={{borderRadius: 30, width:340, height:600, justifyContent:'center', alignItems:'center', backgroundColor:'#ecf0f1' }} >
             <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop: 50}}>
             <ScrollView>
-            <Text style={styles.title}>Time</Text>
+            <View style={{justifyContent:'center', alignItems:'center'}}>
+            <Text style={{fontSize: 25, fontFamily: 'Kohinoor Telugu',}}>Time</Text>
             <Picker
                 selectedValue={selectedValueTime}
-                style={{ height: 200, width: 300, marginBottom: 30 }}
+                style={{ height: 200, width: 200, marginBottom: 0, borderColor:'black',backgroundColor:'#FFFFFF', borderWidth: 2, borderRadius:50 }}
                 onValueChange={(itemValue, itemIndex) => setSelectedValueTime(itemValue)}
             >
                 <Picker.Item label="Select" value="" />
@@ -198,7 +197,7 @@ var Search = async() => {
             <Text style={styles.title}>Cuisine</Text>
             <Picker
                 selectedValue={selectedValueCuisine}
-                style={{ height: 200, width: 300 , marginBottom: 30 }}
+                style={{ height: 200, width: 200, marginBottom: 0, borderColor:'black' ,backgroundColor:'#FFFFFF', borderWidth: 2, borderRadius:50 }}
                 onValueChange={(itemValue, itemIndex) => setSelectedValueCuisine(itemValue)}
             >
                 <Picker.Item label="Select" value="" />
@@ -209,7 +208,7 @@ var Search = async() => {
             <Text style={styles.title}>Price</Text>
             <Picker
                 selectedValue={selectedValuePrice}
-                style={{ height: 200, width: 300, marginBottom: 30 }}
+                style={{ height: 200, width: 200, marginBottom: 0, borderColor:'black',backgroundColor:'#FFFFFF', borderWidth: 2, borderRadius:50}}
                 onValueChange={(itemValue, itemIndex) => setSelectedValuePrice(itemValue)}
             >
                 <Picker.Item label="Select" value="" />
@@ -218,13 +217,14 @@ var Search = async() => {
             <Text style={styles.title}>Healthiness</Text>
             <Picker
                 selectedValue={selectedValueHealthy}
-                style={{ height: 200, width: 300, marginBottom: 30 }}
+                style={{ height: 200, width: 200, marginBottom: 0, borderColor:'black',backgroundColor:'#FFFFFF', borderWidth: 2, borderRadius:50 }}
                 onValueChange={(itemValue, itemIndex) => setSelectedValueHealthy(itemValue)}
             >
                 <Picker.Item label="Select" value="" />
                 <Picker.Item label="Healthy" value="true" />
             </Picker>
             <Text style={styles.title}>Food Preferences</Text>
+            </View>
             <View style={styles.prefalim}>
                 <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setGlutenFree(!glutenFree) }}>
                     <Image
@@ -256,9 +256,12 @@ var Search = async() => {
             </View>
             </ScrollView>
             </View>
-            <Button title="Apply Filters" onPress={()=>{Filters(); toggleOverlay()}}/>
+            <Button 
+            buttonStyle={{ backgroundColor:'#ade498', width:200, padding:10, borderRadius:30, marginTop:15 }}
+            titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu' }} 
+            title="Apply Filters" 
+            onPress={()=>{Filters(); toggleOverlay()}}/>
             </Overlay>
-            
         </View>
     )
 }
@@ -281,8 +284,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         margin: 15,
     }, title:{
+        marginTop:20,
         fontSize: 25,
-        fontWeight: 'bold'
+        fontFamily: 'Kohinoor Telugu',
     },image: {
         width: 300,
         height: 150,
