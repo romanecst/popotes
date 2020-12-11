@@ -106,8 +106,6 @@ export default function Group() {
             />
           </View>
 
-
-
           <View
             style={{ textAlign: "center", marginLeft: 50, marginRight: 50 }}
           >
@@ -128,11 +126,6 @@ export default function Group() {
               }
             />
           </View>
-
-
-
-
-
         </ScrollView>
       </View>
     </View>
