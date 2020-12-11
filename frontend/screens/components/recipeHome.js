@@ -68,7 +68,7 @@ if(likes != undefined){
             
             </View>
         </Card>
-
+            
     </View>
 ) 
 }
