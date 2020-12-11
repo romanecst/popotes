@@ -55,10 +55,10 @@ import Constants from 'expo-constants';
     if (!result.cancelled) {
       setImage(result.uri);}}
 
-  function createGroup(props){
+  function createGroup(){
    setVisible(!visible);
   }
-  function back(props){
+  function back(){
     setVisible(false);
    }
 
