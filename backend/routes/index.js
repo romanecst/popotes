@@ -24,6 +24,8 @@ router.post('/search', async function(req, res, next) {
   res.json(recipes);
 });
 
+
+/* Recipe filter */
 router.get('/find', async function(req, res, next) {
   //limit à enlever pour recevoir toute la bdd
   var recipes = await recipesModel.find().limit( 30 );
@@ -75,6 +77,8 @@ router.post('/filters', async function(req, res, next) {
   res.json(result);
 });
 
+
+/* Save recipe in BDD */
 router.get('/save', function(req, res, next) {
   var options = {
     method: 'GET',
@@ -200,7 +204,7 @@ router.post('/sign-in', async function(req,res,next){
   res.json({result, user, error, token})
 })
 
-
+/* Create group */
 router.post('/group', async function(req, res, next) {
    
   var newGroup = new groupModel ({
@@ -216,10 +220,58 @@ console.log("test groupe",  groupSave);
 });
 
 
-var colorUser = ['#FFC312','#C4E538','#12CBC4','#FDA7DF','#ED4C67',
+/* Assign color a user group */
+router.post('/addUser', async function(req,res,next){
+
+  var colorUser = ['#FFC312','#C4E538','#12CBC4','#FDA7DF','#ED4C67',
 '#F79F1F','#A3CB38','#1289A7','#D980FA','#B53471',
 '#EE5A24','#009432','#0652DD','#9980FA','#833471',
 '#EA2027','#006266','#1B1464','#5758BB','#6F1E51']
 
+var group = await groupModel.findOne({group_token:req.body.group_token});
+  var userColor = [];
+ for(var i =0; i<group.user_id.length; i++) {
+    userColor.push({user:group.user_id[i], color:colorUser[i]})
+ }
+ res.json({userColor});
+})
+
+/* Deleted group */
+router.delete('/deleteGroup/:name', async function(req,res,next){
+
+  var returnDb = await groupModel.deleteOne({nameGroup:req.body.nameGroup});
+
+  var result = false;
+  if(returnDb.deletedCount == 1){
+    result = true
+  }
+  res.json({result})
+})
+
+/* User update */
+router.post('/userUpdate', async function(req,res,next){
+
+  var user = await userModel.findOne({token: req.body.token})
+  console.log("dede",req.body.token);
+  console.log("edesas",user);
+
+  const passwordEncrypt = SHA256(req.body.passwordFromFront + user.salt).toString(encBase64);
+
+  
+  if(req.body.emailFromFront != user.email){
+    var update = await userModel.updateOne({token:req.body.token},{email: req.body.emailFromFront})
+  }
+  else if(req.body.usernameFromFront != user.username){
+    var update = await userModel.updateOne({token:req.body.token},{username: req.body.usernameFromFront})
+  }
+  else if(passwordEncrypt != user.password){
+    var update = await userModel.updateOne({token:req.body.token},{password: passwordEncrypt})
+  }
+ res.json({update})
+})
 
 module.exports = router;
+
+
+
+
