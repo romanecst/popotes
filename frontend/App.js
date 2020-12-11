@@ -26,6 +26,7 @@ import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
 import checkList from './reducers/checkList';
 import nameGroup from './reducers/nameGroup';
+import tokenGroup from './reducers/tokenGroup';
 import recipeList from './reducers/recipeList';
 import ingredientList from './reducers/ingredientList';
 
@@ -33,7 +34,8 @@ import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe, nameGroup, token, recipeList, checkList, ingredientList}));
+const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList}));
+
 
 
 import GroupI from './screens/Group';
