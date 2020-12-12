@@ -19,7 +19,7 @@ import Ingredient from './components/ingredientcheck';
 import Recette from './components/recettecheck';
 
 
-function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
+function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
 
@@ -35,23 +35,30 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
     var category = {};
 
+    var simpleList = [];
     filteredIngredients.forEach((elem)=>{
         elem.forEach(function(el){
-            if(!(el.aisle in category) && !('Others' in category)){
-                if(el.aisle !== null && el.aisle !=='?'){
-                    category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
-                }else{
-                    category['Others'] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
-                }
-            }else{
-                if(el.aisle in category){
-                    category[el.aisle].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
-                }else if(el.aisle=== null || el.aisle ==='?'){
-                    category['Others'].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
-                }
-            }
+            simpleList.push(el)
          })
     })
+
+
+    simpleList.forEach(function(el){
+        if(!(el.aisle in category) && !('Others' in category)){
+            if(el.aisle !== null && el.aisle !=='?'){
+                category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
+            }else{
+                category['Others'] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
+            }
+        }else{
+            if(el.aisle in category){
+                category[el.aisle].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+            }else if(el.aisle=== null || el.aisle ==='?'){
+                category['Others'].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+            }
+        }
+        })
+   
 
     var displayByCategory = [];
 
@@ -80,6 +87,18 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
     }
 
+
+    useEffect(()=>{
+        return async()=>{
+            // console.log('CLOSING');
+            await fetch('http://192.168.1.87:3000/addIngredients', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
+            });
+        }
+    },[])
+
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF2DF' }}>
 
@@ -87,7 +106,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
             <Header
                 containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
                 leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
-                centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+                centerComponent={{ text: listInfo.name, style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
@@ -139,7 +158,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 }
 
 function mapStateToProps(state) {
-    return { ingredientList: state.ingredientList, checkList: state.checkList, recipeInfo: state.recipe}
+    return { ingredientList: state.ingredientList, checkList: state.checkList, recipeInfo: state.recipe, listInfo: state.listInfo}
 }
 
 export default connect(

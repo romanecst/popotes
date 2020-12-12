@@ -11,6 +11,7 @@ import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
 export default function homePage({navigation}) {
+    const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
     const [selectedValueCuisine, setSelectedValueCuisine] = useState("");
     const [selectedValuePrice, setSelectedValuePrice] = useState("");
@@ -73,7 +74,7 @@ useEffect(() => {
     var rawResult = await fetch('http://192.168.1.87:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}`
+        body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}&type=${selectedValueDish}`
     });
     var result = await rawResult.json();
     setListRecipe(result);
@@ -93,12 +94,16 @@ var Search = async() => {
 }
 
   useEffect(()=>{
-    console.log('PREFERENCE ALIMENTAIRE',glutenFree,vegetarian,lactoseFree,vegan);
     if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
         Filters();
     }  
   },[pref])
 
+  useEffect(()=>{
+    if(searchTxt === '' && pref){
+        Filters();
+    }  
+  },[searchTxt])
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -184,6 +189,21 @@ var Search = async() => {
             <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop: 50}}>
             <ScrollView>
             <View style={{justifyContent:'center', alignItems:'center'}}>
+            <Text style={{fontSize: 25, fontFamily: 'Kohinoor Telugu',}}>Type of Dish</Text>
+            <Picker
+                selectedValue={selectedValueDish}
+                style={{ height: 200, width: 200, marginBottom: 0, borderColor:'black',backgroundColor:'#FFFFFF', borderWidth: 2, borderRadius:50 }}
+                onValueChange={(itemValue, itemIndex) => setSelectedValueDish(itemValue)}
+            >
+                <Picker.Item label="Select" value="" />
+                <Picker.Item label="Appetizer" value="appetizer" />
+                <Picker.Item label="Starter" value="starter" />
+                <Picker.Item label="Main Course" value="main course" />
+                <Picker.Item label="Side" value="side dish" />
+                <Picker.Item label="Dessert" value="dessert" />
+                <Picker.Item label="Snack" value="snack" />
+                <Picker.Item label="Sweets" value="sweets" />
+            </Picker>
             <Text style={{fontSize: 25, fontFamily: 'Kohinoor Telugu',}}>Time</Text>
             <Picker
                 selectedValue={selectedValueTime}
@@ -201,9 +221,19 @@ var Search = async() => {
                 onValueChange={(itemValue, itemIndex) => setSelectedValueCuisine(itemValue)}
             >
                 <Picker.Item label="Select" value="" />
+                <Picker.Item label="African" value="African" />
                 <Picker.Item label="American" value="American" />
+                <Picker.Item label="Mexican" value="Mexican" />
+                <Picker.Item label="Asian" value="Asian" />
+                <Picker.Item label="Chinese" value="Chinese" />
+                <Picker.Item label="Indian" value="Indian" />
+                <Picker.Item label="Japanese" value="Japanese" />
+                <Picker.Item label="European" value="European" />
                 <Picker.Item label="French" value="French" />
                 <Picker.Item label="Italian" value="Italian" />
+                <Picker.Item label="Spanish" value="Spanish" />
+                
+                
             </Picker>
             <Text style={styles.title}>Price</Text>
             <Picker

@@ -10,9 +10,21 @@ import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
 import { connect } from 'react-redux';
 
-function Recipe({ navigation, recipeInfo, ingredientList }) {
+function Recipe({ navigation, recipeInfo, ingredientList, currentList }) {
     const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(recipeInfo.servings);
+    const [list, setList] = useState();
+    const [listArray, setListArray] = useState([]);
+
+    useEffect(()=>{
+        const loadList = async() => {
+          var rawResult = await fetch('http://192.168.1.87:3000/list');
+          var result = await rawResult.json();
+          setListArray(result)
+        }
+        loadList();
+      
+      },[])
 
     var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
 
@@ -135,22 +147,21 @@ function Recipe({ navigation, recipeInfo, ingredientList }) {
         {/* DROP DOWN -- LIST HERE !!  */}
         <View style={{justifyContent:'center', alignItems:'center', marginVertical:10}}>
         <DropDownPicker
-          items={[
-            { label: 'Noel', value: 'item1' },
-            { label: 'Weekend normandie', value: 'item2' },
-          ]}
+          items={listArray.map(function(el){
+            return { label: el.name, value: el._id }
+        })}
           defaultIndex={0}
           defaultNull placeholder="Select an list"
           containerStyle={{width: 150, height: 70}} 
           style={{marginBottom:10}}
-          onChangeItem={item => console.log(item.label, item.value)}
+          onChangeItem={item => setList({_id: item.value, name: item.label})}
         />
         <Button
           iconRight={true}
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => { ingredientList(newIngredients); toggleOverlay(); navigation.navigate('GlobalList') }}
+          onPress={() => {  currentList(list); ingredientList(newIngredients); toggleOverlay(); navigation.navigate('GlobalList') }}
         />
         </View>
       </Overlay>
@@ -163,6 +174,9 @@ function mapDispatchToProps(dispatch) {
     return {
         ingredientList: function(info) { 
             dispatch( {type: 'ingredientList', ingredient: info} ) 
+        },
+        currentList: function(info) { 
+            dispatch( {type: 'listInfo', listInfo: info} ) 
         }
     }
 }

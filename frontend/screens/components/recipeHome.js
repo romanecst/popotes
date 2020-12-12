@@ -16,8 +16,19 @@ import Checking from './checkingOverlay';
 
 
 function RecipeHome(props) {
-    const [like, setLike] = useState(false)
+    const [like, setLike] = useState(false);
+    const [list, setList] = useState();
+    const [listArray, setListArray] = useState([]);
 
+    useEffect(()=>{
+        const loadList = async() => {
+          var rawResult = await fetch('http://192.168.1.87:3000/list');
+          var result = await rawResult.json();
+          setListArray(result)
+        }
+        loadList();
+      
+      },[])
 
     function colorLike() {
         setLike(!like);
@@ -50,6 +61,14 @@ function RecipeHome(props) {
     const toggleOverlay = () => {
         setVisible(!visible);
     };
+
+    var overlayIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, j){
+        return <Checking key={j} name={ingredient.name} quantity= {ingredient.amount} measure={ingredient.measures.us.unitLong}/>
+    });
+
+    var newIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, i){
+    return {name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title}
+    });
 
     return (
         <View style={{ justifyContent: 'space-between' }}>
@@ -86,46 +105,42 @@ function RecipeHome(props) {
 
 
             {/* ------------------------------ OVERLAY ------------------------------ */}
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} isVisible={visible} onBackdropPress={toggleOverlay}>
-                    <View style={styles.overlay}>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, marginHorizontal: 15 }}>You will add the ingredients to your shopping list:{"\n"}{"\n"}</Text>
-                        <Text style={{ fontFamily: 'Kohinoor Telugu', color: '#636e72', marginHorizontal: 50, fontSize: 15 }}>check the ingredients you already have:</Text>
-                    </View>
+            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} isVisible={visible} onBackdropPress={toggleOverlay}>
+        <View style={styles.containerOverlay}>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, marginHorizontal: 15 }}>You will add the ingredients to your shopping list:{"\n"}{"\n"}</Text>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', color: '#636e72', marginHorizontal: 50, fontSize:15 }}>check the ingredients you already have:</Text>
+        </View>
 
 
-                    <View style={styles.ingredients}>
+        <View style={styles.ingredients}>
 
-                        <ScrollView>
-                            {/* code se trouve dans le composant "checkingOverlay" */}
-                            <Checking />
-                            <Checking />
-                        </ScrollView>
+          <ScrollView>
+            {/* code se trouve dans le composant "checkingOverlay" */}
+            {overlayIngredients}
+          </ScrollView>
 
-                    </View>
-                    {/* DROP DOWN -- LIST HERE !!  */}
-                    <View style={{ justifyContent: 'center', alignItems: 'center', marginVertical: 10 }}>
-                        <DropDownPicker
-                            items={[
-                                { label: 'Noel', value: 'item1' },
-                                { label: 'Weekend normandie', value: 'item2' },
-                            ]}
-                            defaultIndex={0}
-                            defaultNull placeholder="Select an list"
-                            containerStyle={{ width: 150, height: 70 }}
-                            style={{ marginBottom: 10 }}
-                            onChangeItem={item => console.log(item.label, item.value)}
-                        />
-                        <Button
-                            iconRight={true}
-                            title="Next  "
-                            buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
-                            titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
-                            onPress={() => { props.navigation.navigate('List') }}
-                        />
-                    </View>
-                </Overlay>
-            </View>
+        </View>
+        {/* DROP DOWN -- LIST HERE !!  */}
+        <View style={{justifyContent:'center', alignItems:'center', marginVertical:10}}>
+        <DropDownPicker
+          items={listArray.map(function(el){
+              return { label: el.name, value: el._id }
+          })}
+          defaultIndex={0}
+          defaultNull placeholder="Select a list"
+          containerStyle={{width: 150, height: 70}} 
+          style={{marginBottom:10}}
+          onChangeItem={item => setList({_id: item.value, name: item.label})}
+        />
+        <Button
+          iconRight={true}
+          title="Next  "
+          buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
+          onPress={() => { props.currentList(list); props.ingredientList(newIngredients); toggleOverlay(); props.navigation.navigate('GlobalList') }}
+        />
+        </View>
+      </Overlay>
         </View>
     )
 }
@@ -141,9 +156,16 @@ function mapDispatchToProps(dispatch) {
         },
         deleteRecipe: function (info) {
             dispatch({ type: 'recipeListDel', title: info })
+        },
+        ingredientList: function(info) { 
+            dispatch( {type: 'ingredientList', ingredient: info} ) 
+        },
+        currentList: function(info) { 
+            dispatch( {type: 'listInfo', listInfo: info} ) 
         }
     }
 }
+
 
 function mapStateToProps(state) {
     return { recipeList: state.recipeList }
@@ -204,7 +226,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#f3eef0',
         paddingHorizontal: 30
-    }, overlay: {
+    }, containerOverlay: {
         justifyContent: "center",
         alignItems: 'center',
         marginTop: 15,

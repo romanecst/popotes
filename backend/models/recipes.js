@@ -14,7 +14,8 @@ const recipesSchema = mongoose.Schema({
     readyInMinutes: Number,
     servings: Number,
     cuisines: Array,
-    extendedIngredients: Array
+    extendedIngredients: Array,
+    dishTypes: Array
 })
 
 const recipesModel = mongoose.model('recipes', recipesSchema)

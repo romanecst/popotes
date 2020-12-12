@@ -2,8 +2,11 @@ const mongoose = require('mongoose')
 
 
 var ingredientSchema = mongoose.Schema({
+    aisle: String,
+    amount: Number,
+    measure: String,
     name: String,
-    quantity: Number,
+    recipeName: String,
     buyer: String,
 })
 
@@ -15,6 +18,6 @@ const listSchema = mongoose.Schema({
 
 })
 
-const listModel = mongoose.model('list', listSchema)
+const listModel = mongoose.model('lists', listSchema)
 
 module.exports = listModel

@@ -30,6 +30,7 @@ import nameGroup from './reducers/nameGroup';
 import tokenGroup from './reducers/tokenGroup';
 import recipeList from './reducers/recipeList';
 import ingredientList from './reducers/ingredientList';
+import listInfo from './reducers/listInfo';
 
 import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
 import GroupI from './screens/Group';
@@ -42,7 +43,7 @@ import GroupPopUpPartage from'./screens/GroupePopUpPartage'
 import {createStore, combineReducers}  from 'redux';
 import GroupePopUpPartage from './screens/GroupePopUpPartage';
 
-const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList}));
+const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo}));
 
 
 

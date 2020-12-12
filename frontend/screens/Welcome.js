@@ -1,5 +1,5 @@
 console.disableYellowBox = true;
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Text, Button, Overlay } from 'react-native-elements';
 export default function welcome({ navigation }) {
@@ -8,10 +8,44 @@ export default function welcome({ navigation }) {
     const [vegetarian, setVegetarian] = useState(false);
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
+    const [ifTrue, setIfTrue] = useState(false);
+
+    useEffect(()=>{
+        const goToHome = async()=>{
+        var preferences = ['gluten free','vegetarian','lactose free','vegan'];
+        for (let i = 0; i<preferences.length; i++){
+            await AsyncStorage.getItem(preferences[i], 
+            function(error, data){
+            if(data !== null){
+                setIfTrue(true);
+            }
+            })
+        };
+    }
+    goToHome();
+    },[])
 
     const toggleOverlay = () => {
         setVisible(!visible);
     };
+
+    if(!ifTrue){
+        var next = <Button 
+        title="Next"
+        type="outline"
+        buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
+        titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
+        onPress={toggleOverlay}
+    />
+    }else{
+        var next = <Button 
+        title="Next"
+        type="outline"
+        buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
+        titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
+        onPress={() => {navigation.navigate('Home'); setVisible(false)}}
+        />
+    }
 
     // LOCAL STORAGE ================>
     function favoriteAlim(diet) {
@@ -29,6 +63,7 @@ export default function welcome({ navigation }) {
     var vegeta = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
     var lactose = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
     var vega = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
+    var noP = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
 
     if (glutenFree) {
         gluten = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
@@ -42,19 +77,34 @@ export default function welcome({ navigation }) {
     if (vegan) {
         vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
     };
+ 
+
+    if(!glutenFree && !vegetarian && !lactoseFree && !vegan){
+        var button = <Button
+        title="Next"
+        disabled={true}
+        type="clear"
+        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
+        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+        />
+    }else{
+        var button = <Button
+        title="Next"
+        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
+        type="clear"
+        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
+        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+        />
+    }
 
 return (
-    <ImageBackground source={require('../assets/Background.jpeg')} style={{ flex: 1 }}>
+    <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
         <View style={styles.container}>
             <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
             <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
-            <Button 
-                title="Next"
-                type="outline"
-                buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
-                titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
-                onPress={toggleOverlay}
-            />
+            {next}
             <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
                 <View style={styles.overlay}>
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>Hello,{"\n"}let me learn more about you...{"\n"}{"\n"}</Text>
@@ -89,14 +139,7 @@ return (
                             <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
                         </TouchableOpacity>
                     </View>
-                    <Button
-                        title="Next"
-                        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
-                        type="clear"
-                        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
-                        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-                        />
+                    {button}
                     </View>
                 </Overlay>
             </View>

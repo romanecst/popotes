@@ -8,7 +8,8 @@ var axios = require("axios").default;
 
 const recipesModel = require('../models/recipes');
 const userModel = require('../models/users');
-const groupModel = require('../models/group')
+const groupModel = require('../models/group');
+const listModel = require('../models/list')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -45,7 +46,8 @@ router.post('/filters', async function(req, res, next) {
       glutenFree: req.body.gluten,
       vegetarian: req.body.vegetarian,
       lactoseFree: req.body.lactose,
-      vegan: req.body.vegan
+      vegan: req.body.vegan,
+      dishTypes: {$all: [`${req.body.type}`]}
     };
   }else{
     filters = {
@@ -56,7 +58,8 @@ router.post('/filters', async function(req, res, next) {
       glutenFree: req.body.gluten,
       vegetarian: req.body.vegetarian,
       lactoseFree: req.body.lactose,
-      vegan: req.body.vegan
+      vegan: req.body.vegan,
+      dishTypes: {$all: [`${req.body.type}`]}
     };
   }
 
@@ -72,7 +75,6 @@ router.post('/filters', async function(req, res, next) {
   }
 
   var result = await recipesModel.find(empty);
-
   
   res.json(result);
 });
@@ -91,6 +93,9 @@ router.get('/save', function(req, res, next) {
   };
   axios.request(options).then(async function (response) {
     console.log('SUCCESS');
+    console.log("RECIPE",response.data.recipes);
+    console.log('TYPE',response.data.recipes[0].dishTypes)
+
     var recipes = response.data.recipes;
     for( var i = 0; i< recipes.length; i++){
       var newRecipe = new recipesModel ({
@@ -107,7 +112,8 @@ router.get('/save', function(req, res, next) {
         readyInMinutes: recipes[i].readyInMinutes,
         servings: recipes[i].servings,
         cuisines: recipes[i].cuisines,
-        extendedIngredients: recipes[i].extendedIngredients
+        extendedIngredients: recipes[i].extendedIngredients,
+        dishTypes: recipes[i].dishTypes
       });
       await newRecipe.save();
     }
@@ -297,7 +303,37 @@ router.post('/userUpdate', async function(req,res,next){
     var update = await userModel.updateOne({token:req.body.token},{password: passwordEncrypt})
   }
  res.json({update})
-})
+});
+
+router.post('/addList', async function(req,res,next){
+  var result = false;
+  var newList = new listModel ({
+    name: req.body.name
+  });
+  listSave = await newList.save();
+  if(groupSave){
+    result = true;
+  }
+  res.json(result)
+});
+
+router.get('/list', async function(req,res,next){
+  var result = await listModel.find();
+  console.log(result)
+  res.json(result)
+});
+
+router.post('/addIngredients', async function(req,res,next){
+  console.log(req.body.listID)
+  var ingredients = JSON.parse(req.body.list);
+  if(ingredients.length !== 0){
+    var list = await listModel.updateOne(
+      {_id: req.body.listID},
+      {ingredients: ingredients}
+      );
+  }
+  res.json()
+});
 
 module.exports = router;
 
