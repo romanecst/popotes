@@ -21,12 +21,9 @@ import Recette from './components/recettecheck';
 
 function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
 
-    // bouton toggle // 
     const [isEnabled, setIsEnabled] = useState(false);
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
-    // console.log(ingredientList)
 
     var filteredIngredients = [];
     for(var s=0; s<ingredientList.length; s++){
@@ -35,20 +32,8 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
         } );
         filteredIngredients.push(list);
     }
-      {/* code dans le composant "ingredientcheck" */}
+
     var category = {};
-    // for(var a=0; a<filteredIngredients.length; a++){
-    //     for(var b=0; b<filteredIngredients[a].length; b++){
-    //         if(!(filteredIngredients[a][b].aisle in category) && !('Others' in category)){
-    //             if(filteredIngredients[a][b].aisle !== null){
-    //                 category[filteredIngredients[a][b].aisle] = [];
-    //             }else{
-    //                 category['Others'] = [];
-    //             }
-    //         }
-    //     }
-    // }
-    // console.log(category);
 
     filteredIngredients.forEach((elem)=>{
         elem.forEach(function(el){
@@ -68,27 +53,11 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
          })
     })
 
-    console.log('CATTTTTT', category);
-
     var displayByCategory = [];
 
     for(const key in category){ 
-        console.log('INGRRRR',key);
         displayByCategory.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{category[key]}</View>);
     }
-
-    var test = ()=>{}
-        // console.log("KEYYYY",key, category[key])
-        // var ingredientsByCategory = category[key].map(function(element){
-        //     console.log('INGRRRR',key, element);
-        //     return element
-        // });
-       
-        // console.log('INGRRRR',ingredientsByCategory);
-        // displayByCategory.push(ingredientsByCategory);
-        // return ingredientsByCategory
-   
-
 
     var recipesMap = filteredIngredients.map((array)=>{
         var recipeName = '';
@@ -98,34 +67,8 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
         })
     return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {recipeName} </Text>{recipes}</View>
     })
-    //  bouton radio // 
-    // useEffect(()=>{
-    // let finalList = []
-    // for(let i=0; i<ingredientList.length; i++){
-    //     let inList = false;
-    //     for(let j=0; j<checkList.length; j++) {
-    //         console.log('ingredient:', ingredientList[i].name, 'check:', checkList[j]);
-    //         if(ingredientList[i].name == checkList[j]){
-    //             inList = true;
-    //         }
-    //     };
-    //     if(!inList){
-    //         console.log('hello')
-    //         finalList.push(ingredientList[i])
-    //     }       
-    // };
-    // console.log('CHECK LIST',checkList);
-    // console.log('INGREDIENT LIST',ingredientList);
-    // console.log('FINAL LIST',finalList);
-    // },[])
-    // for(var j=0; j<checkList.length; j++) {
-    //     ingredientList.forEach(element => {
-    //         console.log('ELE',element)
-    //     });
-    // }
+  
     
-    
-
     if (isEnabled) {
         var ingredient = <ScrollView style={{height:380}}>{displayByCategory}</ScrollView>    
         var trier = "recette"
@@ -136,7 +79,6 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo }) {
         var trier = "ingredient"
 
     }
-
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF2DF' }}>
