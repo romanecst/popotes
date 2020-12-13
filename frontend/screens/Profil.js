@@ -27,7 +27,7 @@ function Profil({ navigation, token }) {
   var lactose = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
   var vega = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
 
-
+  // CHOIX PREFERENCE =========================>
   if (glutenFree) {
     gluten = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
   };
@@ -51,47 +51,10 @@ function Profil({ navigation, token }) {
     })
   };
 
-
-useEffect(() => {
-
-  const Preferences = async()=>{
-      var preferences = ['gluten free','vegetarian','lactose free','vegan'];
-      var ifTrue = false;
-      for (let i = 0; i<preferences.length; i++){
-          await AsyncStorage.getItem(preferences[i], 
-          function(error, data){
-          if(data === 'true'){
-              ifTrue = true;
-              if(preferences[i]==='gluten free'){
-                  setGlutenFree(true);
-              }else if(preferences[i]==='vegetarian'){
-                  setVegetarian(true);
-              }else if(preferences[i]==='lactose free'){
-                  setLactoseFree(true);
-              }else{
-                  setVegan(true);
-              }
-          }
-          })
-      };
-      if(ifTrue){
-          setPref(true);
-      }else{
-          var rawReponse = await fetch('http://192.168.1.18:3000/find');
-          var response= await rawReponse.json();
-          setListRecipe(response);
-      }
-  };
-
-  Preferences();
-  
-      
-}, []);
-
   /* Update user */
   var updateUser = async () => {
 
-    var userRegisters = await fetch("http://172.17.1.53:3000/userUpdate", {
+    var userRegisters = await fetch("http://192.168.1.18:3000/userUpdate", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
@@ -104,6 +67,7 @@ useEffect(() => {
 
 
     <View style={{ flex: 1, backgroundColor: "#e5f8f8" }}>
+      {/* --------------HEADER -----------------------*/}
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
@@ -119,122 +83,125 @@ useEffect(() => {
           <TouchableOpacity
             onPress={() => console.log("Works!")}
             activeOpacity={0.3}
-            style={{ backgroundColor: 'black', borderRadius: 100, padding: 2, marginTop: 15 }}
-
+            style={{ backgroundColor: 'black', borderRadius: 100, marginTop: 15, borderWidth: 1, marginBottom: 20 }}
           >
 
             <Avatar
-              size="xlarge"
-              rounded icon={{ name: 'add-a-photo', size: 65, color: 'black' }}
+              size={130}
+              rounded icon={{
+                name: 'add-a-photo', size: 65, color: 'black',
+              }}
               containerStyle={{ backgroundColor: "white" }}
             />
           </TouchableOpacity>
 
+          {/* --------------------CHAMPS FORMULAIRE ------------------------------------ */}
+          <Text style={{ fontSize: 20, color: "black", fontFamily: 'Kohinoor Telugu', marginBottom: 20 }} >Sign-Up : </Text>
 
+          <View>
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Name :</Text>
+            <TextInput
+              style={styles.text}
+              placeholder="Write your Name..."
+              onChangeText={(text) => setUserName(text)}
+              value={userName}
+            />
+
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Email :</Text>
+            <TextInput
+              style={styles.text}
+              placeholder="Write your email..."
+              onChangeText={(text) => setEmail(text)}
+              value={email}
+            />
+
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Password :</Text>
+            <TextInput
+              style={styles.text}
+              placeholder="Write your password"
+              onChangeText={(text) => setPassword(text)}
+              value={password}
+            />
+          </View>
+
+          <Button
+            title="sign-up"
+            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
+          />
+
+          {/* ---------------------------CHOIX DES PREFERENCE ALIMENTAIRE --------------------------- */}
+
+          <Text style={{ fontSize: 20, color: "black", fontFamily: 'Kohinoor Telugu', marginTop: 20 }} >select your preferences :</Text>
+
+          <View>
+            <View style={styles.prefalim}>
+              <TouchableOpacity
+                style={styles.picto}
+                activeOpacity={0.3}
+                onPress={() => {
+                  favoriteAlim("gluten free");
+                  setGlutenFree(!glutenFree);
+                }}
+              >
+                <Image style={gluten} source={require("../assets/noGluten.png")} />
+                <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
+                  Gluten free
+            </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.picto}
+                activeOpacity={0.3}
+                onPress={() => {
+                  favoriteAlim("vegetarian");
+                  setVegetarian(!vegetarian);
+                }}
+              >
+                <Image style={vegeta} source={require("../assets/noMeat.png")} />
+                <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
+                  Vegetarian
+            </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.prefalim}>
+              <TouchableOpacity
+                style={styles.picto}
+                activeOpacity={0.3}
+                onPress={() => {
+                  favoriteAlim("Lactose free");
+                  setLactoseFree(!lactoseFree);
+                }}
+              >
+                <Image style={lactose} source={require("../assets/noMilk.png")} />
+                <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
+                  Lactiose free
+            </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.picto}
+                activeOpacity={0.3}
+                onPress={() => {
+                  favoriteAlim("vegan");
+                  setVegan(!vegan);
+                }}
+              >
+                <Image style={vega} source={require("../assets/vegetalien.png")} />
+                <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
+                  Vegan
+            </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <Button
+            title="validate"
+            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
+            onPress={() => { navigation.navigate('Profil'); updateUser() }}
+
+          />
         </View>
 
-
-        {/* --------------------CHAMPS FORMULAIRE ------------------------------------ */}
-        <TextInput
-          style={{ borderRadius: 20, marginTop: 40, marginLeft: 30, marginRight: 30, height: 50, borderColor: "white", borderWidth: 1, backgroundColor: "white" }}
-          placeholder=" Name"
-          onChangeText={(text) => setUserName(text)}
-          value={userName}
-        />
-
-        <TextInput
-          style={{ borderRadius: 20, marginBottom: 20, marginTop: 20, marginLeft: 30, marginRight: 30, height: 50, borderColor: "white", borderWidth: 1, backgroundColor: "white" }}
-          placeholder=" email"
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-        />
-
-        <TextInput
-          style={{ borderRadius: 20, marginTop: 20, marginLeft: 30, marginRight: 30, height: 50, borderColor: "white", borderWidth: 1, backgroundColor: "white" }}
-          placeholder=" Password"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-        />
-
-        <Text
-          h2
-          style={{
-            marginTop: 10,
-            color: "#FFFF",
-            fontFamily: "Kohinoor Telugu",
-          }}
-        />
-        <Text style={{ marginLeft: 45, fontSize: 30, color: "black" }} >Mes preferences alimentaire ? </Text>
-
-
-        {/* ---------------------------CHOIX DES PREFERENCE ALIMENTAIRE --------------------------- */}
-        <View>
-          <View style={styles.prefalim}>
-            <TouchableOpacity
-              style={styles.picto}
-              activeOpacity={0.3}
-              onPress={() => {
-                favoriteAlim("gluten free");
-                setGlutenFree(!glutenFree);
-              }}
-            >
-              <Image style={gluten} source={require("../assets/noGluten.png")} />
-              <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
-                Gluten free
-            </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.picto}
-              activeOpacity={0.3}
-              onPress={() => {
-                favoriteAlim("vegetarian");
-                setVegetarian(!vegetarian);
-              }}
-            >
-              <Image style={vegeta} source={require("../assets/noMeat.png")} />
-              <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
-                Vegetarian
-            </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.prefalim}>
-            <TouchableOpacity
-              style={styles.picto}
-              activeOpacity={0.3}
-              onPress={() => {
-                favoriteAlim("Lactose free");
-                setLactoseFree(!lactoseFree);
-              }}
-            >
-              <Image style={lactose} source={require("../assets/noMilk.png")} />
-              <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
-                Lactiose free
-            </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.picto}
-              activeOpacity={0.3}
-              onPress={() => {
-                favoriteAlim("vegan");
-                setVegan(!vegan);
-              }}
-            >
-              <Image style={vega} source={require("../assets/vegetalien.png")} />
-              <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 11 }}>
-                Vegan
-            </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <Button
-
-          title=" Valider "
-          color=" # 841584 "
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => updateUser()}
-        />
       </ScrollView>
     </View>
 
@@ -257,8 +224,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 15,
-  }, taille: {
-
+  }, text: {
+    fontFamily: 'Kohinoor Telugu',
+    width: 230,
+    padding: 10,
+    borderRadius: 30,
+    marginBottom: 15,
+    fontSize: 12,
+    backgroundColor: "white"
   }
 });
 
