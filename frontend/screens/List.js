@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 40,
-  
     justifyContent:'space-between'
   }
 });
