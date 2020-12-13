@@ -26,7 +26,7 @@ router.post('/search', async function(req, res, next) {
 
 router.get('/find', async function(req, res, next) {
   //limit à enlever pour recevoir toute la bdd
-  var recipes = await recipesModel.find().limit( 30 );
+  var recipes = await recipesModel.find().limit( 50 );
   res.json(recipes);
 });
 
