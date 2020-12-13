@@ -73,10 +73,12 @@ function Signin({navigation, addToken}) {
   
 
 
-
   const toggleOverlay = () => {
-    setVisible(true);
+    setVisible(!visible);
   };
+  // const toggleOverlay = () => {
+  //   setVisible(true);
+  // };
 
 
 

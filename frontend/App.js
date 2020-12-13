@@ -97,7 +97,6 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
-  // OverlayCheck:OverlayCheck,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
 

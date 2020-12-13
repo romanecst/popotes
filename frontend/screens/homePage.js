@@ -257,7 +257,7 @@ var Search = async() => {
             </ScrollView>
             </View>
             <Button 
-            buttonStyle={{ backgroundColor:'#ade498', width:200, padding:10, borderRadius:30, marginTop:15 }}
+            buttonStyle={{ backgroundColor:'#ade498', width:200, padding:10, borderRadius:30, marginTop:5 }}
             titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu' }} 
             title="Apply Filters" 
             onPress={()=>{Filters(); toggleOverlay()}}/>
