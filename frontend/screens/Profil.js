@@ -8,13 +8,23 @@ import {
   borderColor,
   TouchableOpacity,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 import { Avatar, Button, Header } from "react-native-elements";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import {connect} from 'react-redux';
 
-export default function Profil({navigation}) {
+
+
+
+
+
+
+function Profil({navigation,token}) {
+
+
   const [visible, setVisible] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
   const [vegetarian, setVegetarian] = useState(false);
@@ -23,7 +33,7 @@ export default function Profil({navigation}) {
 
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
-  const [motdepasse, setMotDepasse] = useState();
+  const [password, setPassword] = useState();
 
 
   // COULEUR APRES SELECTION  ================>
@@ -76,8 +86,23 @@ export default function Profil({navigation}) {
     };
   }
 
+
+
+  /* Update user */
+  var updateUser = async () => {
+    
+    var userRegisters = await fetch("http://172.17.1.53:3000/userUpdate",{
+      method:'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body:`token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
+  })
+    var response = await userRegisters.json();
+    console.log(response);
+  }
+
   return (
 
+    
     <View style={{flex:1, backgroundColor: "#e5f8f8" }}>
 
       <Header
@@ -86,7 +111,7 @@ export default function Profil({navigation}) {
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
-
+    <ScrollView>
       {/* --------------BOUTON D'AJOUT DE PHOTO " AVATAR " -----------------------*/}
       <View >
         <AntDesign style={{ marginTop: 65, marginLeft: 165, borderColor: "white" }} name="adduser" size={80} color="black" />
@@ -123,8 +148,8 @@ export default function Profil({navigation}) {
       <TextInput
         style={{ borderRadius: 20, marginTop: 20, marginLeft: 30, marginRight: 30, height: 50, borderColor: "white", borderWidth: 1, backgroundColor: "white" }}
         placeholder=" Password"
-        onChangeText={(text) => setMotDepasse(text)}
-        value={motdepasse}
+        onChangeText={(text) => setPassword(text)}
+        value={password}
       />
 
       <Text
@@ -198,7 +223,17 @@ export default function Profil({navigation}) {
         </View>
       </View>
 
+      <Button
+         
+         title = " Valider "
+         color = " # 841584 "
+         buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+         onPress = {() => updateUser()}
+       />
+       </ScrollView>
     </View>
+    
   )
 }
 const styles = StyleSheet.create({
@@ -222,3 +257,12 @@ const styles = StyleSheet.create({
 
   }
 });
+
+function mapStateToProps(state) {
+  return { token: state.token }
+}
+
+export default connect(
+  mapStateToProps, 
+  null
+)(Profil);
