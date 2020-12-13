@@ -1,22 +1,9 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
-  Image,
-  borderColor,
-  TouchableOpacity,
-  ImageBackground,
-  ScrollView,
-} from "react-native";
-
+import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
 import { Button, ListItem, Header } from "react-native-elements";
 
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { Fontisto } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
+import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
+
 
 export default function Profil({ navigation }) {
   const list = [
@@ -49,73 +36,71 @@ export default function Profil({ navigation }) {
   ];
 
   return (
-    <View style={{flex:1, backgroundColor: "#FFF2DF" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFF2DF" }}>
 
       <Header
         containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white"  />}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
         centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
 
-      <View style={{ alignItems: "center", marginTop: 90 }}>
-        <Text style={{ fontSize: 30 }}>Creer une liste</Text>
-
-        {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
-        <Ionicons name="ios-add-circle-outline" size={134} color="black"/>
-      </View>
-      <Text
-        style={{
-          alignItems: "center",
-          marginLeft: 80,
-          marginTop: 40,
-          fontSize: 20,
-        }}
-      >
-        Mes Listes mes listes de course{" "}
-      </Text>
 
       {/* ---------------------------LISTE EXISTANTE FAVORITE------------------------------------------  */}
-      <ScrollView
-        style={{
-          marginBottom: 10,
-          marginTop: 70,
-          backgroundColor: "#FFF2DF",
-          paddingLeft: 5,
-          paddingRight: 5,
-        }}
-      >
-        {list.map((l, i) => (
-          <TouchableOpacity
-          onPress={() => { navigation.navigate('GlobalList') }}>
-          <ListItem
-            key={i}
-            bottomDivider
-            style={{
-              borderRadius: 90,
-              marginLeft: 30,
-              marginRight: 30,
-              marginBottom: 10,
-              top: 20,
-            }}
-          >
-            <ListItem.Content style={{ flex: 1 }}>
-              <View style={{ marginLeft: 300, top: 20 }}>
-                <Ionicons name="ios-trash" size={24} color="black" />
+
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+        <Text style={{ marginTop: 50, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My shop list</Text>
+
+        <ScrollView style={styles.scroll}>
+
+          {list.map((l, i) => (
+            <TouchableOpacity onPress={() => { navigation.navigate('GlobalList') }} >
+              <View style={styles.blocScroll}>
+                <Text> {l.name}</Text>
+                <Text>{l.subtitle}</Text>
+
+
+                <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding:18, borderRadius:50}}>
+                </Button>
               </View>
 
-              <ListItem.Title> {l.name}</ListItem.Title>
-              <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
+
+      <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 15 }}>
+
+
+        <Text style={{ fontSize: 20, fontFamily: "Kohinoor Telugu" }}>Creat a liste</Text>
+        <Button
+          icon={<Ionicons name="ios-add-circle-outline" size={60} color="black" />}
+          buttonStyle={{ backgroundColor: '#FFF2DF' }}
+        />
+      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
+  }, scroll: {
+    marginBottom: 50,
+    marginTop: 20,
+    backgroundColor: "#FFF2DF",
+    width: 300,
+    height: 300,
+  }, blocScroll: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    marginBottom: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 40,
+  
+    justifyContent:'space-between'
+  }
 });

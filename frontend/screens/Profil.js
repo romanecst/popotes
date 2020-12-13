@@ -227,8 +227,8 @@ const styles = StyleSheet.create({
   }, text: {
     fontFamily: 'Kohinoor Telugu',
     width: 230,
-    padding: 10,
-    borderRadius: 30,
+    padding: 15,
+    borderRadius: 10,
     marginBottom: 15,
     fontSize: 12,
     backgroundColor: "white"
