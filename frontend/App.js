@@ -55,7 +55,6 @@ var BottomNavigator = createBottomTabNavigator({
   Home: homePage,
   Map: Map,
   Profil: Profil, 
-  List:List,
   GroupI: GroupI,
   MesGroupes:MesGroupes,
   MesGroupesP12:MesGroupesP12,

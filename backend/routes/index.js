@@ -311,7 +311,7 @@ router.post('/addList', async function(req,res,next){
     name: req.body.name
   });
   listSave = await newList.save();
-  if(groupSave){
+  if(listSave){
     result = true;
   }
   res.json(result)
@@ -319,12 +319,19 @@ router.post('/addList', async function(req,res,next){
 
 router.get('/list', async function(req,res,next){
   var result = await listModel.find();
-  console.log(result)
+  res.json(result)
+});
+
+router.post('/deleteList', async function(req,res,next){
+  var result = false;
+  var returnDb = await listModel.deleteOne({_id: req.body.id});
+  if(returnDb.deletedCount == 1){
+    result = true
+  }
   res.json(result)
 });
 
 router.post('/addIngredients', async function(req,res,next){
-  console.log(req.body.listID)
   var ingredients = JSON.parse(req.body.list);
   if(ingredients.length !== 0){
     var list = await listModel.updateOne(
@@ -332,6 +339,17 @@ router.post('/addIngredients', async function(req,res,next){
       {ingredients: ingredients}
       );
   }
+  res.json()
+});
+
+router.post('/deleteIngredients', async function(req,res,next){
+  // var ingredients = JSON.parse(req.body.list);
+  // if(ingredients.length !== 0){
+  //   var list = await listModel.updateOne(
+  //     {_id: req.body.listID},
+  //     {ingredients: ingredients}
+  //     );
+  // }
   res.json()
 });
 

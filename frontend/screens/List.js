@@ -44,6 +44,19 @@ function List({ navigation, currentList }) {
     });
   }
 
+  async function DelList(id){
+    if(id){
+      await fetch('http://192.168.1.87:3000/deleteList', {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `id=${id}`
+      });
+      var templist = [...list];
+      templist = templist.filter(el => el._id !== id);
+      setList(templist);
+  }
+  }
+
   const toggleOverlay = () => {
     setVisible(!visible);
 };
@@ -111,7 +124,7 @@ function List({ navigation, currentList }) {
           </ListItem>
           </TouchableOpacity>
           <View style={{top: 20 }}>
-                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> console.log('HELOO')} />
+                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(l._id)} />
           </View>
           </View>
         ))}
@@ -121,9 +134,6 @@ function List({ navigation, currentList }) {
   <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
     <View style={styles.overlay}>
         <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, give a name to your list : </Text>
-        <View style={styles.prefalim}>
-            
-        </View>
         <Input placeholder='Name'
         onChangeText= {(value) => setText(value)} 
         value={text}/>
@@ -163,10 +173,5 @@ const styles = StyleSheet.create({
     width: 290,
     margin: 18,
     justifyContent: 'center',
-},
-prefalim: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-    }, 
+}
 });

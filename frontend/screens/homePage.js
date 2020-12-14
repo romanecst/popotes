@@ -26,7 +26,6 @@ export default function homePage({navigation}) {
 
    const [searchTxt, setSearchTxt] = useState('')
    const [listRecipe, setListRecipe] = useState([])
-   const [recipeHome, setRecipeHome] = useState([]);
    
 
 useEffect(() => {
@@ -202,7 +201,7 @@ var Search = async() => {
                 <Picker.Item label="Side" value="side dish" />
                 <Picker.Item label="Dessert" value="dessert" />
                 <Picker.Item label="Snack" value="snack" />
-                <Picker.Item label="Sweets" value="sweets" />
+                <Picker.Item label="Beverage" value="beverage" />
             </Picker>
             <Text style={{fontSize: 25, fontFamily: 'Kohinoor Telugu',}}>Time</Text>
             <Picker

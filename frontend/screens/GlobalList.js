@@ -22,8 +22,21 @@ import Recette from './components/recettecheck';
 function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [text, setText] = useState('');
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    const toggleOverlay = () => {
+        setVisible(!visible);
+    };
+
+    // useEffect(()=>{
+    //     async function load(){
+            
+    //     };
+    //     load();
+    // },[])
 
     var filteredIngredients = [];
     for(var s=0; s<ingredientList.length; s++){
@@ -90,7 +103,6 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
 
     useEffect(()=>{
         return async()=>{
-            // console.log('CLOSING');
             await fetch('http://192.168.1.87:3000/addIngredients', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -153,6 +165,24 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
                 icon={<MaterialCommunityIcons name="account-group" size={36} color="black" />}
             />
+
+             {/* ------------------------------ OVERLAY -----------------------------------------------*/}
+  <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
+    <View style={styles.overlay}>
+        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
+        <Input placeholder='Product name'
+        onChangeText= {(value) => setText(value)} 
+        value={text}/>
+        </View>
+        <Button
+        title="Confirm"
+        onPress={() => {toggleOverlay()}}
+        type="clear"
+        buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+        />
+    </Overlay>
         </View>
     );
 }
