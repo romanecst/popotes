@@ -93,7 +93,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
 var Search = async() => {
-    var rawResult = await fetch('http://172.17.1.197:3000/search', {
+    var rawResult = await fetch('http://172.17.1.71:3000/search', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `search=${searchTxt}`

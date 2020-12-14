@@ -8,7 +8,7 @@ import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
 import {connect} from 'react-redux';
 
-function List({ navigation, currentList, saveList, delList, list}) {
+function List({ navigation, currentList, saveList, delList, list, addingredientList}) {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
 
@@ -92,7 +92,7 @@ function List({ navigation, currentList, saveList, delList, list}) {
             flexDirection: 'row',
         }}>
           <TouchableOpacity
-          onPress={() => {currentList(l); navigation.navigate('GlobalList') }}>
+          onPress={() => {currentList(l); addingredientList(l.ingredients); navigation.navigate('GlobalList') }}>
           <ListItem
             key={i}
             bottomDivider
@@ -185,8 +185,12 @@ function mapDispatchToProps(dispatch) {
     delList: function(info) { 
       dispatch( {type: 'delList', list: info} ) 
   },
+    addingredientList: function(info) { 
+      dispatch( {type: 'ingredientList', ingredient: info} ) 
+    }
   }
-  }
+}
+
 
   function mapStateToProps(state) {
     return { recipeList: state.recipeList, list: state.list }
