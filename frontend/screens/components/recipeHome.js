@@ -18,6 +18,18 @@ import Checking from './checkingOverlay';
 function RecipeHome(props) {
     const [like, setLike] = useState(false);
     const [selectedList, setSelectedList] = useState();
+    const [list, setList] = useState();
+    const [listArray, setListArray] = useState([]);
+
+    useEffect(()=>{
+        const loadList = async() => {
+          var rawResult = await fetch('http://172.17.1.53:3000/list');
+          var result = await rawResult.json();
+          setListArray(result)
+        }
+        loadList();
+      
+      },[])
 
     function colorLike() {
         setLike(!like);

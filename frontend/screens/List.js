@@ -109,12 +109,12 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
             }}
           >
             <ListItem.Content style={{ flex: 1 }}>
-              <Text> {l.name}</Text>
+              <Text> {el.name}</Text>
             </ListItem.Content>
           </ListItem>
           </TouchableOpacity>
           <View style={{top: 20 }}>
-                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(l._id)} />
+                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(el._id)} />
           </View>
           </View>
         ))}

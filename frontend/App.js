@@ -39,7 +39,6 @@ import MesGroupesP12 from './screens/MesGroupesP12';
 
 import {Provider} from 'react-redux';
 
-
 import {createStore, combineReducers}  from 'redux';
 
 
@@ -57,7 +56,6 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: Profil, 
   MesGroupes:MesGroupes,
   MesGroupesP12:MesGroupesP12,
-  
 },
 // {
 //   backBehavior: 'history', 
@@ -98,7 +96,6 @@ var StackNavigator = createStackNavigator({
   Recipe: Recipe,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
-
   Retour: BottomNavigator,
   Map : Map,
   
