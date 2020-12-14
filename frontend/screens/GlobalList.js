@@ -17,9 +17,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 import Ingredient from './components/ingredientcheck';
 import Recette from './components/recettecheck';
+import { withNavigationFocus } from 'react-navigation';
 
 
-function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo }) {
+function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo, addingredientList, isFocused, clearIngredientList}) {
 
     const [isEnabled, setIsEnabled] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -46,8 +47,6 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
         filteredIngredients.push(list);
     }
 
-    var category = {};
-
     var simpleList = [];
     filteredIngredients.forEach((elem) => {
         elem.forEach(function (el) {
@@ -55,6 +54,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
         })
     })
 
+    var category = {};
 
     simpleList.forEach(function (el) {
         if (!(el.aisle in category) && !('Others' in category)) {
@@ -79,16 +79,22 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
         displayByCategory.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{category[key]}</View>);
     }
 
-    var recipesMap = filteredIngredients.map((array) => {
-        var recipeName = '';
-        var recipes = array.map(function (el, j) {
-            recipeName = el.recipeName;
-            return <Recette key={j} name={el.name} amount={el.amount} measure={el.measure} />
-        })
-        return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {recipeName} </Text>{recipes}</View>
+    var recipeCat = {};
+
+    simpleList.forEach(function(el){
+        if(!(el.recipeName in recipeCat)){
+            recipeCat[el.recipeName] = [<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure}/>];
+        }else{
+            recipeCat[el.recipeName].push(<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure}/>);
+        }
     })
 
+    var recipesMap = []
 
+    for(const key in recipeCat){ 
+        recipesMap.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{recipeCat[key]}</View>);
+    }
+    
     if (isEnabled) {
         var ingredient = <ScrollView style={{ height: 380 }}>{displayByCategory}</ScrollView>
         var trier = "recette"
@@ -101,12 +107,12 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
     }
 
 
-    useEffect(() => {
-        return async () => {
-            await fetch('http://192.168.1.87:3000/addIngredients', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
+    useEffect(()=>{
+        return async()=>{
+            await fetch('http://172.17.1.197:3000/addIngredients', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
             });
         }
     }, [])
@@ -144,12 +150,16 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 {/* ------------------------- CATEGOEIRE / INGREDIENT / QUANTITE ou GRAMMAGE ---------------FIN---------- */}
             </View>
             <View style={{ flexDirection: 'row', marginHorizontal: 20, justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => {toggleOverlay()}}>
                 <View style={styles.ajoutListe}>
                     <MaterialIcons name="playlist-add" size={30} color="black" />
                 </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
                 <View style={styles.okList}>
-                    <Octicons name="checklist" size={26} color="black" />
+                    <Octicons name="checklist" size={26} color="black" onPress={()=>clearIngredientList()}/>
                 </View>
+                </TouchableOpacity>
             </View>
             <Button
                 iconRight={true}
@@ -191,10 +201,21 @@ function mapStateToProps(state) {
     return { ingredientList: state.ingredientList, checkList: state.checkList, recipeInfo: state.recipe, listInfo: state.listInfo }
 }
 
-export default connect(
+function mapDispatchToProps(dispatch) {
+    return {
+      clearIngredientList: function() { 
+        dispatch( {type: 'clearingredientList'} ) 
+      }
+    }
+  }
+
+
+var globalListScreen = connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(GlobalList);
+
+export default withNavigationFocus(globalListScreen);
 
 
 const styles = StyleSheet.create({

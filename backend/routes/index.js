@@ -318,7 +318,7 @@ router.post('/addList', async function (req, res, next) {
   if (listSave) {
     result = true;
   }
-  res.json(result)
+  res.json(listSave)
 });
 
 router.get('/list', async function (req, res, next) {
@@ -354,8 +354,27 @@ router.post('/deleteIngredients', async function (req, res, next) {
   //     {ingredients: ingredients}
   //     );
   // }
-  res.json()
+  res.json()});
+router.post('/getIngredients', async function(req,res,next){
+    var list = await listModel.findOne({_id: req.body.id});
+  res.json(list)
 });
+
+
+/* Random carrousel */
+router.get('/randomCourrousel', async function(req, res, next) {
+  var recipes = await recipesModel.find();
+  var idRecipe = [];
+  for(var i=0; i<recipes.length; i++){
+    idRecipe.push(recipes[i]._id)
+  }
+  var random = Math.round(Math.random() * idRecipe.length)
+  var id = idRecipe[random];
+  var randomRecipe = await recipesModel.findOne({_id:id});
+
+  res.json(randomRecipe);
+});
+
 
 module.exports = router;
 

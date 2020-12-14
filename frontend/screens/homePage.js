@@ -4,13 +4,15 @@ import {Button, Overlay, Card, SearchBar, Header} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
 import IconIonic from 'react-native-vector-icons/Ionicons';
-import RecipeHome from './components/recipeHome';
 
 import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-export default function homePage({navigation}) {
+
+import { connect } from 'react-redux';
+
+function homePage({navigation, loadList}) {
     const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
     const [selectedValueCuisine, setSelectedValueCuisine] = useState("");
@@ -26,6 +28,7 @@ export default function homePage({navigation}) {
 
    const [searchTxt, setSearchTxt] = useState('')
    const [listRecipe, setListRecipe] = useState([])
+   const [source,setSource] = useState('')
    
 
 useEffect(() => {
@@ -53,24 +56,39 @@ useEffect(() => {
         if(ifTrue){
             setPref(true);
         }else{
-            var rawReponse = await fetch('http://172.17.1.71:3000/find');
+            var rawReponse = await fetch('http://172.17.1.53:3000/find');
             var response= await rawReponse.json();
             setListRecipe(response);
         }
     };
 
     Preferences();
+
+    const ListInit = async() => {
+        var rawResult = await fetch('http://172.17.1.197:3000/list');
+        var result = await rawResult.json();
+        loadList(result)
+    }
+
+    ListInit();  
+    /* Random on Today's pick */
+    var searchRandom = async ()=>{
+        var randomCarrousel = await fetch('http://172.17.1.53:3000/randomCourrousel');
+        var resultRandom = await randomCarrousel.json();
+        setSource(resultRandom.image)       
+    }
+    searchRandom();
     
         
   }, []);
 
-  // Romane IP: http://172.17.1.197:3000/filters
+// Romane IP: http://172.17.1.197:3000/filters
 // Leila IP: http://172.17.1.129:3000/filters ; 192.168.1.20 maison
 // Nico IP: http://172.17.1.53:3000/filters
 // Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-    var rawResult = await fetch('http://172.17.1.71:3000/filters', {
+    var rawResult = await fetch('http://172.17.1.53:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}&type=${selectedValueDish}`
@@ -82,31 +100,31 @@ useEffect(() => {
     function updateSearch(search){
         setSearchTxt(search)
     }
-var Search = async() => {
-    var rawResult = await fetch('http://172.17.1.71:3000/search', {
-        method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `search=${searchTxt}`
-    });
-    var result = await rawResult.json();
-    setListRecipe(result);
-}
+    var Search = async() => {
+        var rawResult = await fetch('http://172.17.1.53:3000/search', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `search=${searchTxt}`
+        });
+        var result = await rawResult.json();
+        setListRecipe(result);
+    }
 
-  useEffect(()=>{
-    if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
-        Filters();
-    }  
-  },[pref])
+    useEffect(()=>{
+        if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
+            Filters();
+        }  
+    },[pref])
 
-  useEffect(()=>{
-    if(searchTxt === '' && pref){
-        Filters();
-    }  
-  },[searchTxt])
+    useEffect(()=>{
+        if(searchTxt === '' && pref){
+            Filters();
+        }  
+    },[searchTxt])
 
-  const toggleOverlay = () => {
-    setVisible(!visible);
-  };
+    const toggleOverlay = () => {
+        setVisible(!visible);
+    };
 
 
     var gluten = {backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100 };
@@ -131,7 +149,11 @@ var Search = async() => {
         return <RecipeHome key={i} image={recipe.image} title={recipe.title} recipeInfo={recipe}/>
     })
 
-    
+  
+        
+
+   
+
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
@@ -162,16 +184,11 @@ var Search = async() => {
             <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu', color:'grey'}}>Today's pick</Text>
 
             <ScrollView style={{marginTop: 8, marginBottom:15}} horizontal={true}>
-            <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
-                <Image source={require('../assets/tarte.jpg')} style={styles.image} />   
+            <TouchableOpacity onPress={() => {navigation.navigate('recipeHome')}}>
+                <Image source={{uri:source}} style={styles.image} />   
             </TouchableOpacity>
-                <View>
-                <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
-                </View>
-                <View>
-                <Image source={require('../assets/tarte.jpg')} style={styles.image}/>   
-                </View>    
             </ScrollView>
+            
             <Button title="Filters" onPress={toggleOverlay} 
                     buttonStyle={styles.Filters}
                     titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu', paddingBottom:3, paddingTop:3, paddingHorizontal:8}}
@@ -294,6 +311,18 @@ var Search = async() => {
         </View>
     )
 }
+function mapDispatchToProps(dispatch) {
+    return {
+        loadList: function(info) { 
+            dispatch( {type: 'loadList', list: info} ) 
+        },
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(homePage);
 
 const styles = StyleSheet.create({
     container: {

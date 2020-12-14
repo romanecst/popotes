@@ -30,6 +30,7 @@ import tokenGroup from './reducers/tokenGroup';
 import recipeList from './reducers/recipeList';
 import ingredientList from './reducers/ingredientList';
 import listInfo from './reducers/listInfo';
+import list from './reducers/shoppinglist';
 
 import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
 import GlobalGroup from './screens/Group';
@@ -40,7 +41,8 @@ import {Provider} from 'react-redux';
 
 import {createStore, combineReducers}  from 'redux';
 
-const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo}));
+
+const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo, list}));
 
 
 

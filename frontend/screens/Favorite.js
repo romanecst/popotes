@@ -33,14 +33,6 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
     },[])
 
 
-if(!isFocused){
-    const SaveData = async() => {
-        if(recipeList.length !== 0){
-            await AsyncStorage.setItem("favorites", JSON.stringify(recipeList));
-        }
-    }
-    SaveData();
-}
 
 
     function updateSearch(search){
@@ -55,6 +47,13 @@ if(!isFocused){
         </View>
     </View>
     })
+
+    useEffect(()=>{
+        return async()=>{
+            await AsyncStorage.setItem("favorites", JSON.stringify(recipeList));
+        }
+    },[]);
+    
 
     return (
 
