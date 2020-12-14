@@ -53,11 +53,7 @@ useEffect(() => {
         if(ifTrue){
             setPref(true);
         }else{
-<<<<<<< HEAD
             var rawReponse = await fetch('http://172.17.1.53:3000/find');
-=======
-            var rawReponse = await fetch('http://172.17.1.71:3000/find');
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -74,11 +70,7 @@ useEffect(() => {
 // Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-<<<<<<< HEAD
     var rawResult = await fetch('http://172.17.1.53:3000/filters', {
-=======
-    var rawResult = await fetch('http://172.17.1.71:3000/filters', {
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}&type=${selectedValueDish}`
@@ -91,11 +83,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
 var Search = async() => {
-<<<<<<< HEAD
     var rawResult = await fetch('http://172.17.1.53:3000/search', {
-=======
-    var rawResult = await fetch('http://172.17.1.71:3000/search', {
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `search=${searchTxt}`
