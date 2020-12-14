@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
-<<<<<<< HEAD
 import { Button, ListItem, Header , Overlay, Input} from "react-native-elements";
-=======
-import { Button, ListItem, Header, Input, Overlay } from "react-native-elements";
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
@@ -19,11 +15,7 @@ function List({ navigation, currentList }) {
 
   useEffect(()=>{
     const loadList = async() => {
-<<<<<<< HEAD
       var rawResult = await fetch('http://172.17.1.53:3000/list');
-=======
-      var rawResult = await fetch('http://172.17.1.71:3000/list');
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
       var result = await rawResult.json();
       setList(result)
     }
@@ -114,12 +106,12 @@ function List({ navigation, currentList }) {
             }}
           >
             <ListItem.Content style={{ flex: 1 }}>
-              <Text> {l.name}</Text>
+              <Text> {el.name}</Text>
             </ListItem.Content>
           </ListItem>
           </TouchableOpacity>
           <View style={{top: 20 }}>
-                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(l._id)} />
+                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(el._id)} />
           </View>
           </View>
         ))}

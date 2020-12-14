@@ -353,6 +353,22 @@ router.post('/deleteIngredients', async function(req,res,next){
   res.json()
 });
 
+
+/* Random carrousel */
+router.get('/randomCourrousel', async function(req, res, next) {
+  var recipes = await recipesModel.find();
+  var idRecipe = [];
+  for(var i=0; i<recipes.length; i++){
+    idRecipe.push(recipes[i]._id)
+  }
+  var random = Math.round(Math.random() * idRecipe.length)
+  var id = idRecipe[random];
+  var randomRecipe = await recipesModel.findOne({_id:id});
+
+  res.json(randomRecipe);
+});
+
+
 module.exports = router;
 
 

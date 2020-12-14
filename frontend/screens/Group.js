@@ -86,7 +86,7 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
     var rawResponse = await fetch("http://172.17.1.53:3000/group", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `avatarGroupFromFront=${image}=${nameGroup}`,
+      body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}`,
     });
     var response = await rawResponse.json();
     var token = response.groupSave.group_token;
