@@ -314,7 +314,7 @@ router.post('/addList', async function(req,res,next){
   if(listSave){
     result = true;
   }
-  res.json(result)
+  res.json(listSave)
 });
 
 router.get('/list', async function(req,res,next){
@@ -340,6 +340,11 @@ router.post('/addIngredients', async function(req,res,next){
       );
   }
   res.json()
+});
+
+router.post('/getIngredients', async function(req,res,next){
+    var list = await listModel.findOne({_id: req.body.listID});
+  res.json(list)
 });
 
 router.post('/deleteIngredients', async function(req,res,next){
