@@ -18,7 +18,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList }) {
 
     useEffect(()=>{
         const loadList = async() => {
-          var rawResult = await fetch('http://192.168.1.87:3000/list');
+          var rawResult = await fetch('http://172.17.1.53:3000/list');
           var result = await rawResult.json();
           setListArray(result)
         }

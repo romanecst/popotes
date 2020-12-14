@@ -54,7 +54,7 @@ function Profil({ navigation, token }) {
   /* Update user */
   var updateUser = async () => {
 
-    var userRegisters = await fetch("http://192.168.1.18:3000/userUpdate", {
+    var userRegisters = await fetch("http://172.17.1.53:3000/userUpdate", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`

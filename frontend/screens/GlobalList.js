@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Switch, ScrollView } from 'react-native';
 import { ListItem, Header, Button } from "react-native-elements";
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Overlay, Input } from 'react-native-elements';
 
 
 import { AntDesign } from "@expo/vector-icons";
@@ -103,7 +103,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
 
     useEffect(()=>{
         return async()=>{
-            await fetch('http://192.168.1.87:3000/addIngredients', {
+            await fetch('http://172.17.1.53:3000/addIngredients', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`

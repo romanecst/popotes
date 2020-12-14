@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
-import { Button, ListItem, Header } from "react-native-elements";
+import { Button, ListItem, Header , Overlay, Input} from "react-native-elements";
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
@@ -15,7 +15,7 @@ function List({ navigation, currentList }) {
 
   useEffect(()=>{
     const loadList = async() => {
-      var rawResult = await fetch('http://172.17.1.197:3000/list');
+      var rawResult = await fetch('http://172.17.1.53:3000/list');
       var result = await rawResult.json();
       setList(result)
     }
@@ -24,7 +24,7 @@ function List({ navigation, currentList }) {
   },[])
 
   const addList = async() => {
-    await fetch('http://172.17.1.197:3000/addList', {
+    await fetch('http://172.17.1.53:3000/addList', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `name=${text}`
@@ -33,7 +33,7 @@ function List({ navigation, currentList }) {
 
   async function DelList(id){
     if(id){
-      await fetch('http://172.17.1.197:3000/deleteList', {
+      await fetch('http://172.17.1.53:3000/deleteList', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `id=${id}`
