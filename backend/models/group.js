@@ -8,6 +8,7 @@ const groupSchema = mongoose.Schema({
     group_token: String,
 })
 
+
 const groupModel = mongoose.model('group', groupSchema)
 
 module.exports = groupModel
