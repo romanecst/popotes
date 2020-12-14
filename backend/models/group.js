@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const groupSchema = mongoose.Schema({
     list_id:{ type: mongoose.Schema.Types.ObjectId, ref: 'list' },
-    user_id:[{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+    user_id:Array,
     name: String,
     avatar: String,
     group_token: String,
