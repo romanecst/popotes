@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
 import { ListItem, Header, Button, Overlay, Input, CheckBox } from "react-native-elements";
 
-
-
-
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';

@@ -8,7 +8,7 @@ export default function(ingredientList = [], action) {
     }else if(action.type == 'delingredientList'){
       var newList = [];
       for(var i=0; i<ingredientList.length; i++){
-        var list = ingredientList[i].filter( el => el.id !== action.id);
+        var list = ingredientList[i].filter( el => el.name !== action.name);
         newList.push(list)
       }
       return newList;

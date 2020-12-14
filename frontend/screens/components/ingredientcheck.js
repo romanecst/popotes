@@ -17,7 +17,7 @@ return(
     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 12 }}> {props.amount} {props.measure}</Text>
     </View>
     <CheckBox checked={checked} checkedColor='#ADE498' onPress={() => { setChecked(!checked) }} />
-    <Entypo name="cross" size={24} color="black" onPress={()=>{props.deleteingredientList(props.id);console.log('ID', props.id);}}/>
+    <Entypo name="cross" size={24} color="black" onPress={()=>{props.deleteingredientList(props.name)}}/>
 </View>
 
 )}
@@ -25,7 +25,7 @@ return(
 function mapDispatchToProps(dispatch) {
     return {
       deleteingredientList: function(info) { 
-        dispatch( {type: 'delingredientList', id: info} ) 
+        dispatch( {type: 'delingredientList', name: info} ) 
       }
     }
   }
