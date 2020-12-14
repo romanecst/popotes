@@ -13,7 +13,6 @@ import homePage from './screens/homePage';
 import Map from './screens/Map';
 import Favorite from './screens/Favorite';
 import Profil from './screens/Profil';
-import GlobalGroup from './screens/GlobalGroup';
 import List from './screens/List';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
@@ -33,7 +32,7 @@ import ingredientList from './reducers/ingredientList';
 import listInfo from './reducers/listInfo';
 
 import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
-import GroupI from './screens/Group';
+import GlobalGroup from './screens/Group';
 import MesGroupesP12 from './screens/MesGroupesP12';
 
 
@@ -55,7 +54,6 @@ var BottomNavigator = createBottomTabNavigator({
   Home: homePage,
   Map: Map,
   Profil: Profil, 
-  GroupI: GroupI,
   MesGroupes:MesGroupes,
   MesGroupesP12:MesGroupesP12,
   GroupePopUpPartage:GroupePopUpPartage
@@ -97,7 +95,6 @@ var StackNavigator = createStackNavigator({
   CreateGroup: CreateGroup,
   List: List,
   Recipe: Recipe,
-  // OverlayCheck:OverlayCheck,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
 

@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
-  Image,
-  borderColor,
-  TouchableOpacity,
-  ImageBackground,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
+import { Button, ListItem, Header } from "react-native-elements";
 
-import { Button, ListItem, Header, Overlay, Input } from "react-native-elements";
+import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
-import { Ionicons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { Fontisto } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
 
 
 import {connect} from 'react-redux';
@@ -28,7 +15,7 @@ function List({ navigation, currentList }) {
 
   useEffect(()=>{
     const loadList = async() => {
-      var rawResult = await fetch('http://192.168.1.87:3000/list');
+      var rawResult = await fetch('http://172.17.1.197:3000/list');
       var result = await rawResult.json();
       setList(result)
     }
@@ -37,7 +24,7 @@ function List({ navigation, currentList }) {
   },[])
 
   const addList = async() => {
-    await fetch('http://192.168.1.87:3000/addList', {
+    await fetch('http://172.17.1.197:3000/addList', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `name=${text}`
@@ -46,7 +33,7 @@ function List({ navigation, currentList }) {
 
   async function DelList(id){
     if(id){
-      await fetch('http://192.168.1.87:3000/deleteList', {
+      await fetch('http://172.17.1.197:3000/deleteList', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `id=${id}`
@@ -62,11 +49,11 @@ function List({ navigation, currentList }) {
 };
 
   return (
-    <View style={{flex:1, backgroundColor: "#FFF2DF" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFF2DF" }}>
 
       <Header
         containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white"  />}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
         centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
@@ -147,6 +134,42 @@ function List({ navigation, currentList }) {
 
         />
     </Overlay>
+
+      {/* ---------------------------LISTE EXISTANTE FAVORITE------------------------------------------  */}
+
+    {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+      <Text style={{ marginTop: 50, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My shop list</Text>
+
+      <ScrollView style={styles.scroll}>
+
+        {list.map((l, i) => (
+          <TouchableOpacity onPress={() => { navigation.navigate('GlobalList') }} >
+            <View style={styles.blocScroll}>
+              <Text> {l.name}</Text>
+              <Text>{l.subtitle}</Text>
+
+
+              <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding:18, borderRadius:50}}>
+              </Button>
+            </View>
+
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View> */}
+
+      {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
+
+      {/* <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 15 }}>
+
+
+        <Text style={{ fontSize: 20, fontFamily: "Kohinoor Telugu" }}>Creat a liste</Text>
+        <Button
+          icon={<Ionicons name="ios-add-circle-outline" size={60} color="black" />}
+          buttonStyle={{ backgroundColor: '#FFF2DF' }}
+        />
+      </View> */}
     </View>
   );
 }
@@ -173,5 +196,19 @@ const styles = StyleSheet.create({
     width: 290,
     margin: 18,
     justifyContent: 'center',
-}
+}, scroll: {
+    marginBottom: 50,
+    marginTop: 20,
+    backgroundColor: "#FFF2DF",
+    width: 300,
+    height: 300,
+  }, blocScroll: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    marginBottom: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 40,
+    justifyContent:'space-between'
+  }
 });

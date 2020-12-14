@@ -2,7 +2,9 @@ console.disableYellowBox = true;
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Text, Button, Overlay } from 'react-native-elements';
+
 export default function welcome({ navigation }) {
+
     const [visible, setVisible] = useState(false);
     const [glutenFree, setGlutenFree] = useState(false);
     const [vegetarian, setVegetarian] = useState(false);
