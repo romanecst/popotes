@@ -23,10 +23,10 @@ import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 
-function Group({ tokenGroup, navigation, checkNameGroup }) {
+function Group({ AddTokenGroup, navigation, checkNameGroup }) {
   const [visible, setVisible] = useState(false);
   const [nameGroup, setNameGroup] = useState("");
-  // const [tokenGroup, setTokenGroup] = useState("")
+  const [tokenGroup, setTokenGroup] = useState("")
 
   const [groupExists, setGroupExists] = useState(false);
   const [listErrorGroup, setListErrorGroup] = useState([]);
@@ -83,10 +83,10 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
 
   /* Create group */
   var saveGroup = async function save() {
-    var rawResponse = await fetch("http://172.17.1.53:3000/group", {
+    var rawResponse = await fetch("http://192.168.1.21:3000/group", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `avatarGroupFromFront=${image}=${nameGroup}`,
+      body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}`,
     });
     var response = await rawResponse.json();
     var token = response.groupSave.group_token;
@@ -94,7 +94,7 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
     if (response.result == true) {
       setTokenGroup(token);
       setGroupExists(true);
-      props.AddTokenGroup(token);
+      AddTokenGroup(token);
       setVisible(false);
     } else {
       setListErrorGroup(response.error);
@@ -104,7 +104,7 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch("http://172.17.1.53:3000/deleteGroup/:name", {
+    var rawResponse = await fetch("http://192.168.1.21:3000/deleteGroup/:name", {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `groupName=${nameGroup}`,

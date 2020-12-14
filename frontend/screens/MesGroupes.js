@@ -19,7 +19,7 @@ export default function MesGroupes() {
       <View
         style={{
           alignItems: "center",
-          justifyContent: "space-betwen",
+          
           marginTop: 120,
         }}
       >
@@ -59,7 +59,7 @@ export default function MesGroupes() {
         <Text
           style={{ marginTop: 20, fontSize: 25, fontFamily: "Kohinoor Telugu" }}
         >
-          Participants :
+          Participants :!!!!!!!!!!!!!!
         </Text>
 
         <ScrollView>

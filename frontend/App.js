@@ -37,10 +37,10 @@ import MesGroupesP12 from './screens/MesGroupesP12';
 
 
 import {Provider} from 'react-redux';
-import GroupPopUpPartage from'./screens/GroupePopUpPartage'
+
 
 import {createStore, combineReducers}  from 'redux';
-import GroupePopUpPartage from './screens/GroupePopUpPartage';
+
 
 const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo}));
 
@@ -56,7 +56,7 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: Profil, 
   MesGroupes:MesGroupes,
   MesGroupesP12:MesGroupesP12,
-  GroupePopUpPartage:GroupePopUpPartage
+  
 },
 // {
 //   backBehavior: 'history', 

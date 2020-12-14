@@ -223,10 +223,10 @@ router.post('/group', async function(req, res, next) {
   const groupSearch = await groupModel.findOne({
     name: req.body.nameGroupFromFront})
     
-    if(groupSearch!= null){
-      error.push('Group already exists'),
-      console.log('test différent de null')
-    }
+    // if(groupSearch!= null){
+    //   error.push('Group already exists'),
+    //   console.log('test différent de null')
+    // }
 
   if(req.body.nameGroupFromFront == ''){
     result=false,
