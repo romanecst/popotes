@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Switch, ScrollView } from 'react-native';
-<<<<<<< HEAD
-import { ListItem, Header, Button } from "react-native-elements";
-import { CheckBox, Overlay, Input } from 'react-native-elements';
-=======
-import { ListItem, Header, Button, Overlay, Input } from "react-native-elements";
-import { CheckBox } from 'react-native-elements';
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
+import { ListItem, Header, Button, Overlay, Input,CheckBox  } from "react-native-elements";
+
 
 
 import { AntDesign } from "@expo/vector-icons";

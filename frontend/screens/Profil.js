@@ -54,11 +54,7 @@ function Profil({ navigation, token }) {
   /* Update user */
   var updateUser = async () => {
 
-<<<<<<< HEAD
-    var userRegisters = await fetch("http://172.17.1.53:3000/userUpdate", {
-=======
     var userRegisters = await fetch("http://172.17.1.71:3000/userUpdate", {
->>>>>>> c3604204aca3ad67a0f0b683bcdc43284c9e0c0d
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
