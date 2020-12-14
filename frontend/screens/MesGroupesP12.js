@@ -1,25 +1,34 @@
-import React, { useState } from "react";
-import { View, ScrollView, TouchableOpacity, StyleSheet,Alert, TextInput} from "react-native";
-import { Input, Button, Avatar, Accessory, Icon, Card, ListItem , CheckBox, Text, Header} from "react-native-elements";
+import React, { useState, useEffect } from "react";
+import { View, ScrollView, TouchableOpacity, StyleSheet, Alert, TextInput } from "react-native";
+import { Input, Button, Avatar, Accessory, Icon, Card, ListItem, CheckBox, Text, Header } from "react-native-elements";
 // import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
+import CircleCheckBox, { LABEL_POSITION } from 'react-native-circle-checkbox';
 
-export default function MesGroupesP12() {
 
-  const list = [
-    {
 
-      name: 'Jean-Michel ',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-      subtitle: 'Achat des tomates',
-      
+export default function MesGroupesP12({navigation}) {
+
+  useEffect(()=> {
+
+    var colorRandom = async () => {
+
+      var userRegisters = await fetch("http://172.17.1.71:3000/addUser", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'token=pjdqlFXcykwwPlQEE5npwqk3tVcSbxyN'
+      })
+      var response = await userRegisters.json();
+      console.log('TESTTTTTTTTTTTTT', JSON.parse(response));
     }
+ colorRandom()
+  },[])
+  /* color user */
   
-  ]
-  
+
 
   return (
-    <View style={{ flex:1, backgroundColor: "#e5f8f8" }}>
+    <View style={{ flex: 1, backgroundColor: "#e5f8f8" }}>
 
 
 
@@ -33,72 +42,96 @@ export default function MesGroupesP12() {
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
 
+      <View style={{ alignItems: "center", justifyContent: 'center' }}>
 
-{/* ------------AVATAR DANS LA SCROLL VIEW------------------ */}
 
-      <ScrollView showsHorizontalScrollIndicator={false}
-        horizontal={true}
-        style={{ marginTop: 90, marginHorizontal: 10, marginBottom:20, paddingBottom:50 }}>
-        <View >
-          <Avatar
-            rounded
-            title="Jean"
-            size={100}
-            source={{
-              uri:
-                "https://geeko.lesoir.be/wp-content/uploads/sites/58/2020/05/avatar.jpg",
-            }}  />
-            <Text style={{textAlign:"center", fontFamily:'Kohinoor Telugu' }}>Jean Michel </Text>
-        </View>
-      </ScrollView >
-      
-      <View style={{alignItems:"center", marginBottom:10, marginTop:50}} >
-          <Button
-      buttonStyle={{ width: 230 , backgroundColor:"white", borderRadius:50}}
-      containerStyle={{ margin: 0 }}
-      disabledStyle={{
-      borderWidth: 10,
-      
-      }}
-      disabledTitleStyle={{ color: "#00F" }}
-      title="Acheteur Principal"
-      titleStyle={{ alignItems:"center" }}
-      type="outline"
-    />
+        <Text h4 style={{ marginTop: 10, marginBottom: 8, fontFamily: 'Kohinoor Telugu' }}>*Nom du Groupe*</Text>
+        <Text h5 style={{ marginTop: 10, marginBottom: 15, fontFamily: 'Kohinoor Telugu', borderRadius: 17, borderWidth: 1, padding: 6 }}>4 participants</Text>
+
+        {/* ------------AVATAR DANS LA SCROLL VIEW------------------ */}
+
+
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={styles.overlayH}>
+          <View style={{ flexDirection: 'row' }}>
+
+            <View style={{ alignItems: 'center' }}>
+              <View style={{ borderWidth: 10, borderColor: 'red', borderRadius: 100, marginRight: 5 }}>
+                <Avatar
+                  rounded
+                  title="Romane"
+                  size={100}
+                  source={{ uri: "https://geeko.lesoir.be/wp-content/uploads/sites/58/2020/05/avatar.jpg" }}
+                />
+              </View>
+              <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Romane </Text>
+            </View>
+          </View>
+        </ScrollView >
+
+        {/* ---------------Scroll des recettes  -------------- */}
+
+        <ScrollView style={styles.scroll}>
+
+          <TouchableOpacity onPress={() => { navigation.navigate('') }} >
+            <View style={styles.blocScroll}>
+              <Text>Ingredients :</Text>
+
+              <View style={{ alignItems: 'center', marginTop: 20, flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <Text style={{marginRight:40}}> oeuf : 2</Text>
+                <CircleCheckBox
+                  checked={false}
+                  onToggle={(checked) => console.log('My state is: ', checked)}
+                  labelPosition={LABEL_POSITION.LEFT}
+                  outerColor='black'
+                  innerColor='red'
+                  innerSize='27'
+                  outerSize='30'
+                />
+                <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding: 18, borderRadius: 50 }}></Button>
+              </View>
+
+
+              <View style={{ alignItems: 'center', marginTop: 20, flexDirection: 'row', justifyContent: 'flex-end'}}>
+              <Text style={{marginRight:40}}> pates : 200 g</Text>
+                <CircleCheckBox
+                  checked={false}
+                  onToggle={(checked) => console.log('My state is: ', checked)}
+                  labelPosition={LABEL_POSITION.LEFT}
+                  outerColor='black'
+                  innerColor='#833471'
+                  innerSize='27'
+                  outerSize='30'
+                />
+                <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding: 18, borderRadius: 50 }}></Button>
+              </View>
+              
+
+            </View>
+          </TouchableOpacity>
+
+        </ScrollView>
+
       </View>
-
-      <View style={{alignItems:"center", marginBottom:10, marginTop:20}} >
-          <Button
-      buttonStyle={{ width: 230 , backgroundColor:"white", borderRadius:50}}
-      containerStyle={{ margin: 0 }}
-      disabledStyle={{
-      borderWidth: 60,
-      borderColor: "black"
-      }}
-      disabledTitleStyle={{ color: "#00F" }}
-      title="Acheteur Indépendant"
-      titleStyle={{ alignItems:"center" }}
-      type="outline" 
-    />
-      </View>
-
-      {/* ---------------Scroll des recettes " sous forme de cards " -------------- */}
-<ScrollView style={{ borderRadius:39, backgroundColor:"white"}} >
-      <View style={{flexDirection:1, flexDirection:"column", width:400}} >
-  {
-    list.map((l, i) => (
-      <ListItem key={i} bottomDivider style={{marginTop:5, Color:"red", vh:10}}>
-        <Avatar source={{uri: l.avatar_url}} />
-        <ListItem.Content>
-          <ListItem.Title>{l.name}</ListItem.Title>
-          <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-        </ListItem.Content>
-      </ListItem>
-    ))
-  }
-</View>
-</ScrollView>
-  
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  overlayH: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: 360,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+  }, scroll: {
+    marginTop: 10,
+    backgroundColor: "#FFFFFF",
+    width: 330,
+    height: 300,
+    borderRadius: 30,
+    padding: 15
+  }
+});

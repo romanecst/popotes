@@ -33,83 +33,83 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
 
     // useEffect(()=>{
     //     async function load(){
-            
+
     //     };
     //     load();
     // },[])
 
     var filteredIngredients = [];
-    for(var s=0; s<ingredientList.length; s++){
-        var list = ingredientList[s].filter( function( el ) {
-            return !checkList.includes( el.name );
-        } );
+    for (var s = 0; s < ingredientList.length; s++) {
+        var list = ingredientList[s].filter(function (el) {
+            return !checkList.includes(el.name);
+        });
         filteredIngredients.push(list);
     }
 
     var category = {};
 
     var simpleList = [];
-    filteredIngredients.forEach((elem)=>{
-        elem.forEach(function(el){
+    filteredIngredients.forEach((elem) => {
+        elem.forEach(function (el) {
             simpleList.push(el)
-         })
+        })
     })
 
 
-    simpleList.forEach(function(el){
-        if(!(el.aisle in category) && !('Others' in category)){
-            if(el.aisle !== null && el.aisle !=='?'){
-                category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
-            }else{
-                category['Others'] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>];
+    simpleList.forEach(function (el) {
+        if (!(el.aisle in category) && !('Others' in category)) {
+            if (el.aisle !== null && el.aisle !== '?') {
+                category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure} />];
+            } else {
+                category['Others'] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure} />];
             }
-        }else{
-            if(el.aisle in category){
-                category[el.aisle].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
-            }else if(el.aisle=== null || el.aisle ==='?'){
-                category['Others'].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure}/>)
+        } else {
+            if (el.aisle in category) {
+                category[el.aisle].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure} />)
+            } else if (el.aisle === null || el.aisle === '?') {
+                category['Others'].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure} />)
             }
         }
-        })
-   
+    })
+
 
     var displayByCategory = [];
 
-    for(const key in category){ 
+    for (const key in category) {
         displayByCategory.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{category[key]}</View>);
     }
 
-    var recipesMap = filteredIngredients.map((array)=>{
+    var recipesMap = filteredIngredients.map((array) => {
         var recipeName = '';
-        var recipes = array.map(function(el, j){
+        var recipes = array.map(function (el, j) {
             recipeName = el.recipeName;
-            return  <Recette key={j} name={el.name} amount={el.amount} measure={el.measure}/> 
+            return <Recette key={j} name={el.name} amount={el.amount} measure={el.measure} />
         })
-    return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {recipeName} </Text>{recipes}</View>
+        return <View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}> {recipeName} </Text>{recipes}</View>
     })
-  
-    
+
+
     if (isEnabled) {
-        var ingredient = <ScrollView style={{height:380}}>{displayByCategory}</ScrollView>    
+        var ingredient = <ScrollView style={{ height: 380 }}>{displayByCategory}</ScrollView>
         var trier = "recette"
     } else {
-        var ingredient = <ScrollView style={{height:380}}>
-        {recipesMap}
+        var ingredient = <ScrollView style={{ height: 380 }}>
+            {recipesMap}
         </ScrollView>
         var trier = "ingredient"
 
     }
 
 
-    useEffect(()=>{
-        return async()=>{
+    useEffect(() => {
+        return async () => {
             await fetch('http://192.168.1.87:3000/addIngredients', {
-            method: 'POST',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
             });
         }
-    },[])
+    }, [])
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF2DF' }}>
@@ -122,7 +122,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu'}}> Trier par {trier} </Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Trier par {trier} </Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#febf63" }}
                     thumbColor={isEnabled ? "#FFF2DF" : "#f4f3f4"}
@@ -166,29 +166,29 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 icon={<MaterialCommunityIcons name="account-group" size={36} color="black" />}
             />
 
-             {/* ------------------------------ OVERLAY -----------------------------------------------*/}
-  <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
-    <View style={styles.overlay}>
-        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
-        <Input placeholder='Product name'
-        onChangeText= {(value) => setText(value)} 
-        value={text}/>
-        </View>
-        <Button
-        title="Confirm"
-        onPress={() => {toggleOverlay()}}
-        type="clear"
-        buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+            {/* ------------------------------ OVERLAY -----------------------------------------------*/}
+            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
+                <View style={styles.overlay}>
+                    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
+                    <Input placeholder='Product name'
+                        onChangeText={(value) => setText(value)}
+                        value={text} />
+                </View>
+                <Button
+                    title="Confirm"
+                    onPress={() => { toggleOverlay() }}
+                    type="clear"
+                    buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+                    titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
 
-        />
-    </Overlay>
+                />
+            </Overlay>
         </View>
     );
 }
 
 function mapStateToProps(state) {
-    return { ingredientList: state.ingredientList, checkList: state.checkList, recipeInfo: state.recipe, listInfo: state.listInfo}
+    return { ingredientList: state.ingredientList, checkList: state.checkList, recipeInfo: state.recipe, listInfo: state.listInfo }
 }
 
 export default connect(
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginTop: 15,
         marginBottom: 15,
-        marginHorizontal:90
+        marginHorizontal: 90
     }, ingredients: {
         backgroundColor: 'white',
         marginHorizontal: 20,

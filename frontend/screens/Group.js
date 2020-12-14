@@ -10,7 +10,8 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
-function Group(props, navigation) {
+
+function Group(props) {
 
   const [visible, setVisible] = useState(false);
   const [nameGroup, setNameGroup] = useState("")
@@ -64,7 +65,7 @@ function Group(props, navigation) {
     var rawResponse = await fetch("http://172.17.1.53:3000/group", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `avatarGroupFromFront=${image}=${nameGroup}`
+      body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}`
     });
     var response = await rawResponse.json();
     var token = response.groupSave.group_token;
@@ -101,12 +102,11 @@ function Group(props, navigation) {
 
       {/* -------------------------HEADER---------------------------------- */}
 
-
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
         leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
         centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
-        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
 
@@ -126,11 +126,11 @@ function Group(props, navigation) {
         {/* -------------------Acces à mes groupe precedent ----------------------- */}
 
 
-        <Text style={{ marginTop: 50, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My group list</Text>
+        <Text style={{ marginTop: 20, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My group list</Text>
 
         <ScrollView style={styles.scroll}>
 
-          <TouchableOpacity onPress={() => { navigation.navigate('') }} >
+          <TouchableOpacity onPress={() => { props.navigation.navigate('MesGroupesP12') }} >
             <View style={styles.blocScroll}>
               <Text> Weekend Party</Text>
               <Text style={{ fontStyle: 'italic' }}>with friends</Text>
@@ -139,7 +139,7 @@ function Group(props, navigation) {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => { navigation.navigate('') }} >
+          <TouchableOpacity onPress={() => { navigation.navigate('MesGroupesP12') }} >
             <View style={styles.blocScroll}>
               <Text> Nouvel an chinois</Text>
               <Text style={{ fontStyle: 'italic' }}>family</Text>
@@ -148,7 +148,7 @@ function Group(props, navigation) {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => { navigation.navigate('') }} >
+          <TouchableOpacity onPress={() => { navigation.navigate('MesGroupesP12') }} >
             <View style={styles.blocScroll}>
               <Text>Normandie party</Text>
               <Text style={{ fontStyle: 'italic' }}>with friends</Text>
@@ -236,7 +236,6 @@ function Group(props, navigation) {
 
 const styles = StyleSheet.create({
   scroll: {
-    marginBottom: 20,
     marginTop: 10,
     backgroundColor: "#e5f8f8",
     width: 300,
