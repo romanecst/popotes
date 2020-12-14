@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
-import { Button, ListItem, Header } from "react-native-elements";
+import { Button, ListItem, Header, Input, Overlay } from "react-native-elements";
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
@@ -15,7 +15,7 @@ function List({ navigation, currentList }) {
 
   useEffect(()=>{
     const loadList = async() => {
-      var rawResult = await fetch('http://172.17.1.197:3000/list');
+      var rawResult = await fetch('http://172.17.1.71:3000/list');
       var result = await rawResult.json();
       setList(result)
     }
