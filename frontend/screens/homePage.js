@@ -10,7 +10,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
-export default function homePage({navigation}) {
+
+import { connect } from 'react-redux';
+
+function homePage({navigation, loadList}) {
     const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
     const [selectedValueCuisine, setSelectedValueCuisine] = useState("");
@@ -60,7 +63,14 @@ useEffect(() => {
     };
 
     Preferences();
-    
+
+    const ListInit = async() => {
+        var rawResult = await fetch('http://172.17.1.197:3000/list');
+        var result = await rawResult.json();
+        loadList(result)
+    }
+
+    ListInit();  
         
   }, []);
 
@@ -294,6 +304,18 @@ var Search = async() => {
         </View>
     )
 }
+function mapDispatchToProps(dispatch) {
+    return {
+        loadList: function(info) { 
+            dispatch( {type: 'loadList', list: info} ) 
+        },
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(homePage);
 
 const styles = StyleSheet.create({
     container: {

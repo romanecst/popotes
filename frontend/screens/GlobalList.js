@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Switch, ScrollView } from 'react-native';
-import { ListItem, Header, Button } from "react-native-elements";
+import { StyleSheet, Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
+import { ListItem, Header, Button, Overlay, Input } from "react-native-elements";
 import { CheckBox } from 'react-native-elements';
 
 
@@ -31,12 +31,18 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
         setVisible(!visible);
     };
 
-    // useEffect(()=>{
-    //     async function load(){
-            
-    //     };
-    //     load();
-    // },[])
+    useEffect(()=>{
+        async function load(){
+        var rawResult = await fetch('http://172.17.1.197:3000/getIngredients', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: `id=${listInfo._id}`
+        });
+        var result = await rawResult.json();
+        console.log('INGRRRR',result);
+        };
+        load();
+    },[])
 
     var filteredIngredients = [];
     for(var s=0; s<ingredientList.length; s++){
@@ -144,12 +150,16 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 {/* ------------------------- CATEGOEIRE / INGREDIENT / QUANTITE ou GRAMMAGE ---------------FIN---------- */}
             </View>
             <View style={{ flexDirection: 'row', marginHorizontal: 20, justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => {toggleOverlay()}}>
                 <View style={styles.ajoutListe}>
                     <MaterialIcons name="playlist-add" size={30} color="black" />
                 </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
                 <View style={styles.okList}>
                     <Octicons name="checklist" size={26} color="black" />
                 </View>
+                </TouchableOpacity>
             </View>
             <Button
                 iconRight={true}

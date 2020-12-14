@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
-import { Button, ListItem, Header } from "react-native-elements";
+import { Button, ListItem, Header, Overlay, Input } from "react-native-elements";
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
@@ -8,27 +8,29 @@ import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
 import {connect} from 'react-redux';
 
-function List({ navigation, currentList }) {
+function List({ navigation, currentList, saveList, delList, list}) {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
-  const [list, setList] = useState([]);
 
-  useEffect(()=>{
-    const loadList = async() => {
-      var rawResult = await fetch('http://172.17.1.197:3000/list');
-      var result = await rawResult.json();
-      setList(result)
-    }
-    loadList();
+  // useEffect(()=>{
+  //   const loadList = async() => {
+  //     var rawResult = await fetch('http://172.17.1.197:3000/list');
+  //     var result = await rawResult.json();
+  //     setList(result)
+  //   }
+  //   loadList();
   
-  },[])
+  // },[])
 
   const addList = async() => {
-    await fetch('http://172.17.1.197:3000/addList', {
+    var rawResponse = await fetch('http://172.17.1.197:3000/addList', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `name=${text}`
     });
+    var response = await rawResponse.json();
+    saveList(response); 
+    setText('');
   }
 
   async function DelList(id){
@@ -38,9 +40,7 @@ function List({ navigation, currentList }) {
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `id=${id}`
       });
-      var templist = [...list];
-      templist = templist.filter(el => el._id !== id);
-      setList(templist);
+      delList(id)
   }
   }
 
@@ -127,7 +127,7 @@ function List({ navigation, currentList }) {
         </View>
         <Button
         title="Confirm"
-        onPress={() => {setList([...list, {name:text}]); addList(); toggleOverlay()}}
+        onPress={() => {addList(); toggleOverlay()}}
         type="clear"
         buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
@@ -178,13 +178,24 @@ function mapDispatchToProps(dispatch) {
   return {
       currentList: function(info) { 
           dispatch( {type: 'listInfo', listInfo: info} ) 
-      }
+      },
+      saveList: function(info) { 
+        dispatch( {type: 'addList', list: info} ) 
+    },
+    delList: function(info) { 
+      dispatch( {type: 'delList', list: info} ) 
+  },
   }
   }
+
+  function mapStateToProps(state) {
+    return { recipeList: state.recipeList, list: state.list }
+}
+
       
   
   export default connect(
-      null, 
+    mapStateToProps, 
       mapDispatchToProps
   )(List);
 
