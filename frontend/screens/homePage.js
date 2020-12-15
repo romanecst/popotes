@@ -9,6 +9,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
+import RecipeHome from './components/recipeHome'
 
 import { connect } from 'react-redux';
 
@@ -56,7 +57,7 @@ useEffect(() => {
         if(ifTrue){
             setPref(true);
         }else{
-            var rawReponse = await fetch('http://172.17.1.53:3000/find');
+            var rawReponse = await fetch('http://192.168.1.87:3000/find');
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -65,7 +66,7 @@ useEffect(() => {
     Preferences();
 
     const ListInit = async() => {
-        var rawResult = await fetch('http://172.17.1.197:3000/list');
+        var rawResult = await fetch('http://192.168.1.87:3000/list');
         var result = await rawResult.json();
         loadList(result)
     }
@@ -73,7 +74,7 @@ useEffect(() => {
     ListInit();  
     /* Random on Today's pick */
     var searchRandom = async ()=>{
-        var randomCarrousel = await fetch('http://172.17.1.53:3000/randomCourrousel');
+        var randomCarrousel = await fetch('http://192.168.1.87:3000/randomCourrousel');
         var resultRandom = await randomCarrousel.json();
         setSource(resultRandom.image)       
     }
@@ -88,7 +89,7 @@ useEffect(() => {
 // Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-    var rawResult = await fetch('http://172.17.1.53:3000/filters', {
+    var rawResult = await fetch('http://192.168.1.87:3000/filters', {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}&type=${selectedValueDish}`
@@ -101,7 +102,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
     var Search = async() => {
-        var rawResult = await fetch('http://172.17.1.53:3000/search', {
+        var rawResult = await fetch('http://192.168.1.87:3000/search', {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `search=${searchTxt}`

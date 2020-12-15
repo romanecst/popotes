@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View, Text, Image, BorderColor, TouchableOpacity
 import { Avatar, Button, Header, Accessory, ListItem } from "react-native-elements";
 import { AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
+import Signin from "./Signin";
 
 function Profil({ navigation, token }) {
 
@@ -54,7 +55,7 @@ function Profil({ navigation, token }) {
   /* Update user */
   var updateUser = async () => {
 
-    var userRegisters = await fetch("http://172.17.1.53:3000/userUpdate", {
+    var userRegisters = await fetch("http://192.168.1.87:3000/userUpdate", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
@@ -75,6 +76,10 @@ function Profil({ navigation, token }) {
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
+
+      {/* --------------------------- OVERLAY CONNECTION ----------------------*/}
+
+      <Signin screen='Profil'/>
 
       <ScrollView>
         {/* --------------BOUTON D'AJOUT DE PHOTO " AVATAR " -----------------------*/}

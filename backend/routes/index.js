@@ -346,15 +346,6 @@ router.post('/addIngredients', async function (req, res, next) {
   res.json()
 });
 
-router.post('/deleteIngredients', async function (req, res, next) {
-  // var ingredients = JSON.parse(req.body.list);
-  // if(ingredients.length !== 0){
-  //   var list = await listModel.updateOne(
-  //     {_id: req.body.listID},
-  //     {ingredients: ingredients}
-  //     );
-  // }
-  res.json()});
 router.post('/getIngredients', async function(req,res,next){
     var list = await listModel.findOne({_id: req.body.id});
   res.json(list)

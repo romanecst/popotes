@@ -13,7 +13,7 @@ export default function MesGroupesP12({navigation}) {
 
     var colorRandom = async () => {
 
-      var userRegisters = await fetch("http://172.17.1.71:3000/addUser", {
+      var userRegisters = await fetch("http://192.168.1.87:3000/addUser", {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'token=pjdqlFXcykwwPlQEE5npwqk3tVcSbxyN'

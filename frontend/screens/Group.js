@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Image,
-  Linking,
-} from "react-native";
+import {View, ScrollView, TouchableOpacity, StyleSheet, TextInput, Image, Linking} from "react-native";
 import { Input, Button, Overlay, Avatar, Header, Text } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
@@ -17,11 +9,15 @@ import { connect } from 'react-redux';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
+import Signin from './Signin';
+import Signup from './Signup';
 
 
 function Group(props) {
 
   const [visible, setVisible] = useState(false);
+  const [visibleSignin, setVisibleSignin] = useState(false);
+  const [visibleSignup, setVisibleSignup] = useState(false);
   const [nameGroup, setNameGroup] = useState("");
   const [tokenGroup, setTokenGroup] = useState("")
 
@@ -30,6 +26,14 @@ function Group(props) {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [image, setImage] = useState("");
+
+  const toggleSignin = () => {
+    setVisibleSignin(!visibleSignin);
+  }
+
+  const toggleSignup = () => {
+    setVisibleSignup(!visibleSignup);
+  }
 
   const text =
       `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
@@ -80,7 +84,7 @@ function Group(props) {
 
   /* Create group */
   var saveGroup = async function save() {
-    var rawResponse = await fetch("http://172.17.1.53:3000/group", {
+    var rawResponse = await fetch("http://192.168.1.87:3000/group", {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}`
@@ -101,7 +105,7 @@ function Group(props) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch("http://192.168.1.21:3000/deleteGroup/:name", {
+    var rawResponse = await fetch("http://192.168.1.87:3000/deleteGroup/:name", {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `groupName=${nameGroup}`,
@@ -361,6 +365,12 @@ function Group(props) {
             </View>
           </View>
         </Overlay>
+
+        {/* -------------------------OVERLAY ----- SIGN IN ---------------------------------- */}
+
+        {/* <Signup screen='Group'/> */}
+        <Signin screen='Group'/>
+
       </View>
     </View>
   );

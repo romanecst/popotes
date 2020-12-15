@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Overlay, Input, Avatar } from 'react-native-elements';
-import { StyleSheet, Text, View , Image} from 'react-native';
+import { StyleSheet, Text, View , Image, TouchableOpacity} from 'react-native';
 import {Icon, Entypo} from 'react-native-vector-icons/FontAwesome';
 
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
+import { withNavigation } from 'react-navigation';
 
 
-function Signin({navigation, addToken}) {
+function Signin(props) {
 
 
   const [signInEmail, setSignInEmail] = useState('')
@@ -23,7 +24,7 @@ function Signin({navigation, addToken}) {
 
   var handleSubmitSignin = async () => {
  
-    const data = await fetch('http://172.17.1.53:3000/sign-in', {
+    const data = await fetch('http://192.168.1.87:3000/sign-in', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
@@ -33,7 +34,7 @@ function Signin({navigation, addToken}) {
 
     if(body.result == true){
       console.log(body.token);
-      addToken(body.token)
+      props.addToken(body.token)
       setUserExists(true)
       
     }  else {
@@ -42,7 +43,7 @@ function Signin({navigation, addToken}) {
   }
 
   if(userExists){
-    return navigation.navigate('List')
+    return props.navigation.navigate(props.screen)
   }
 
   var tabErrorsSignin = listErrorsSignin.map((error,i) => {
@@ -54,16 +55,15 @@ function Signin({navigation, addToken}) {
 
 
   const toggleOverlay = () => {
-    setVisible(true);
+    setVisible(!visible);
   };
 
 
 
   return (
     <View>
-      <Button title="Open Overlay" onPress={toggleOverlay} />
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} onBackdropPress={toggleOverlay} >
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} >
         
         <View style={styles.overlay}>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
@@ -99,6 +99,7 @@ function Signin({navigation, addToken}) {
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
           onPress={() => handleSubmitSignin()}
         />
+        <TouchableOpacity><Text>Already have an account? Log in</Text></TouchableOpacity> 
         </View>
       </Overlay>
     </View>
@@ -118,7 +119,7 @@ function mapDispatchToProps(dispatch){
 export default connect(
   null,
   mapDispatchToProps
-)(Signin);
+)(withNavigation(Signin));
 
 
 
@@ -133,5 +134,5 @@ const styles = StyleSheet.create({
         borderRadius:20,
         height:60,
         marginBottom:20
-      }
+      }, 
 });
