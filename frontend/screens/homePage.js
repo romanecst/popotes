@@ -78,7 +78,7 @@ useEffect(() => {
     var searchRandom = async ()=>{
         var randomCarrousel = await fetch(`${baseURL}/randomCourrousel`);
         var resultRandom = await randomCarrousel.json();
-        setSource(resultRandom.image)       
+        setSource(resultRandom.image);        
     }
     searchRandom();
     
@@ -162,7 +162,6 @@ useEffect(() => {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
-                leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack('homePage') }}/>}
                 centerComponent={{ text: 'HOMEPAGE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
             />

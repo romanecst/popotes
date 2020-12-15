@@ -217,8 +217,7 @@ function Group(props) {
           height: 90,
           paddingTop: 50,
         }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
-        centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        centerComponent={{ text:'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 

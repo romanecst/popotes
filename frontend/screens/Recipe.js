@@ -32,7 +32,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
         if(!Number.isInteger(amount)){
             amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(1);
         }
-    return <Text key={i} style={{ fontSize: 12 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
+    return <Text key={i} style={{ fontSize: 18 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
     });
 
     var overlayIngredients = recipeInfo.extendedIngredients.map(function(ingredient, j){
@@ -67,16 +67,16 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
                 {/* ************* TITRE ********** */}
                 <View style={styles.container}>
                     <View style={styles.title}>
-                        <Text style={{ fontSize: 20 }}>{recipeInfo.title}</Text>
+                        <Text style={{ fontSize: 22 }}>{recipeInfo.title}</Text>
                     </View>
                     <View >
                         <View style={styles.detail1}>
                             {/* ************ DUREE RECETTE ************ */}
-                            <Text> Préparation : {recipeInfo.readyInMinutes} </Text>
+                            <Text style={{fontSize:18}}> Préparation : {recipeInfo.readyInMinutes} </Text>
                         </View>
                         <View style={styles.detail1}>
                             {/* ************ NOMBRE DE PERSONNE RECETTE ************ */}
-                            <Text> Nombre de personne : {servings}</Text>
+                            <Text style={{fontSize:18}}> Nombre de personne : {servings}</Text>
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                             <View style={styles.plus}>
@@ -93,7 +93,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
                                 {/* ************BOUTON - ************ */}
                                 <Button
                                     title="-"
-                                    onPress={() => setServings(servings - 1)}
+                                    onPress={() => { if(servings >0){setServings(servings - 1)}}}
                                     type="clear"
                                     buttonStyle={{ borderColor: 'white' }}
                                     titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
@@ -103,19 +103,23 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
                     </View>
                     <View style={styles.title}>
 
-                        <Text style={{ fontSize: 20 }}>**INGREDIENTS : **{"\n"}{"\n"}</Text>
+                        <Text style={{ fontSize: 22 }}>INGREDIENTS : {"\n"}</Text>
                         {/* ************NOMBRE INGREDIENT *************/}
                         {ingredients}
                     </View>
                     <View style={styles.title}>
-                        <Text style={{ fontSize: 20 }}>**DESCRIPTION : **{"\n"}{"\n"}</Text>
+                        <Text style={{ fontSize: 22 }}>DESCRIPTION :{"\n"}</Text>
                         {/* ************DESCRIPTION *************/}
-                        <Text style={{ fontSize: 12 }}>{instructions}</Text>
+                        <Text style={{ fontSize: 18 }}>{instructions}</Text>
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row', marginHorizontal: 70, justifyContent: 'space-between', alignItems: 'center', marginBottom: 50 }}>
+                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginHorizontal:100, marginBottom:50}}>
+                <View style={{backgroundColor:'white', padding:15, borderRadius:30}}>
                     <AntDesign name="heart" size={24} color="black" />
-                    <FontAwesome name="list" size={24} color="black" onPress={()=>toggleOverlay()} />
+                </View>
+                <View style={{backgroundColor:'white', padding:15, borderRadius:30}}>
+                <FontAwesome name="list" size={24} color="black" onPress={()=>toggleOverlay()} />
+                </View>
                 </View>
             </ScrollView>
 
@@ -195,9 +199,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         fontFamily: 'Kohinoor Telugu',
         width: 320,
-        borderRadius: 30,
+        borderRadius: 10,
         padding: 12,
-        marginBottom: 3
+        marginBottom:15
     }, detail1: {
         fontFamily: 'Kohinoor Telugu',
         backgroundColor: 'white',

@@ -4,19 +4,31 @@ import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
 import { FontAwesome } from '@expo/vector-icons';
-import Welcome from './screens/Welcome';
-import CreateGroup from './screens/CreateGroup';
-import homePage from './screens/homePage';
-import Map from './screens/Map';
+
+import {Provider} from 'react-redux';
+import {createStore, combineReducers}  from 'redux';
+
+
+// BOTTOM NAVIGATOR =============================>
 import Favorite from './screens/Favorite';
+import Group from './screens/Group';
+import homePage from './screens/homePage';
 import Profil from './screens/Profil';
+
+// STACK NAVIGATOR =============================>
+import CreateGroup from './screens/CreateGroup';
+import Welcome from './screens/Welcome';
 import List from './screens/List';
+import recipe from './reducers/recipeInfo';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
-// import OverlayCheck from './screens/overlayCheckIngredient'
+import MesGroupes from './screens/MesGroupes'; 
+import MesGroupesP12 from './screens/MesGroupesP12';
 
-import recipe from './reducers/recipeInfo';
+
+
+// import OverlayCheck from './screens/overlayCheckIngredient'
 import token from './reducers/token'
 import checkList from './reducers/checkList';
 import nameGroup from './reducers/nameGroup';
@@ -26,14 +38,10 @@ import ingredientList from './reducers/ingredientList';
 import listInfo from './reducers/listInfo';
 import list from './reducers/shoppinglist';
 
-import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
-import Group from './screens/Group';
-import MesGroupesP12 from './screens/MesGroupesP12';
 
 
-import {Provider} from 'react-redux';
 
-import {createStore, combineReducers}  from 'redux';
+
 
 
 const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo, list}));
@@ -46,8 +54,15 @@ var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
   Group: Group,
   Home: homePage,
-  Map: Map,
   Profil: Profil,
+  List: {
+    screen: List,
+  //   navigationOptions:()=>{
+  //     return {
+  //       tabBarVisible:false,
+  //     };
+  //  }
+}
 },
 // {
 //   backBehavior: 'history', 
@@ -91,7 +106,7 @@ var StackNavigator = createStackNavigator({
   MesGroupes:MesGroupes,
   MesGroupesP12:MesGroupesP12,
   Retour: BottomNavigator,
-  Map : Map,
+  
   
 },
 {headerMode:"none"}

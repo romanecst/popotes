@@ -149,6 +149,59 @@ function Profil({ navigation, token }) {
     })
   };
 
+  var handleSubmitSignin = async () => {
+ 
+    const data = await fetch(`${baseURL}/sign-in`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
+    })
+
+    const body = await data.json()
+
+    if(body.result == true){
+      
+      console.log(body.token);
+      props.addToken(body.token);
+
+      const rawReponse = await fetch(`${baseURL}/getGroups`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `token=${body.token}`
+    })
+
+      const response = await rawReponse.json()
+      setGroupList(response);
+      AsyncStorage.setItem("user token", body.token);
+      toggleSignin();
+      // setUserExists(true)
+      
+    }  else {
+      setErrorsSignin(body.error)
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      AsyncStorage.getItem("user token", 
+              async function(error, data){
+                if(data){
+                props.addToken(data);
+                const rawReponse = await fetch(`${baseURL}/getGroups`, {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body: `token=${data}`
+                })
+
+               const response = await rawReponse.json()
+              setGroupList(response);
+                }else{
+                  setVisibleSignin(true);
+                }
+              })
+    })();
+  }, []);
+
   /* Update user */
   var updateUser = async () => {
 
@@ -169,7 +222,6 @@ function Profil({ navigation, token }) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
@@ -441,6 +493,15 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return { token: state.token }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+
+    addToken: function(token){
+      dispatch({type: 'addToken', token: token})
+    }
+  };
 }
 
 export default connect(

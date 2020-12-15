@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
-
 import { Button, ListItem, Header, Input, Overlay } from "react-native-elements";
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
@@ -45,7 +44,7 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
 
       <Header
         containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }}/>}
         centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
