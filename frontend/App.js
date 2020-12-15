@@ -55,6 +55,14 @@ var BottomNavigator = createBottomTabNavigator({
   Group: Group,
   Home: homePage,
   Profil: Profil,
+  List: {
+    screen: List,
+  //   navigationOptions:()=>{
+  //     return {
+  //       tabBarVisible:false,
+  //     };
+  //  }
+}
 },
 // {
 //   backBehavior: 'history', 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Switch, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
 import { ListItem, Header, Button, Overlay, Input } from "react-native-elements";
 import { CheckBox } from 'react-native-elements';
 
@@ -160,17 +160,11 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 </TouchableOpacity>
                 <TouchableOpacity>
                 <View style={styles.okList}>
-                    <Octicons name="checklist" size={26} color="black" onPress={()=>clearIngredientList()}/>
+                    <Octicons name="checklist" size={30} color="black" onPress={()=>clearIngredientList()}/>
                 </View>
                 </TouchableOpacity>
             </View>
-            <Button
-                iconRight={true}
-                title="Store close to you"
-                buttonStyle={{ borderColor: 'white', marginHorizontal: 70, borderRadius: 30, backgroundColor: '#febf63', justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}
-                titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-                icon={<Fontisto name="shopping-store" size={20} color="white" />}
-            />
+           
             <Button
                 iconRight={true}
                 title="Share with the group"

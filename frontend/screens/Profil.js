@@ -74,7 +74,6 @@ function Profil({ navigation, token }) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />

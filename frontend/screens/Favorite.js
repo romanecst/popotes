@@ -62,7 +62,6 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
             
             <Header
                 containerStyle={{backgroundColor:'#febf63', height:90, paddingTop:50}}
-                leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
                 centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
             />

@@ -76,6 +76,7 @@ function MesGroupes(props) {
             title=""
             buttonStyle={{ backgroundColor: "white", borderRadius: 45 }}
             icon={<Entypo name="cross" size={24} color="black" />}
+            onPress={() => {navigation.navigate('MesGroupesP12')}}
           />
           </View>
           })
