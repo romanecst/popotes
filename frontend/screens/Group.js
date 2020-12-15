@@ -20,9 +20,7 @@ function Group(props) {
   const [visible, setVisible] = useState(false);
 
   const [nameGroup, setNameGroup] = useState("");
-  const [tokenGroup, setTokenGroup] = useState("")
-
-  const [groupExists, setGroupExists] = useState(false);
+  const [tokenGroup, setTokenGroup] = useState("");
   const [listErrorGroup, setListErrorGroup] = useState([]);
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -198,10 +196,9 @@ function Group(props) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch(`${baseURL}/deleteGroup/:name`, {
+    var rawResponse = await fetch(`${baseURL}/deleteGroup/${nameGroup}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `groupName=${nameGroup}`,
     });
     var response = await rawResponse.json();
     console.log("test update", response);
