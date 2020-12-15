@@ -31,10 +31,7 @@ export default function MesGroupesP12({navigation}) {
   return (
     <View style={{ flex: 1, backgroundColor: "#e5f8f8" }}>
 
-
-
       {/* -------------------------HEADER---------------------------------- */}
-
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
