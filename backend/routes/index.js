@@ -258,6 +258,15 @@ router.post('/group', async function (req, res, next) {
   res.json({ result, token, error, groupSave });
 });
 
+router.post('/updateGroup', async function (req, res, next) {
+  var result = false
+  var group = await groupModel.updateOne({group_token: req.body.token}, {list_id: req.body.listID});
+  if(group.nModified == 1){
+    result = true
+  }
+  res.json(result);
+});
+
 router.post('/getGroups', async function (req, res, next) {
   var groups = await groupModel.find({user_id: { $all: [`${req.body.token}`] }});
   console.log(groups)
@@ -265,10 +274,17 @@ router.post('/getGroups', async function (req, res, next) {
 });
 
 router.post('/getMyGroup', async function (req, res, next) {
+
+  var colorUser = ['#FFC312', '#C4E538', '#12CBC4', '#FDA7DF', '#ED4C67',
+    '#F79F1F', '#A3CB38', '#1289A7', '#D980FA', '#B53471',
+    '#EE5A24', '#009432', '#0652DD', '#9980FA', '#833471',
+    '#EA2027', '#006266', '#1B1464', '#5758BB', '#6F1E51'];
+
   var mygroup = await groupModel.findOne({group_token: req.body.token});
   var users = []
   for(var i=0; i<mygroup.user_id.length; i++){
     var userID = await userModel.findOne({token: mygroup.user_id[i]})
+    userID.salt = colorUser[i];
     users.push(userID)
   }
   res.json({mygroup, users});
@@ -334,6 +350,7 @@ router.post('/addList', async function (req, res, next) {
   if (listSave) {
     result = true;
   }
+  console.log(listSave)
   res.json(listSave)
 });
 

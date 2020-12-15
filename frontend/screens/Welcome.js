@@ -82,26 +82,6 @@ export default function welcome({ navigation }) {
     };
  
 
-    if(!glutenFree && !vegetarian && !lactoseFree && !vegan){
-        var button = <Button
-        title="Next"
-        disabled={true}
-        type="clear"
-        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
-        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-        />
-    }else{
-        var button = <Button
-        title="Next"
-        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
-        type="clear"
-        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
-        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-        />
-    }
-
 return (
     <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -142,7 +122,14 @@ return (
                             <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
                         </TouchableOpacity>
                     </View>
-                    {button}
+                    <Button
+                        title="Next"
+                        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
+                        type="clear"
+                        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
+                        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+                        />
                     </View>
                 </Overlay>
             </View>

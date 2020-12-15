@@ -31,7 +31,6 @@ function Group(props) {
   const [signInEmail, setSignInEmail] = useState('')
   const [signInPassword, setSignInPassword] = useState('')
 
-  const [userExists, setUserExists] = useState(false)
   const [listErrorsSignin, setErrorsSignin] = useState([])
 
   const [visibleSignin, setVisibleSignin] = useState(false);
@@ -78,16 +77,11 @@ function Group(props) {
       setGroupList(response);
       AsyncStorage.setItem("user token", body.token);
       toggleSignin();
-      // setUserExists(true)
       
     }  else {
       setErrorsSignin(body.error)
     }
   }
-
-  // if(userExists){
-  //   toggleSignin();
-  // }
 
   var tabErrorsSignin = listErrorsSignin.map((error,i) => {
     return(<Text>{error}</Text>)
@@ -103,7 +97,8 @@ function Group(props) {
 
     const body = await data.json()
     if(body.result == true){
-      props.addToken(body.token)
+      props.addToken(body.token);
+      AsyncStorage.setItem("user token", body.token);
       toggleSignup();
 
 
@@ -141,7 +136,7 @@ function Group(props) {
                const response = await rawReponse.json()
               setGroupList(response);
                 }else{
-                  setVisibleSignin(true);
+                  setVisibleSignup(true);
                 }
               })
       if (Platform.OS !== "web") {
@@ -192,8 +187,8 @@ function Group(props) {
 
     if (response.result == true) {
       setTokenGroup(token);
-      setGroupExists(true);
-      AddTokenGroup(token);
+      props.AddTokenGroup(token);
+      setGroupList([...groupList, response.groupSave])
       createGroup()
     } else {
       setListErrorGroup(response.error);
@@ -478,7 +473,7 @@ function Group(props) {
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
           onPress={() => handleSubmitSignin()}
         />
-        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
+        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
         </View>
       </Overlay>
 
@@ -525,7 +520,7 @@ function Group(props) {
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
           onPress={() => {handleSubmitSignUp()}}
         />
-        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
         </View>
       </Overlay>
 
