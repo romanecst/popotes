@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity, ImageBackground, ScrollView } from "react-native";
-
 import { Button, ListItem, Header, Input, Overlay } from "react-native-elements";
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
