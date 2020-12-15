@@ -4,6 +4,8 @@ import { Avatar, Button, Header, Accessory, ListItem } from "react-native-elemen
 import { AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
 
+import * as ImagePicker from "expo-image-picker";
+
 function Profil({ navigation, token }) {
 
 
@@ -16,6 +18,38 @@ function Profil({ navigation, token }) {
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const [hasPermission, setHasPermission] = useState(null);
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const {
+          status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        } else {
+          setHasPermission(true);
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log("essai permission result", result);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
 
   // COULEUR APRES SELECTION  ================>
@@ -71,7 +105,7 @@ function Profil({ navigation, token }) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.navigate('homePage')}}/>}
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
@@ -81,18 +115,27 @@ function Profil({ navigation, token }) {
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
           <TouchableOpacity
-            onPress={() => console.log("Works!")}
+            onPress={pickImage}
             activeOpacity={0.3}
             style={{ backgroundColor: 'black', borderRadius: 100, marginTop: 15, borderWidth: 1, marginBottom: 20 }}
           >
+            {image ? 
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 130, height: 130, borderRadius:60 }}
+                    containerStyle={{ borderRadius: 200 }}
+                    
+                  />
+                   : 
 
             <Avatar
               size={130}
               rounded icon={{
-                name: 'add-a-photo', size: 65, color: 'black',
+                name: 'add-a-photo', size: 60, color: 'black',
               }}
               containerStyle={{ backgroundColor: "white" }}
             />
+            }
           </TouchableOpacity>
 
           {/* --------------------CHAMPS FORMULAIRE ------------------------------------ */}
