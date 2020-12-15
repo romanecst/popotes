@@ -16,7 +16,7 @@ import * as Contacts from 'expo-contacts';
 import { connect } from "react-redux";
 import {baseURL} from '../screens/components/adressIP'
 
- function MesGroupes({tokenGroup, nameGroup, props}) {
+ function MesGroupes({tokenGroup, nameGroup}) {
 
   const [searchGroupe, setSearchGroupe] = useState("Chercher un Groupe");
   const [searchFriend, setSearchFriend] = useState("");
@@ -59,7 +59,7 @@ useEffect(()=>{
         const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
           method: 'POST',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: `token=${props.tokenGroup}`
+          body: `token=${tokenGroup}`
         })
         const response = await rawReponse.json();
         setGroupName(response.mygroup.name);
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-  return { tokenGroup: state.tokenGroup,nameGroup: state.nameGroup? token: state.token  };
+  return { tokenGroup: state.tokenGroup, nameGroup: state.nameGroup, token: state.token  };
 }
 
 export default connect(mapStateToProps,null)

@@ -24,7 +24,7 @@ import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
 import MesGroupes from './screens/MesGroupes'; 
-import MesGroupesP12 from './screens/MesGroupesP12';
+
 
 
 
@@ -105,7 +105,7 @@ var StackNavigator = createStackNavigator({
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
   MesGroupes:MesGroupes,
-  MesGroupesP12:MesGroupesP12,
+  
   Retour: BottomNavigator,
   
   
