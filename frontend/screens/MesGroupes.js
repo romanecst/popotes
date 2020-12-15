@@ -9,9 +9,11 @@ import {
 import { Input, Button, Avatar, Accessory } from "react-native-elements";
 import { TextInput } from "react-native";
 import { Icon } from "react-native-vector-icons/FontAwesome";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 
 import { connect } from 'react-redux';
+
+import {baseURL} from '../screens/components/adressIP'
 
 
 function MesGroupes(props) {
@@ -21,7 +23,7 @@ function MesGroupes(props) {
 
   useEffect(()=>{
     const loadInfo = async()=>{
-      const rawReponse= await fetch('http://192.168.1.87:3000/getMyGroup', {
+      const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `token=${props.tokenGroup}`
@@ -73,7 +75,7 @@ function MesGroupes(props) {
           <Button
             title=""
             buttonStyle={{ backgroundColor: "white", borderRadius: 45 }}
-            icon={<Ionicons name="ios-trash" size={30} color="black" />}
+            icon={<Entypo name="cross" size={24} color="black" />}
           />
           </View>
           })

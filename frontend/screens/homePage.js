@@ -13,6 +13,8 @@ import RecipeHome from './components/recipeHome'
 
 import { connect } from 'react-redux';
 
+import {baseURL} from '../screens/components/adressIP'
+
 function homePage({navigation, loadList}) {
     const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
@@ -57,7 +59,7 @@ useEffect(() => {
         if(ifTrue){
             setPref(true);
         }else{
-            var rawReponse = await fetch('http://192.168.1.87:3000/find');
+            var rawReponse = await fetch(`${baseURL}/find`);
             var response= await rawReponse.json();
             setListRecipe(response);
         }
@@ -66,7 +68,7 @@ useEffect(() => {
     Preferences();
 
     const ListInit = async() => {
-        var rawResult = await fetch('http://192.168.1.87:3000/list');
+        var rawResult = await fetch(`${baseURL}/list`);
         var result = await rawResult.json();
         loadList(result)
     }
@@ -74,7 +76,7 @@ useEffect(() => {
     ListInit();  
     /* Random on Today's pick */
     var searchRandom = async ()=>{
-        var randomCarrousel = await fetch('http://192.168.1.87:3000/randomCourrousel');
+        var randomCarrousel = await fetch(`${baseURL}/randomCourrousel`);
         var resultRandom = await randomCarrousel.json();
         setSource(resultRandom.image)       
     }
@@ -89,7 +91,7 @@ useEffect(() => {
 // Remi IP: http://172.17.1.71:3000
 
   var Filters = async() => {
-    var rawResult = await fetch('http://192.168.1.87:3000/filters', {
+    var rawResult = await fetch(`${baseURL}/filters`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `time=${selectedValueTime}&cuisine=${selectedValueCuisine}&price=${selectedValuePrice}&healthy=${selectedValueHealthy}&gluten=${glutenFree}&vegetarian=${vegetarian}&lactose=${lactoseFree}&vegan=${vegan}&type=${selectedValueDish}`
@@ -102,7 +104,7 @@ useEffect(() => {
         setSearchTxt(search)
     }
     var Search = async() => {
-        var rawResult = await fetch('http://192.168.1.87:3000/search', {
+        var rawResult = await fetch(`${baseURL}/search`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `search=${searchTxt}`
@@ -160,7 +162,7 @@ useEffect(() => {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
-                leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" />}
+                leftComponent= {<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack('homePage') }}/>}
                 centerComponent={{ text: 'HOMEPAGE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
             />

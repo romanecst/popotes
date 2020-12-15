@@ -19,6 +19,9 @@ import Ingredient from './components/ingredientcheck';
 import Recette from './components/recettecheck';
 import { withNavigationFocus } from 'react-navigation';
 
+import {baseURL} from '../screens/components/adressIP'
+
+
 
 function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo, addingredientList, isFocused, clearIngredientList}) {
 
@@ -109,7 +112,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
 
     useEffect(()=>{
         return async()=>{
-            await fetch('http://192.168.1.87:3000/addIngredients', {
+            await fetch(`${baseURL}/addIngredients`, {
             method: 'POST',
             headers: {'Content-Type':'application/x-www-form-urlencoded'},
             body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
@@ -123,7 +126,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
             {/* ------------------------- PARGE 1 TRIER PAR INGREDIENT ------------------------- */}
             <Header
                 containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }} />}
                 centerComponent={{ text: listInfo.name, style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />

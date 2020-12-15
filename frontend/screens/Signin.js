@@ -6,6 +6,8 @@ import {Icon, Entypo} from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
+import {baseURL} from '../screens/components/adressIP'
+
 
 function Signin(props) {
 
@@ -22,7 +24,7 @@ function Signin(props) {
 
   var handleSubmitSignin = async () => {
  
-    const data = await fetch('http://192.168.1.87:3000/sign-in', {
+    const data = await fetch(`${baseURL}/sign-in`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
@@ -61,16 +63,16 @@ function Signin(props) {
   return (
     <View>
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} >
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', justifyContent:'center', alignItems:'center'}} isVisible={visible} >
         
         <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in</Text>
             <Avatar
-                size="large"
+                size="medium"
                 rounded
                 title="LW"
                 activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+                containerStyle={{backgroundColor:"red",marginBottom:20,marginLeft:100}}
             />
              
             <Input

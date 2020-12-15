@@ -10,7 +10,9 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import Signin from './Signin';
-import Signup from './Signup';
+
+import {baseURL} from '../screens/components/adressIP'
+
 
 
 function Group(props) {
@@ -53,7 +55,7 @@ function Group(props) {
 
   var handleSubmitSignin = async () => {
  
-    const data = await fetch('http://192.168.1.87:3000/sign-in', {
+    const data = await fetch(`${baseURL}/sign-in`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
@@ -66,7 +68,7 @@ function Group(props) {
       console.log(body.token);
       props.addToken(body.token);
 
-      const rawReponse = await fetch('http://192.168.1.87:3000/getGroups', {
+      const rawReponse = await fetch(`${baseURL}/getGroups`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `token=${body.token}`
@@ -93,7 +95,7 @@ function Group(props) {
 
   var handleSubmitSignUp = async () => {
 
-    const data = await fetch('http://192.168.1.87:3000/sign-up', {
+    const data = await fetch(`${baseURL}/sign-up`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
@@ -130,7 +132,7 @@ function Group(props) {
               async function(error, data){
                 if(data){
                 props.addToken(data);
-                const rawReponse = await fetch('http://192.168.1.87:3000/getGroups', {
+                const rawReponse = await fetch(`${baseURL}/getGroups`, {
                   method: 'POST',
                   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   body: `token=${data}`
@@ -180,7 +182,7 @@ function Group(props) {
 
   /* Create group */
   var saveGroup = async function save() {
-    var rawResponse = await fetch("http://192.168.1.87:3000/group", {
+    var rawResponse = await fetch(`${baseURL}/group`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}&userID=${props.token}`
@@ -201,7 +203,7 @@ function Group(props) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch("http://192.168.1.87:3000/deleteGroup/:name", {
+    var rawResponse = await fetch(`${baseURL}/deleteGroup/:name`, {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `groupName=${nameGroup}`,
@@ -257,7 +259,6 @@ function Group(props) {
            return  <TouchableOpacity key={i} onPress={() => {props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
            <View style={styles.blocScroll}>
              <Text>{el.name}</Text>
-             {/* <Text style={{ fontStyle: "italic" }}>with friends</Text> */}
              <Button
                icon={<Entypo name="cross" size={24} color="black" />}
                buttonStyle={{

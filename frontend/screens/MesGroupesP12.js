@@ -5,6 +5,7 @@ import { Input, Button, Avatar, Accessory, Icon, Card, ListItem, CheckBox, Text,
 import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
 import CircleCheckBox, { LABEL_POSITION } from 'react-native-circle-checkbox';
 
+import {baseURL} from '../screens/components/adressIP'
 
 
 export default function MesGroupesP12({navigation}) {
@@ -13,7 +14,7 @@ export default function MesGroupesP12({navigation}) {
 
     var colorRandom = async () => {
 
-      var userRegisters = await fetch("http://192.168.1.87:3000/addUser", {
+      var userRegisters = await fetch(`${baseURL}/addUser`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'token=pjdqlFXcykwwPlQEE5npwqk3tVcSbxyN'
@@ -37,7 +38,7 @@ export default function MesGroupesP12({navigation}) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { navigation.goBack(null) }}/>}
         centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />

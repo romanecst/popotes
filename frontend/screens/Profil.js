@@ -4,6 +4,8 @@ import { Avatar, Button, Header, Accessory, ListItem } from "react-native-elemen
 import { AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
 import Signin from "./Signin";
+import {baseURL} from '../screens/components/adressIP'
+
 
 function Profil({ navigation, token }) {
 
@@ -55,7 +57,7 @@ function Profil({ navigation, token }) {
   /* Update user */
   var updateUser = async () => {
 
-    var userRegisters = await fetch("http://192.168.1.87:3000/userUpdate", {
+    var userRegisters = await fetch(`${baseURL}/userUpdate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`

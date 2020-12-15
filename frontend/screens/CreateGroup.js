@@ -15,7 +15,7 @@ export default function CreateGroup({navigation}) {
 
 
     return (
-        <ImageBackground source={require('../assets/Background.jpeg')} style={{ flex: 1 }}>
+        <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
         <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
         <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50}} isVisible={!visible} >
@@ -35,7 +35,7 @@ export default function CreateGroup({navigation}) {
           type="clear"
           buttonStyle={{justifyContent: 'center'}}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => {navigation.navigate('GlobalGroup');setVisible(true)}}
+          onPress={() => {navigation.navigate('Group');setVisible(true)}}
         />
         </View>
       </Overlay>

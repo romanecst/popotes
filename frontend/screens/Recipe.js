@@ -7,23 +7,14 @@ import Checking from './components/checkingOverlay';
 
 import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
-
 import { connect } from 'react-redux';
+
 
 function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
     const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(recipeInfo.servings);
     const [selectedList, setSelectedList] = useState();
 
-    // useEffect(()=>{
-    //     const loadList = async() => {
-    //       var rawResult = await fetch('http://192.168.1.87:3000/list');
-    //       var result = await rawResult.json();
-    //       setListArray(result)
-    //     }
-    //     loadList();
-      
-    //   },[])
 
     var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
 
@@ -64,7 +55,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
 
             <Header
                 containerStyle={{ backgroundColor: '#ade498', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }}  />}
                 centerComponent={{ text: 'RECETTE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />

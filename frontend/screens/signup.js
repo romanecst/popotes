@@ -6,6 +6,7 @@ import {Icon} from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
+import {baseURL} from '../screens/components/adressIP'
 
 
 
@@ -23,7 +24,7 @@ function Signup(props) {
 
   var handleSubmitSignUp = async () => {
 
-    const data = await fetch('http://192.168.1.87:3000/sign-up', {
+    const data = await fetch(`${baseURL}/sign-up`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
