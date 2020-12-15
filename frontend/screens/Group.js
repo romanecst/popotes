@@ -85,9 +85,6 @@ function Group(props) {
     }
   }
 
-  // if(userExists){
-  //   toggleSignin();
-  // }
 
   var tabErrorsSignin = listErrorsSignin.map((error,i) => {
     return(<Text>{error}</Text>)
@@ -103,7 +100,8 @@ function Group(props) {
 
     const body = await data.json()
     if(body.result == true){
-      props.addToken(body.token)
+      props.addToken(body.token);
+      AsyncStorage.setItem("user token", body.token);
       toggleSignup();
 
 
