@@ -21,6 +21,7 @@ function Group(props) {
 
   const [nameGroup, setNameGroup] = useState("");
   const [tokenGroup, setTokenGroup] = useState("")
+  
 
   const [groupExists, setGroupExists] = useState(false);
   const [listErrorGroup, setListErrorGroup] = useState([]);
@@ -334,7 +335,7 @@ function Group(props) {
                 {image ? (
                   <Image
                     source={{ uri: image }}
-                    style={{ width: 130, height: 130 }}
+                    style={{ width: 130, height: 130, borderRadius:60 }}
                     containerStyle={{ borderRadius: 200 }}
                   />
                 ) : (
@@ -372,6 +373,7 @@ function Group(props) {
                 placeholder="Group Name"
                 onChangeText={(value) => {
                   setNameGroup(value);
+                 
                 }}
                 value={nameGroup}
               />

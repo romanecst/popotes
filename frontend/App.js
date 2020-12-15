@@ -99,6 +99,7 @@ var BottomNavigator = createBottomTabNavigator({
 var StackNavigator = createStackNavigator({
   Welcome: Welcome,
   CreateGroup: CreateGroup,
+  homePage : homePage,
   List: List,
   Recipe: Recipe,
   GlobalList: GlobalList,

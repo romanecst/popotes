@@ -209,6 +209,38 @@ router.post('/sign-in', async function (req, res, next) {
 
   res.json({ result, user, error, token })
 })
+// Insérer des amis 
+router.post('/friends', async function(req, res, next) {
+  var result = false;
+  var error = [];
+
+  var groupSearch = await groupModel.findOne({group_token: req.body.tokenGroupFromFront});
+  
+  var userSearch = await userModel.findOne({username: req.body.nameFriendFromFront});
+
+    console.log('test groupeSearch', groupSearch)
+    console.log('test userSearch', userSearch)
+
+    if(groupSearch && userSearch){
+  console.log('je passe par ma route /friends et mon group existe')
+  result = true
+// -----------------------Autre possibilité de modifier un tableau dans la base de données-------------------------------------
+  // groupSearch.user_id.push(userSearch.id); 
+  // console.log('test 2 groupSearch', groupSearch)
+
+  // await groupSearch.save();
+
+  var update = await groupModel.updateOne(
+    {group_token: req.body.tokenGroupFromFront},
+    {$push:{user_id:userSearch.token}})
+
+
+}else{
+  console.log('un des deux nexiste pas')
+  error.push('Ton amis n es pas encore connecté! envoi lui le lien!')
+}
+  res.json({result, error, userSearch});
+});
 
 /* Create group */
 router.post('/group', async function (req, res, next) {
