@@ -7,24 +7,14 @@ import Checking from './components/checkingOverlay';
 
 import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
-
 import { connect } from 'react-redux';
 
-function Recipe({ navigation, recipeInfo, ingredientList, currentList }) {
+
+function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
     const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(recipeInfo.servings);
-    const [list, setList] = useState();
-    const [listArray, setListArray] = useState([]);
+    const [selectedList, setSelectedList] = useState();
 
-    useEffect(()=>{
-        const loadList = async() => {
-          var rawResult = await fetch('http://172.17.1.53:3000/list');
-          var result = await rawResult.json();
-          setListArray(result)
-        }
-        loadList();
-      
-      },[])
 
     var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
 
@@ -33,7 +23,8 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList }) {
         if(!Number.isInteger(ingredient.amount)){
             ingredient.amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(1);
         }
-    return {name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: recipeInfo.title}
+        console.log('IDDDDD',ingredient._id)
+    return {id:ingredient.id, name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: recipeInfo.title}
     });
 
     var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
@@ -64,7 +55,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList }) {
 
             <Header
                 containerStyle={{ backgroundColor: '#ade498', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }}  />}
                 centerComponent={{ text: 'RECETTE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
@@ -147,21 +138,21 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList }) {
         {/* DROP DOWN -- LIST HERE !!  */}
         <View style={{justifyContent:'center', alignItems:'center', marginVertical:10}}>
         <DropDownPicker
-          items={listArray.map(function(el){
+          items={list.map(function(el){
             return { label: el.name, value: el._id }
         })}
           defaultIndex={0}
           defaultNull placeholder="Select an list"
           containerStyle={{width: 150, height: 70}} 
           style={{marginBottom:10}}
-          onChangeItem={item => setList({_id: item.value, name: item.label})}
+          onChangeItem={item => setSelectedList({_id: item.value, name: item.label})}
         />
         <Button
           iconRight={true}
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => {  currentList(list); ingredientList(newIngredients); toggleOverlay(); navigation.navigate('GlobalList') }}
+          onPress={() => {  currentList(selectedList); ingredientList(newIngredients); toggleOverlay(); navigation.navigate('GlobalList') }}
         />
         </View>
       </Overlay>
@@ -182,7 +173,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    return { recipeInfo: state.recipe }
+    return { recipeInfo: state.recipe,  list: state.list }
 }
 
 export default connect(

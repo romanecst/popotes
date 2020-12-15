@@ -4,43 +4,34 @@ import { Button, ListItem, Header, Input, Overlay } from "react-native-elements"
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
-
-
 import {connect} from 'react-redux';
 
-function List({ navigation, currentList }) {
+import {baseURL} from '../screens/components/adressIP'
+
+
+function List({ navigation, currentList, saveList, delList, list, addingredientList}) {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
-  const [list, setList] = useState([]);
-
-  useEffect(()=>{
-    const loadList = async() => {
-      var rawResult = await fetch('http://172.17.1.71:3000/list');
-      var result = await rawResult.json();
-      setList(result)
-    }
-    loadList();
-  
-  },[])
 
   const addList = async() => {
-    await fetch('http://172.17.1.53:3000/addList', {
+    var rawResponse = await fetch(`${baseURL}/addList`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `name=${text}`
     });
+    var response = await rawResponse.json();
+    saveList(response); 
+    setText('');
   }
 
   async function DelList(id){
     if(id){
-      await fetch('http://172.17.1.53:3000/deleteList', {
+      await fetch(`${baseURL}/deleteList`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `id=${id}`
       });
-      var templist = [...list];
-      templist = templist.filter(el => el._id !== id);
-      setList(templist);
+      delList(id)
   }
   }
 
@@ -85,14 +76,14 @@ function List({ navigation, currentList }) {
           paddingRight: 5,
         }}
       >
-        {list.map((l, i) => (
+        {list.map((el, i) => (
           <View style={{
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
         }}>
           <TouchableOpacity
-          onPress={() => {currentList(l); navigation.navigate('GlobalList') }}>
+          onPress={() => {currentList(el); addingredientList(el.ingredients); navigation.navigate('GlobalList') }}>
           <ListItem
             key={i}
             bottomDivider
@@ -106,12 +97,12 @@ function List({ navigation, currentList }) {
             }}
           >
             <ListItem.Content style={{ flex: 1 }}>
-              <Text> {l.name}</Text>
+              <Text> {el.name}</Text>
             </ListItem.Content>
           </ListItem>
           </TouchableOpacity>
           <View style={{top: 20 }}>
-                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(l._id)} />
+                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DelList(el._id)} />
           </View>
           </View>
         ))}
@@ -127,7 +118,7 @@ function List({ navigation, currentList }) {
         </View>
         <Button
         title="Confirm"
-        onPress={() => {setList([...list, {name:text}]); addList(); toggleOverlay()}}
+        onPress={() => {addList(); toggleOverlay()}}
         type="clear"
         buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
@@ -178,13 +169,28 @@ function mapDispatchToProps(dispatch) {
   return {
       currentList: function(info) { 
           dispatch( {type: 'listInfo', listInfo: info} ) 
-      }
+      },
+      saveList: function(info) { 
+        dispatch( {type: 'addList', list: info} ) 
+    },
+    delList: function(info) { 
+      dispatch( {type: 'delList', list: info} ) 
+  },
+    addingredientList: function(info) { 
+      dispatch( {type: 'ingredientList', ingredient: info} ) 
+    }
   }
-  }
+}
+
+
+  function mapStateToProps(state) {
+    return { recipeList: state.recipeList, list: state.list }
+}
+
       
   
   export default connect(
-      null, 
+    mapStateToProps, 
       mapDispatchToProps
   )(List);
 

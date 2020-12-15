@@ -1,38 +1,121 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Image,
-  Linking,
-} from "react-native";
+import {View, ScrollView, TouchableOpacity, StyleSheet, TextInput, Image, Linking, AsyncStorage} from "react-native";
 import { Input, Button, Overlay, Avatar, Header, Text } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
-import {
-  Ionicons,
-  Entypo,
-  AntDesign,
-  Fontisto,
-  MaterialIcons,
-} from "@expo/vector-icons";
-import { connect } from "react-redux";
+import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
+import { connect } from 'react-redux';
 
-import { Camera } from "expo-camera";
-import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
 
-function Group({ tokenGroup, navigation, checkNameGroup }) {
+import { Camera } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import Signin from './Signin';
+
+import {baseURL} from '../screens/components/adressIP'
+
+
+
+function Group(props) {
+
   const [visible, setVisible] = useState(false);
+
   const [nameGroup, setNameGroup] = useState("");
-  // const [tokenGroup, setTokenGroup] = useState("")
+  const [tokenGroup, setTokenGroup] = useState("")
 
   const [groupExists, setGroupExists] = useState(false);
   const [listErrorGroup, setListErrorGroup] = useState([]);
 
   const [hasPermission, setHasPermission] = useState(null);
   const [image, setImage] = useState("");
+  
+  const [signInEmail, setSignInEmail] = useState('')
+  const [signInPassword, setSignInPassword] = useState('')
+
+  const [userExists, setUserExists] = useState(false)
+  const [listErrorsSignin, setErrorsSignin] = useState([])
+
+  const [visibleSignin, setVisibleSignin] = useState(false);
+  const [visibleSignup, setVisibleSignup] = useState(false);
+
+  const [signUpUsername, setSignUpUsername] = useState('');
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+
+
+  const [listErrorSignUp, setListErrorSignUp] = useState([]);
+  const [groupList, setGroupList] = useState([]);
+
+  const toggleSignin = () => {
+    setVisibleSignin(!visibleSignin);
+  }
+
+  const toggleSignup = () => {
+    setVisibleSignup(!visibleSignup);
+  }
+
+  var handleSubmitSignin = async () => {
+ 
+    const data = await fetch(`${baseURL}/sign-in`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
+    })
+
+    const body = await data.json()
+
+    if(body.result == true){
+      
+      console.log(body.token);
+      props.addToken(body.token);
+
+      const rawReponse = await fetch(`${baseURL}/getGroups`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `token=${body.token}`
+    })
+
+      const response = await rawReponse.json()
+      setGroupList(response);
+      AsyncStorage.setItem("user token", body.token);
+      toggleSignin();
+      // setUserExists(true)
+      
+    }  else {
+      setErrorsSignin(body.error)
+    }
+  }
+
+  // if(userExists){
+  //   toggleSignin();
+  // }
+
+  var tabErrorsSignin = listErrorsSignin.map((error,i) => {
+    return(<Text>{error}</Text>)
+  })
+
+  var handleSubmitSignUp = async () => {
+
+    const data = await fetch(`${baseURL}/sign-up`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
+    })
+
+    const body = await data.json()
+    if(body.result == true){
+      props.addToken(body.token)
+      toggleSignup();
+
+
+    } else {
+      setListErrorSignUp(body.error)
+    }
+  }
+
+  var tabErrorsSignup = listErrorSignUp.map((error,i) => {
+    return(<Text>{error}</Text>)
+  })
+
 
   const text =
       `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
@@ -45,6 +128,22 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
 
   useEffect(() => {
     (async () => {
+      AsyncStorage.getItem("user token", 
+              async function(error, data){
+                if(data){
+                props.addToken(data);
+                const rawReponse = await fetch(`${baseURL}/getGroups`, {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body: `token=${data}`
+                })
+
+               const response = await rawReponse.json()
+              setGroupList(response);
+                }else{
+                  setVisibleSignin(true);
+                }
+              })
       if (Platform.OS !== "web") {
         const {
           status,
@@ -83,10 +182,10 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
 
   /* Create group */
   var saveGroup = async function save() {
-    var rawResponse = await fetch("http://172.17.1.53:3000/group", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `avatarGroupFromFront=${image}=${nameGroup}`,
+    var rawResponse = await fetch(`${baseURL}/group`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}&userID=${props.token}`
     });
     var response = await rawResponse.json();
     var token = response.groupSave.group_token;
@@ -94,8 +193,8 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
     if (response.result == true) {
       setTokenGroup(token);
       setGroupExists(true);
-      props.AddTokenGroup(token);
-      setVisible(false);
+      AddTokenGroup(token);
+      createGroup()
     } else {
       setListErrorGroup(response.error);
     }
@@ -104,7 +203,7 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch("http://172.17.1.53:3000/deleteGroup/:name", {
+    var rawResponse = await fetch(`${baseURL}/deleteGroup/:name`, {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `groupName=${nameGroup}`,
@@ -124,20 +223,8 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
           paddingTop: 50,
         }}
         leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
-        centerComponent={{
-          text: "GROUPE",
-          style: { color: "#fff", fontFamily: "Kohinoor Telugu" },
-        }}
-        rightComponent={
-          <Fontisto
-            name="shopping-basket"
-            size={24}
-            color="white"
-            onPress={() => {
-              navigation.navigate("List");
-            }}
-          />
-        }
+        centerComponent={{ text:'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
       <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -162,69 +249,30 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
 
         {/* -------------------Acces à mes groupe precedent ----------------------- */}
 
-        <Text
-          style={{ marginTop: 50, fontSize: 20, fontFamily: "Kohinoor Telugu" }}
-        >
-          My group list
-        </Text>
+
+        <Text style={{ marginTop: 20, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My group list</Text>
 
         <ScrollView style={styles.scroll}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("");
-            }}
-          >
-            <View style={styles.blocScroll}>
-              <Text> Weekend Party</Text>
-              <Text style={{ fontStyle: "italic" }}>with friends</Text>
-              <Button
-                icon={<Entypo name="cross" size={24} color="black" />}
-                buttonStyle={{
-                  backgroundColor: "#FFFFFF",
-                  padding: 18,
-                  borderRadius: 50,
-                }}
-              ></Button>
-            </View>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("");
-            }}
-          >
-            <View style={styles.blocScroll}>
-              <Text> Nouvel an chinois</Text>
-              <Text style={{ fontStyle: "italic" }}>family</Text>
-              <Button
-                icon={<Entypo name="cross" size={24} color="black" />}
-                buttonStyle={{
-                  backgroundColor: "#FFFFFF",
-                  padding: 18,
-                  borderRadius: 50,
-                }}
-              ></Button>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("");
-            }}
-          >
-            <View style={styles.blocScroll}>
-              <Text>Normandie party</Text>
-              <Text style={{ fontStyle: "italic" }}>with friends</Text>
-              <Button
-                icon={<Entypo name="cross" size={24} color="black" />}
-                buttonStyle={{
-                  backgroundColor: "#FFFFFF",
-                  padding: 18,
-                  borderRadius: 50,
-                }}
-              ></Button>
-            </View>
-          </TouchableOpacity>
+         {
+         groupList.map(function(el, i){
+           return  <TouchableOpacity key={i} onPress={() => {props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
+           <View style={styles.blocScroll}>
+             <Text>{el.name}</Text>
+             <Button
+               icon={<Entypo name="cross" size={24} color="black" />}
+               buttonStyle={{
+                 backgroundColor: "#FFFFFF",
+                 padding: 18,
+                 borderRadius: 50,
+               }}
+             ></Button>
+           </View>
+         </TouchableOpacity>
+         })
+         
+        }
+          
         </ScrollView>
 
         {/* -------------------------CREATION DE NOUVEAU GROUPE ---------------------------------- */}
@@ -367,7 +415,7 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
                 }}
                 titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  checkNameGroup(nameGroup),
+                  props.checkNameGroup(nameGroup),
                     saveGroup(),
                     Linking.openURL(
                       `mailto:?subject=${nameGroup}&body=${text}`
@@ -384,12 +432,103 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
                 }}
                 titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  checkNameGroup(nameGroup), saveGroup();
+                  props.checkNameGroup(nameGroup), saveGroup();
                 }}
               />
             </View>
           </View>
         </Overlay>
+
+        {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
+
+
+        <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignin} >
+        
+        <View style={styles.overlay}>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
+            <Avatar
+                size="large"
+                rounded
+                title="LW"
+                activeOpacity={1}
+                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+            />
+             
+            <Input
+                containerStyle={styles.input}
+                placeholder='Email'
+                leftIcon={{ type: 'font-awesome', name: 'at' }}
+                onChangeText={(val) => setSignInEmail(val)}
+                val = {signInEmail}
+            />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+                onChangeText={(val) => setSignInPassword(val)}
+                val = {signInPassword}
+            />
+
+              {tabErrorsSignin}
+
+        <Button
+          title="Sign-in"
+          type="clear"
+          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+          onPress={() => handleSubmitSignin()}
+        />
+        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
+        </View>
+      </Overlay>
+
+
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignup} >
+        
+        <View style={styles.overlay}>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>
+            <Avatar
+                size="large"
+                rounded
+                title="LW"
+                activeOpacity={1}
+                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+            />
+             <Input
+                containerStyle={styles.input}
+                placeholder='Username'
+                leftIcon={{ type: 'font-awesome', name: 'user' }}
+                onChangeText={(val) => setSignUpUsername(val)}
+                val = {signUpUsername}
+            />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Email'
+                leftIcon={{ type: 'font-awesome', name: 'at' }}
+                onChangeText={(val) => setSignUpEmail(val)}
+                val = {signUpEmail}
+            />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+                onChangeText={(val) => setSignUpPassword(val)}
+                val = {signUpPassword}
+            />
+
+            {tabErrorsSignup}
+
+        <Button
+          title="Sign-up"
+          type="clear"
+          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+          onPress={() => {handleSubmitSignUp()}}
+        />
+        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
+        </View>
+      </Overlay>
+
       </View>
     </View>
   );
@@ -397,7 +536,6 @@ function Group({ tokenGroup, navigation, checkNameGroup }) {
 
 const styles = StyleSheet.create({
   scroll: {
-    marginBottom: 20,
     marginTop: 10,
     backgroundColor: "#e5f8f8",
     width: 300,
@@ -422,10 +560,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: 20,
   },
+  overlay: {
+    width: 290,
+    margin:18,
+    justifyContent: 'center',
+  },
+input:{
+    borderWidth:1,
+    borderRadius:20,
+    height:60,
+    marginBottom:20
+  }, 
 });
 
 function mapStateToProps(state) {
-  return { tokenGroup: state.tokenGroup, checkNameGroup: state.checkNameGroup };
+  return { tokenGroup: state.tokenGroup, token: state.token };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -436,6 +585,9 @@ function mapDispatchToProps(dispatch) {
     AddTokenGroup: function (tokenGroup) {
       dispatch({ type: "tokenGroup", tokenGroup: tokenGroup });
     },
+    addToken: function(token){
+      dispatch({type: 'addToken', token: token})
+    }
   };
 }
 

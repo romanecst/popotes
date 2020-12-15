@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,17 +9,38 @@ import {
 import { Input, Button, Avatar, Accessory } from "react-native-elements";
 import { TextInput } from "react-native";
 import { Icon } from "react-native-vector-icons/FontAwesome";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 
-export default function MesGroupes() {
-  const [searchGroupe, setSearchGroupe] = useState("Chercher un Groupe");
+import { connect } from 'react-redux';
+
+import {baseURL} from '../screens/components/adressIP'
+
+
+function MesGroupes(props) {
+
+  const [groupName, setGroupName]= useState('');
+  const [groupParticipants, setGroupParticipants]= useState([]);
+
+  useEffect(()=>{
+    const loadInfo = async()=>{
+      const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `token=${props.tokenGroup}`
+      })
+      const response = await rawReponse.json();
+      setGroupName(response.mygroup.name);
+      setGroupParticipants(response.users)
+    }
+    loadInfo();
+  },[])
 
   return (
-    <View style={{ backgroundColor: "#ADE498" }}>
+    <View style={{ backgroundColor: "#ADE498", flex:1 }}>
       <View
         style={{
           alignItems: "center",
-          justifyContent: "space-betwen",
+          
           marginTop: 120,
         }}
       >
@@ -35,22 +56,7 @@ export default function MesGroupes() {
           />
         </View>
         <View>
-          <TextInput
-            style={{
-              height: 50,
-              
-              
-              backgroundColor: "white",
-              borderRadius: 15,
-              textAlign: "center",
-              width: 250,
-              alignItems: "center",
-              marginTop: 40,
-              fontFamily: "Kohinoor Telugu",
-            }}
-            onChangeText={(text) => setSearchGroupe(text)}
-            value={searchGroupe}
-          />
+          <Text style={{padding: 20, fontSize: 20}}>{groupName}</Text>
         </View>
         <Button
           style={{ marginTop: 30, width: 130, fontFamily: "Kohinoor Telugu"}}
@@ -59,60 +65,23 @@ export default function MesGroupes() {
         <Text
           style={{ marginTop: 20, fontSize: 25, fontFamily: "Kohinoor Telugu" }}
         >
-          Participants :
+          Participants :!!!!!!!!!!!!!!
         </Text>
 
         <ScrollView>
+          {groupParticipants.map(function(el, i){
+            return <View style={{width:350,flex:1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', borderRadius: 45}}>
+            <Text style={{marginLeft: 10, fontFamily: "Kohinoor Telugu"}}>{el.username}</Text>
           <Button
-            iconRight={true}
-            title="Soirée du 16 octobre "
-            buttonStyle={{ backgroundColor: "white" }}
-            containerStyle={{
-              borderRadius: 45,
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-            titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-            icon={
-              <View style={{ marginLeft: 140 }}>
-                <Ionicons name="ios-trash" size={30} color="black" />
-              </View>
-            }
+            title=""
+            buttonStyle={{ backgroundColor: "white", borderRadius: 45 }}
+            icon={<Entypo name="cross" size={24} color="black" />}
           />
+          </View>
+          })
+          
+        }
 
-          <Button
-            iconRight={true}
-            title="Noel chez Monique "
-            buttonStyle={{ backgroundColor: "white" }}
-            containerStyle={{
-              borderRadius: 45,
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-            titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-            icon={
-              <View style={{ marginLeft: 140 }}>
-                <Ionicons name="ios-trash" size={30} color="black" />
-              </View>
-            }
-          />
-
-          <Button
-            iconRight={true}
-            title="Soirée chez Albert "
-            buttonStyle={{ backgroundColor: "white" }}
-            containerStyle={{
-              borderRadius: 45,
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-            titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-            icon={
-              <View style={{ marginLeft: 140 }}>
-                <Ionicons name="ios-trash" size={30} color="black" />
-              </View>
-            }
-          />
         </ScrollView>
 
         <Ionicons
@@ -133,3 +102,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
+function mapStateToProps(state) {
+  return { tokenGroup: state.tokenGroup, token: state.token };
+}
+
+
+export default connect(mapStateToProps, null)(MesGroupes);
+

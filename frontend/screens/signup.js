@@ -6,10 +6,11 @@ import {Icon} from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
+import {baseURL} from '../screens/components/adressIP'
 
 
 
-function Signup({navigation, addToken}) {
+function Signup(props) {
 
 
   const [visible, setVisible] = useState(true);
@@ -18,14 +19,12 @@ function Signup({navigation, addToken}) {
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
 
-  const [userExists, setUserExists] = useState([]);
-
   const [listErrorSignUp, setListErrorSignUp] = useState([]);
 
 
   var handleSubmitSignUp = async () => {
 
-    const data = await fetch('http://172.17.1.53:3000/sign-up', {
+    const data = await fetch(`${baseURL}/sign-up`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
@@ -33,9 +32,8 @@ function Signup({navigation, addToken}) {
 
     const body = await data.json()
     if(body.result == true){
-      addToken(body.token)
-      setUserExists(true)
-      navigation.navigate('List')
+      props.addToken(body.token)
+      props.navigation.navigate(props.screen)
 
     } else {
       setListErrorSignUp(body.error)
@@ -49,14 +47,13 @@ function Signup({navigation, addToken}) {
 
   
   const toggleOverlay = () => {
-    setVisible(true);
+    setVisible(!visible);
   };
 
   return (
     <View>
-      <Button title="Open Overlay" onPress={toggleOverlay} />
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} onBackdropPress={toggleOverlay} >
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} >
         
         <View style={styles.overlay}>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>

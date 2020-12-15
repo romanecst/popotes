@@ -11,24 +11,16 @@ import { withNavigation } from 'react-navigation';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Checking from './checkingOverlay';
 
+import {baseURL} from './adressIP'
+
 
 
 
 
 function RecipeHome(props) {
     const [like, setLike] = useState(false);
-    const [list, setList] = useState();
-    const [listArray, setListArray] = useState([]);
+    const [selectedList, setSelectedList] = useState();
 
-    useEffect(()=>{
-        const loadList = async() => {
-          var rawResult = await fetch('http://192.168.1.87:3000/list');
-          var result = await rawResult.json();
-          setListArray(result)
-        }
-        loadList();
-      
-      },[])
 
     function colorLike() {
         setLike(!like);
@@ -69,6 +61,16 @@ function RecipeHome(props) {
     var newIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, i){
     return {name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title}
     });
+
+
+    if(props.list.length !== 0){
+    var items = props.list.map(function(el){
+        return { label: el.name, value: el._id }
+    });
+    items.unshift({ label: 'New List', value: 'new list' })
+    }else{
+    var items = { label: 'New List', value: 'new list' }
+    }
 
     return (
         <View style={{ justifyContent: 'space-between' }}>
@@ -123,21 +125,19 @@ function RecipeHome(props) {
         {/* DROP DOWN -- LIST HERE !!  */}
         <View style={{justifyContent:'center', alignItems:'center', marginVertical:10}}>
         <DropDownPicker
-          items={listArray.map(function(el){
-              return { label: el.name, value: el._id }
-          })}
+          items={items}
           defaultIndex={0}
           defaultNull placeholder="Select a list"
           containerStyle={{width: 150, height: 70}} 
           style={{marginBottom:10}}
-          onChangeItem={item => setList({_id: item.value, name: item.label})}
+          onChangeItem={item => setSelectedList({_id: item.value, name: item.label})}
         />
         <Button
           iconRight={true}
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => { props.currentList(list); props.ingredientList(newIngredients); toggleOverlay(); props.navigation.navigate('GlobalList') }}
+          onPress={() => { props.currentList(selectedList); props.ingredientList(newIngredients); toggleOverlay(); props.navigation.navigate('GlobalList') }}
         />
         </View>
       </Overlay>
@@ -162,13 +162,16 @@ function mapDispatchToProps(dispatch) {
         },
         currentList: function(info) { 
             dispatch( {type: 'listInfo', listInfo: info} ) 
-        }
+        },
+        saveList: function(info) { 
+            dispatch( {type: 'addList', list: info} ) 
+        },
     }
 }
 
 
 function mapStateToProps(state) {
-    return { recipeList: state.recipeList }
+    return { recipeList: state.recipeList,  list: state.list}
 }
 
 

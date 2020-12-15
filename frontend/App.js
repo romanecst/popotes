@@ -1,28 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View, Stack, Button, Group} from 'react-native';
-import { Header } from 'react-native-elements';
-
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
 import { FontAwesome } from '@expo/vector-icons';
-import Welcome from './screens/Welcome';
-import CreateGroup from './screens/CreateGroup';
-import homePage from './screens/homePage';
-import Map from './screens/Map';
+
+import {Provider} from 'react-redux';
+import {createStore, combineReducers}  from 'redux';
+
+
+// BOTTOM NAVIGATOR =============================>
 import Favorite from './screens/Favorite';
+import Group from './screens/Group';
+import homePage from './screens/homePage';
 import Profil from './screens/Profil';
+
+// STACK NAVIGATOR =============================>
+import CreateGroup from './screens/CreateGroup';
+import Welcome from './screens/Welcome';
 import List from './screens/List';
+import recipe from './reducers/recipeInfo';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
-// import OverlayCheck from './screens/overlayCheckIngredient'
-import Signup from './screens/Signup';
-import Signin from './screens/Signin';
-import Groupe from './screens/Group';
+import MesGroupes from './screens/MesGroupes'; 
+import MesGroupesP12 from './screens/MesGroupesP12';
 
-import recipe from './reducers/recipeInfo';
+
+
+// import OverlayCheck from './screens/overlayCheckIngredient'
 import token from './reducers/token'
 import checkList from './reducers/checkList';
 import nameGroup from './reducers/nameGroup';
@@ -30,19 +36,15 @@ import tokenGroup from './reducers/tokenGroup';
 import recipeList from './reducers/recipeList';
 import ingredientList from './reducers/ingredientList';
 import listInfo from './reducers/listInfo';
-
-import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
-import GlobalGroup from './screens/Group';
-import MesGroupesP12 from './screens/MesGroupesP12';
+import list from './reducers/shoppinglist';
 
 
-import {Provider} from 'react-redux';
-import GroupPopUpPartage from'./screens/GroupePopUpPartage'
 
-import {createStore, combineReducers}  from 'redux';
-import GroupePopUpPartage from './screens/GroupePopUpPartage';
 
-const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo}));
+
+
+
+const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo, list}));
 
 
 
@@ -50,13 +52,9 @@ const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, 
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
-  GlobalGroup: GlobalGroup,
+  Group: Group,
   Home: homePage,
-  Map: Map,
-  Profil: Profil, 
-  MesGroupes:MesGroupes,
-  MesGroupesP12:MesGroupesP12,
-  GroupePopUpPartage:GroupePopUpPartage
+  Profil: Profil,
 },
 // {
 //   backBehavior: 'history', 
@@ -68,7 +66,7 @@ var BottomNavigator = createBottomTabNavigator({
       
       if (navigation.state.routeName == 'Favorite') {
         iconName = 'heart-o';
-      } else if (navigation.state.routeName == 'GlobalGroup') {
+      } else if (navigation.state.routeName == 'Group') {
         iconName = "users";
       }else if (navigation.state.routeName == 'Home') {
         iconName = 'home';
@@ -97,9 +95,10 @@ var StackNavigator = createStackNavigator({
   Recipe: Recipe,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
-
+  MesGroupes:MesGroupes,
+  MesGroupesP12:MesGroupesP12,
   Retour: BottomNavigator,
-  Map : Map,
+  
   
 },
 {headerMode:"none"}
