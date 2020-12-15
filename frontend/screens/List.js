@@ -88,14 +88,14 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
           paddingRight: 5,
         }}
       >
-        {list.map((l, i) => (
+        {list.map((el, i) => (
           <View style={{
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
         }}>
           <TouchableOpacity
-          onPress={() => {currentList(l); addingredientList(l.ingredients); navigation.navigate('GlobalList') }}>
+          onPress={() => {currentList(el); addingredientList(el.ingredients); navigation.navigate('GlobalList') }}>
           <ListItem
             key={i}
             bottomDivider

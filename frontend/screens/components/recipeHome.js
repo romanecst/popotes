@@ -21,15 +21,15 @@ function RecipeHome(props) {
     const [list, setList] = useState();
     const [listArray, setListArray] = useState([]);
 
-    useEffect(()=>{
-        const loadList = async() => {
-          var rawResult = await fetch('http://192.168.1.87:3000/list');
-          var result = await rawResult.json();
-          setListArray(result)
-        }
-        loadList();
+    // useEffect(()=>{
+    //     const loadList = async() => {
+    //       var rawResult = await fetch('http://192.168.1.87:3000/list');
+    //       var result = await rawResult.json();
+    //       setListArray(result)
+    //     }
+    //     loadList();
       
-      },[])
+    //   },[])
 
     function colorLike() {
         setLike(!like);

@@ -18,8 +18,6 @@ function Signup(props) {
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
 
-  const [userExists, setUserExists] = useState([]);
-
   const [listErrorSignUp, setListErrorSignUp] = useState([]);
 
 
@@ -34,7 +32,6 @@ function Signup(props) {
     const body = await data.json()
     if(body.result == true){
       props.addToken(body.token)
-      setUserExists(true)
       props.navigation.navigate(props.screen)
 
     } else {
@@ -55,7 +52,7 @@ function Signup(props) {
   return (
     <View>
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} onBackdropPress={toggleOverlay} >
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visible} >
         
         <View style={styles.overlay}>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>

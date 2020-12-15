@@ -16,9 +16,7 @@ function Signin(props) {
   const [userExists, setUserExists] = useState(false)
   const [listErrorsSignin, setErrorsSignin] = useState([])
 
-
   const [visible, setVisible] = useState(true);
-
 
 
 
@@ -99,7 +97,7 @@ function Signin(props) {
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
           onPress={() => handleSubmitSignin()}
         />
-        <TouchableOpacity><Text>Already have an account? Log in</Text></TouchableOpacity> 
+        <TouchableOpacity onPress={()=>toggleOverlay()}><Text>Already have an account? Log in</Text></TouchableOpacity> 
         </View>
       </Overlay>
     </View>

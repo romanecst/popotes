@@ -241,6 +241,7 @@ router.post('/group', async function (req, res, next) {
       name: req.body.nameGroupFromFront,
       avatar: req.body.avatarGroupFromFront,
       group_token: uid2(32),
+      user_id: [req.body.userID]
     });
 
     groupSave = await newGroup.save();
@@ -257,6 +258,21 @@ router.post('/group', async function (req, res, next) {
   res.json({ result, token, error, groupSave });
 });
 
+router.post('/getGroups', async function (req, res, next) {
+  var groups = await groupModel.find({user_id: { $all: [`${req.body.token}`] }});
+  console.log(groups)
+  res.json(groups);
+});
+
+router.post('/getMyGroup', async function (req, res, next) {
+  var mygroup = await groupModel.findOne({group_token: req.body.token});
+  var users = []
+  for(var i=0; i<mygroup.user_id.length; i++){
+    var userID = await userModel.findOne({token: mygroup.user_id[i]})
+    users.push(userID)
+  }
+  res.json({mygroup, users});
+});
 
 /* Assign color a user group */
 router.post('/addUser', async function (req, res, next) {
