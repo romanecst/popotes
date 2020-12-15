@@ -10,7 +10,9 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import Signin from './Signin';
-import Signup from './Signup';
+
+import {baseURL} from '../screens/components/adressIP'
+
 
 
 function Group(props) {
@@ -84,7 +86,7 @@ function Group(props) {
 
   /* Create group */
   var saveGroup = async function save() {
-    var rawResponse = await fetch("http://192.168.1.87:3000/group", {
+    var rawResponse = await fetch(`${baseURL}/group`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}`
@@ -105,7 +107,7 @@ function Group(props) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch("http://192.168.1.87:3000/deleteGroup/:name", {
+    var rawResponse = await fetch(`${baseURL}/deleteGroup/:name`, {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `groupName=${nameGroup}`,
@@ -156,7 +158,7 @@ function Group(props) {
 
         <ScrollView style={styles.scroll}>
 
-          <TouchableOpacity onPress={() => { props.navigation.navigate('MesGroupesP12') }} >
+          <TouchableOpacity onPress={() => { props.navigation.navigate('MesGroupes') }} >
             <View style={styles.blocScroll}>
               <Text> Weekend Party</Text>
               <Text style={{ fontStyle: "italic" }}>with friends</Text>
@@ -171,35 +173,7 @@ function Group(props) {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => { props.navigation.navigate('MesGroupesP12') }} >
-            <View style={styles.blocScroll}>
-              <Text> Nouvel an chinois</Text>
-              <Text style={{ fontStyle: "italic" }}>family</Text>
-              <Button
-                icon={<Entypo name="cross" size={24} color="black" />}
-                buttonStyle={{
-                  backgroundColor: "#FFFFFF",
-                  padding: 18,
-                  borderRadius: 50,
-                }}
-              ></Button>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => { props.navigation.navigate('MesGroupesP12') }} >
-            <View style={styles.blocScroll}>
-              <Text>Normandie party</Text>
-              <Text style={{ fontStyle: "italic" }}>with friends</Text>
-              <Button
-                icon={<Entypo name="cross" size={24} color="black" />}
-                buttonStyle={{
-                  backgroundColor: "#FFFFFF",
-                  padding: 18,
-                  borderRadius: 50,
-                }}
-              ></Button>
-            </View>
-          </TouchableOpacity>
+         
         </ScrollView>
 
         {/* -------------------------CREATION DE NOUVEAU GROUPE ---------------------------------- */}

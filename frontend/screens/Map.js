@@ -16,15 +16,14 @@
 
 // }
 
-
-
-
 import React, { useState } from 'react';
 import { Button, Overlay, Input, Avatar } from 'react-native-elements';
 import { StyleSheet, Text, View , Image} from 'react-native';
 import {Icon} from 'react-native-vector-icons/FontAwesome';
 
 import {connect} from 'react-redux'
+
+import {baseURL} from '../screens/components/adressIP'
 
 
 function Signin({navigation, addToken}) {
@@ -44,7 +43,7 @@ function Signin({navigation, addToken}) {
 
   var handleSubmitSignin = async () => {
  
-    const data = await fetch('http://192.168.1.87:3000/sign-in', {
+    const data = await fetch(`${baseURL}/sign-in`, {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`

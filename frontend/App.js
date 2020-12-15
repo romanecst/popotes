@@ -1,7 +1,4 @@
 import React from 'react';
-import { StyleSheet, Text, View, Stack, Button, Group} from 'react-native';
-import { Header } from 'react-native-elements';
-
 
 import {createAppContainer } from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -18,9 +15,6 @@ import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
 // import OverlayCheck from './screens/overlayCheckIngredient'
-import Signup from './screens/Signup';
-import Signin from './screens/Signin';
-import Groupe from './screens/Group';
 
 import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
@@ -33,7 +27,7 @@ import listInfo from './reducers/listInfo';
 import list from './reducers/shoppinglist';
 
 import MesGroupes from './screens/MesGroupes'; //à supprimé apres creation du bouton d'acces à mes groupes dans GroupI 
-import GlobalGroup from './screens/Group';
+import Group from './screens/Group';
 import MesGroupesP12 from './screens/MesGroupesP12';
 
 
@@ -50,12 +44,10 @@ const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, 
 
 var BottomNavigator = createBottomTabNavigator({
   Favorite: Favorite,
-  GlobalGroup: GlobalGroup,
+  Group: Group,
   Home: homePage,
   Map: Map,
-  Profil: Profil, 
-  MesGroupes:MesGroupes,
-  MesGroupesP12:MesGroupesP12,
+  Profil: Profil,
 },
 // {
 //   backBehavior: 'history', 
@@ -67,7 +59,7 @@ var BottomNavigator = createBottomTabNavigator({
       
       if (navigation.state.routeName == 'Favorite') {
         iconName = 'heart-o';
-      } else if (navigation.state.routeName == 'GlobalGroup') {
+      } else if (navigation.state.routeName == 'Group') {
         iconName = "users";
       }else if (navigation.state.routeName == 'Home') {
         iconName = 'home';
@@ -96,6 +88,7 @@ var StackNavigator = createStackNavigator({
   Recipe: Recipe,
   GlobalList: GlobalList,
   RecipeHome: RecipeHome,
+  MesGroupes:MesGroupes,
   MesGroupesP12:MesGroupesP12,
   Retour: BottomNavigator,
   Map : Map,

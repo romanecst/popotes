@@ -7,8 +7,8 @@ import Checking from './components/checkingOverlay';
 
 import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
-
 import { connect } from 'react-redux';
+
 
 function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
     const [visible, setVisible] = useState(false);
@@ -64,7 +64,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
 
             <Header
                 containerStyle={{ backgroundColor: '#ade498', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" />}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }}  />}
                 centerComponent={{ text: 'RECETTE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />

@@ -11,7 +11,7 @@ import { TextInput } from "react-native";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function MesGroupes() {
+export default function MesGroupes({navigation}) {
   const [searchGroupe, setSearchGroupe] = useState("Chercher un Groupe");
 
   return (
@@ -72,6 +72,7 @@ export default function MesGroupes() {
               marginTop: 10,
               marginBottom: 10,
             }}
+            onPress={() => {navigation.navigate('MesGroupesP12') }}
             titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
             icon={
               <View style={{ marginLeft: 140 }}>
@@ -80,39 +81,6 @@ export default function MesGroupes() {
             }
           />
 
-          <Button
-            iconRight={true}
-            title="Noel chez Monique "
-            buttonStyle={{ backgroundColor: "white" }}
-            containerStyle={{
-              borderRadius: 45,
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-            titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-            icon={
-              <View style={{ marginLeft: 140 }}>
-                <Ionicons name="ios-trash" size={30} color="black" />
-              </View>
-            }
-          />
-
-          <Button
-            iconRight={true}
-            title="Soirée chez Albert "
-            buttonStyle={{ backgroundColor: "white" }}
-            containerStyle={{
-              borderRadius: 45,
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-            titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu" }}
-            icon={
-              <View style={{ marginLeft: 140 }}>
-                <Ionicons name="ios-trash" size={30} color="black" />
-              </View>
-            }
-          />
         </ScrollView>
 
         <Ionicons

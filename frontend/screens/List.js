@@ -3,12 +3,12 @@ import { StyleSheet, TextInput, View, Text, Image, borderColor, TouchableOpacity
 
 import { Button, ListItem, Header, Input, Overlay } from "react-native-elements";
 
-
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
-
-
 import {connect} from 'react-redux';
+
+import {baseURL} from '../screens/components/adressIP'
+
 
 function List({ navigation, currentList, saveList, delList, list, addingredientList}) {
   const [visible, setVisible] = useState(false);
@@ -26,7 +26,7 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
   // },[])
 
   const addList = async() => {
-    var rawResponse = await fetch('http://192.168.1.87:3000/addList', {
+    var rawResponse = await fetch(`${baseURL}/addList`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `name=${text}`
@@ -38,7 +38,7 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
 
   async function DelList(id){
     if(id){
-      await fetch('http://192.168.1.87:3000/deleteList', {
+      await fetch(`${baseURL}/deleteList`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
         body: `id=${id}`
@@ -88,14 +88,14 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
           paddingRight: 5,
         }}
       >
-        {list.map((l, i) => (
+        {list.map((el, i) => (
           <View style={{
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
         }}>
           <TouchableOpacity
-          onPress={() => {currentList(l); addingredientList(l.ingredients); navigation.navigate('GlobalList') }}>
+          onPress={() => {currentList(el); addingredientList(el.ingredients); navigation.navigate('GlobalList') }}>
           <ListItem
             key={i}
             bottomDivider

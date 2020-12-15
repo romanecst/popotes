@@ -11,6 +11,8 @@ import { withNavigation } from 'react-navigation';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Checking from './checkingOverlay';
 
+import {baseURL} from './adressIP'
+
 
 
 
@@ -23,7 +25,7 @@ function RecipeHome(props) {
 
     useEffect(()=>{
         const loadList = async() => {
-          var rawResult = await fetch('http://192.168.1.87:3000/list');
+          var rawResult = await fetch(`${baseURL}/list`);
           var result = await rawResult.json();
           setListArray(result)
         }
