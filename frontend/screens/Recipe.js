@@ -48,33 +48,32 @@ function Recipe(props) {
         setVisible(!visible);
     };
 // ------------------------------------------------GESTION DU LIKE DANS LE DETAIL RECETTE -------------------------------
-    // useEffect(() => {
-    //     if (like) {
-    //         var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
-    //         if (!found) {
-    //             props.saveRecipe(props.recipeInfo);
-    //         }
-    //     } else {
-    //         props.deleteRecipe(props.recipeInfo.title);
-    //     }
-    // }, [like])
+   
+useEffect(() => {
+        if (like) {
+            var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
+            if (!found) {
+                props.saveRecipe(props.recipeInfo);
+            }
+        } else {
+            props.deleteRecipe(props.recipeInfo.title);
+        }
+    }, [like])
 
-
+    var likes = props.recipeList.find(element => element.title == props.recipeInfo.title);
     var colorHeart;
 
     const colorLike = () =>{
         setLike(!like);
     }
-    
-    if (like) {
-        colorHeart = '#c0392b'
-        console.log('like')
-    } else {
-        colorHeart = '#2c3e50'
-        console.log('dislike')
-    }
 
+    if (likes != undefined) {
+        colorHeart ='#FF0000'
+    } else {
+        colorHeart ='black'
+    }
     
+
 
     return (
 
@@ -206,12 +205,18 @@ function mapDispatchToProps(dispatch) {
         },
         currentList: function(info) { 
             dispatch( {type: 'listInfo', listInfo: info} ) 
-        }
+        }, 
+        saveRecipe: function (info) {
+            dispatch({ type: 'recipeList', recipeInfo: info })
+        },
+        deleteRecipe: function (info) {
+            dispatch({ type: 'recipeListDel', title: info })
+        },
     }
 }
 
 function mapStateToProps(state) {
-    return { recipeInfo: state.recipe,  list: state.list }
+    return { recipeInfo: state.recipe,  list: state.list, recipeList: state.recipeList }
 }
 
 export default connect(
