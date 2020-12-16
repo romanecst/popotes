@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { Button, Overlay, Card, SearchBar, Avatar, Input } from 'react-native-elements';
+import { Button, Overlay, Card, SearchBar, Avatar, Input} from 'react-native-elements';
 
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
@@ -35,6 +35,30 @@ function RecipeHome(props) {
   
   
     const [listErrorSignUp, setListErrorSignUp] = useState([]);
+    const [visible, setVisible] = useState(false);
+    const [lists, setLists] = useState([])
+
+    const toggleOverlay = () => {
+        setVisible(!visible);
+        if(!visible){
+          AsyncStorage.getItem("user token", 
+                async function(error, data){
+                  if(data){
+                  props.addToken(data);
+                  const dataFetch = await fetch(`${baseURL}/getMyLists`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `token=${data}`
+                  });
+                  const body = await dataFetch.json();
+                  setLists(body)
+  
+                  }else{
+                    setVisibleSignup(true);
+                  }
+                })
+        }
+    };
   
     const toggleSignin = () => {
       setVisibleSignin(!visibleSignin);
@@ -57,7 +81,6 @@ function RecipeHome(props) {
   
       if(body.result == true){
         
-        console.log(body.token);
         props.addToken(body.token);
         AsyncStorage.setItem("user token", body.token);
         toggleSignin();
@@ -125,11 +148,6 @@ function RecipeHome(props) {
         colorHeart = { color: 'black' }
     }
 
-    const [visible, setVisible] = useState(false);
-
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
 
     var overlayIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, j){
         return <Checking key={j} name={ingredient.name} quantity= {ingredient.amount} measure={ingredient.measures.us.unitLong}/>
@@ -140,14 +158,29 @@ function RecipeHome(props) {
     });
 
 
-    if(props.list.length !== 0){
-    var items = props.list.map(function(el){
+    // if(props.list.length !== 0){
+    var items = lists.map(function(el){
         return { label: el.name, value: el._id }
     });
-    items.unshift({ label: 'New List', value: 'new list' })
-    }else{
-    var items = { label: 'New List', value: 'new list' }
-    }
+    // items.unshift({ label: 'New List', value: 'new list' })
+    // }else{
+    // var items = { label: 'New List', value: 'new list' }
+    // }
+    var newIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, i){
+  return {id:ingredient.id, name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title}
+  });
+
+    async function toList(){
+      props.currentList(selectedList); 
+      await fetch(`${baseURL}/addIngredients`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `list=${selectedList._id}&ingredients=${JSON.stringify(newIngredients)}`
+      });
+      props.ingredientList(newIngredients); 
+      toggleOverlay(); 
+      props.navigation.navigate('GlobalList') 
+      }
 
     const loggedIn = ()=> {
     AsyncStorage.getItem("user token", 
@@ -226,7 +259,7 @@ function RecipeHome(props) {
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => { props.currentList(selectedList); props.ingredientList(newIngredients); toggleOverlay(); props.navigation.navigate('GlobalList') }}
+          onPress={() => toList()}
         />
         </View>
       </Overlay>

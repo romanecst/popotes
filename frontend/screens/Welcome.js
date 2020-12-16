@@ -15,7 +15,7 @@ export default function welcome({ navigation }) {
 
     useEffect(()=>{
         const goToHome = async()=>{
-        var preferences = ['gluten free','vegetarian','lactose free','vegan'];
+        var preferences = ['gluten free','vegetarian','lactose free','vegan','no pref'];
         for (let i = 0; i<preferences.length; i++){
             await AsyncStorage.getItem(preferences[i], 
             function(error, data){
@@ -60,6 +60,12 @@ export default function welcome({ navigation }) {
             }
         })
     };
+
+    function NoPref(){
+        if(!glutenFree && !vegetarian && !lactoseFree && !vegan){
+            AsyncStorage.setItem('no pref', 'true')
+        }
+    }
 
     // COULEUR APRES SELECTION  ================>
     var gluten = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
@@ -124,7 +130,7 @@ return (
                     </View>
                     <Button
                         title="Next"
-                        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
+                        onPress={() => {NoPref(); navigation.navigate('CreateGroup'); setVisible(false)}}
                         type="clear"
                         buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
                         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}

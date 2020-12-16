@@ -50,7 +50,7 @@ function MesGroupes(props) {
       }
     }
     loadInfo();
-  },[])
+  },[props.tokenGroup])
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -61,7 +61,7 @@ function MesGroupes(props) {
     const rawResponseList = await fetch(`${baseURL}/addList`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `name=${text}`
+        body: `name=${text}&user=${props.token}`
     });
 
     const responseList = await rawResponseList.json()
@@ -126,24 +126,7 @@ function MesGroupes(props) {
       } 
     };
 
-
-var newList = listFriends.map(function(list, i){
-  return <Button
-  iconRight={true}
-  title={list}
-  key={i}
-  buttonStyle={{ backgroundColor: "white" }}
-  containerStyle={{
-    borderRadius: 45,
-    marginTop: 10,
-    marginBottom: 10,
-  }}
-  titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu", textAlign: "center" }}
-/>
-})
-
   return (
-    <ScrollView>
     <View style={{ backgroundColor: "#ADE498", flex:1 }}>
       <View
         style={{
@@ -352,7 +335,6 @@ var newList = listFriends.map(function(list, i){
     </Overlay>
 
     </View>
-    </ScrollView>
   );
 }
 
