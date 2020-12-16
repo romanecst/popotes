@@ -12,27 +12,89 @@ import { Input, Button, Avatar, Accessory, Overlay } from "react-native-elements
 import { TextInput } from "react-native";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-import * as Contacts from 'expo-contacts';
-import { connect } from "react-redux";
+
+import { connect } from 'react-redux';
+
 import {baseURL} from '../screens/components/adressIP'
 
- function MesGroupes({tokenGroup, nameGroup}) {
+
+function MesGroupes(props) {
+
+  const [visible, setVisible] = useState(false);
+  const [groupName, setGroupName]= useState('');
+  const [groupParticipants, setGroupParticipants]= useState([]);
+  const [listID, setListID]= useState('');
+  const [text, setText] = useState('');
 
   const [searchGroupe, setSearchGroupe] = useState("Chercher un Groupe");
   const [searchFriend, setSearchFriend] = useState("");
   const [listFriends, setListFriends] = useState ([]);
-  const [visible, setVisible] = useState(false);
+  const [visibleFriends, setVisibleFriends] = useState(false);
   const [listErrorFriends, setListErrorFriends] = useState([]);
-  // const [hasPermission, setHasPermission] = useState(null);
-  // const [contact, setContact]= useState([]);
-  const [groupName, setGroupName]= useState('');
-  const [groupParticipants, setGroupParticipants]= useState([]);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [contact, setContact]= useState([]);
 
+  useEffect(()=>{
+    const loadInfo = async()=>{
+      const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `token=${props.tokenGroup}`
+      })
+      const response = await rawReponse.json();
+      setGroupName(response.mygroup.name);
+      setGroupParticipants(response.users)
 
-  const text =
+      if(response.mygroup.list_id){
+        setListID(response.mygroup.list_id)
+      }
+    }
+    loadInfo();
+  },[])
+
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  }
+
+  
+  const addList = async() => {
+    const rawResponseList = await fetch(`${baseURL}/addList`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `name=${text}`
+    });
+
+    const responseList = await rawResponseList.json()
+    
+
+    const rawResponseGroup = await fetch(`${baseURL}/updateGroup`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `token=${props.tokenGroup}&listID=${responseList._id}`
+  });
+
+  const responseGroup = await rawResponseGroup.json()
+
+  if(responseGroup){
+    setListID(responseList._id)
+  }
+
+  }
+
+  const List = ()=>{
+    if(listID){
+      props.currentList({id:listID})
+      props.navigation.navigate('MesGroupesP12')
+    }else{
+      toggleOverlay();
+    }
+    
+  }
+
+  const textMail =
   `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
    https://popotes/app/fr.${"\n"}
-  Here is the access code to the group:${tokenGroup}, please inform what you
+  Here is the access code to the group:${props.tokenGroup}, please inform what you
   are bringing. ${"\n"}
   See you soon.`
 
@@ -70,25 +132,25 @@ useEffect(()=>{
 
 
   function back() {
-    setVisible(false);
+    setVisibleFriends(false);
   }
   function addFriend() {
-    setVisible(!visible);
+    setVisibleFriends(!visibleFriends);
      }
 
-     var checkNameFriends = async function save() {
-      var rawResponse = await fetch("http://192.168.1.21:3000/friends", {
+     var checkNameFriends = async()=> {
+      var rawResponse = await fetch(`${baseURL}/friends`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `nameFriendFromFront=${searchFriend}&tokenGroupFromFront=${tokenGroup}`,
+        body: `nameFriendFromFront=${searchFriend}&tokenGroupFromFront=${props.tokenGroup}`,
       });
       var response = await rawResponse.json();
       console.log(response)
       var userName = response.userSearch.username;
   
       if (response.result == true && userName) {
-      setListFriends([...listFriends, userName])
-      setVisible(false);
+      setGroupParticipants([...groupParticipants, response.userSearch])
+      setVisibleFriends(false);
         
       }else{
         listErrorFriends.push(`ton ami n'est pas enregistré`)
@@ -96,9 +158,6 @@ useEffect(()=>{
       } 
     };
 
-    useEffect(() => { 
-      console.log('liste amis à jour', listFriends)
-    }, [listFriends]) 
 
 var newList = listFriends.map(function(list, i){
   return <Button
@@ -117,7 +176,7 @@ var newList = listFriends.map(function(list, i){
 
   return (
     <ScrollView>
-    <View style={{ backgroundColor: "#ADE498" }}>
+    <View style={{ backgroundColor: "#ADE498", flex:1 }}>
       <View
         style={{
           alignItems: "center",
@@ -135,14 +194,15 @@ var newList = listFriends.map(function(list, i){
             }}
           />
         </View>
-        <Text>NameGroup : {nameGroup}</Text>
-        <Text>Password: {tokenGroup}</Text>
+        {/* <Text>NameGroup : {props.nameGroup}</Text>
+        <Text>Password: {props.tokenGroup}</Text> */}
         <View>
           <Text style={{padding: 20, fontSize: 20}}>{groupName}</Text>
         </View>
         <Button
           style={{ marginTop: 30, width: 130, fontFamily: "Kohinoor Telugu"}}
           title="Liste"
+          onPress={()=>List()}
         />
         <Text
           style={{ marginTop: 20, fontSize: 25, fontFamily: "Kohinoor Telugu" }}
@@ -158,7 +218,7 @@ var newList = listFriends.map(function(list, i){
             title=""
             buttonStyle={{ backgroundColor: "white", borderRadius: 45 }}
             icon={<Entypo name="cross" size={24} color="black" />}
-            onPress={() => {navigation.navigate('MesGroupesP12')}}
+            onPress={() => {props.navigation.navigate('MesGroupesP12')}}
           />
           </View>
           })
@@ -166,30 +226,9 @@ var newList = listFriends.map(function(list, i){
         }
 
         </ScrollView>
-    <View style={{alignContent: "center"}}> 
+    {/* <View style={{alignContent: "center"}}> 
         {newList}
-    </View>   
-
-    <Text style={{ marginBottom: 10, fontFamily: "Kohinoor Telugu" }}>
-                Invite your friends to download your app :
-              </Text>
-              <Button
-                title="share the link"
-                buttonStyle={{
-                  backgroundColor: "white",
-                  borderRadius: 10,
-                  paddingHorizontal: 18,
-                  marginBottom: 60,
-                  borderWidth: 2,
-                  borderColor: "#7FDBDA",
-                }}
-                titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
-                onPress={() => {
-                    Linking.openURL(
-                      `mailto:?subject=${nameGroup}&body=${text}`
-                    );
-                }}
-              />
+    </View>    */}
     
 
       
@@ -212,7 +251,7 @@ var newList = listFriends.map(function(list, i){
             borderRadius: 30,
             width: 320,
           }}
-          isVisible={visible}
+          isVisible={visibleFriends}
           onBackdropPress={addFriend}
         >
           <ScrollView>
@@ -297,6 +336,27 @@ var newList = listFriends.map(function(list, i){
                   checkNameFriends(searchFriend)
                 }}
               />
+
+              <Text style={{ marginBottom: 10, fontFamily: "Kohinoor Telugu" }}>
+                Invite your friends to download your app :
+              </Text>
+              <Button
+                title="share the link"
+                buttonStyle={{
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  paddingHorizontal: 18,
+                  marginBottom: 60,
+                  borderWidth: 2,
+                  borderColor: "#7FDBDA",
+                }}
+                titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
+                onPress={() => {
+                    Linking.openURL(
+                      `mailto:?subject=${props.nameGroup}&body=${textMail}`
+                    );
+                }}
+              />
             </View>
           </View>
           </ScrollView>
@@ -304,6 +364,25 @@ var newList = listFriends.map(function(list, i){
 
         </View>
       </View>
+
+       {/* ------------------------------ OVERLAY -----------------------------------------------*/}
+  <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
+    <View style={styles.overlay}>
+        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, give a name to your list : </Text>
+        <Input placeholder='Name'
+        onChangeText= {(value) => setText(value)} 
+        value={text}/>
+        </View>
+        <Button
+        title="Confirm"
+        onPress={() => {addList(); toggleOverlay()}}
+        type="clear"
+        buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+        />
+    </Overlay>
+
     </View>
     </ScrollView>
   );
@@ -315,11 +394,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
+  overlay: {
+    width: 290,
+    margin: 18,
+    justifyContent: 'center',
+},
 });
 
-function mapStateToProps(state) {
-  return { tokenGroup: state.tokenGroup, nameGroup: state.nameGroup, token: state.token  };
+function mapDispatchToProps(dispatch) {
+  return {
+      currentList: function(info) { 
+          dispatch( {type: 'listInfo', listInfo: info} ) 
+      },
+  }
 }
 
-export default connect(mapStateToProps,null)
-(MesGroupes);
+function mapStateToProps(state) {
+  return { tokenGroup: state.tokenGroup, token: state.token, nameGroup: state.nameGroup };
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(MesGroupes);
+

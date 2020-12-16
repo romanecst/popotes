@@ -82,28 +82,8 @@ export default function welcome({ navigation }) {
     };
  
 
-    if(!glutenFree && !vegetarian && !lactoseFree && !vegan){
-        var button = <Button
-        title="Next"
-        disabled={true}
-        type="clear"
-        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
-        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-        />
-    }else{
-        var button = <Button
-        title="Next"
-        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
-        type="clear"
-        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
-        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-        />
-    }
-
 return (
-    <ImageBackground source={require('../assets/Background.jpeg')} style={{ flex: 1 }}>
+    <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
         <View style={styles.container}>
             <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
             <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
@@ -142,7 +122,14 @@ return (
                             <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Vegan</Text>
                         </TouchableOpacity>
                     </View>
-                    {button}
+                    <Button
+                        title="Next"
+                        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
+                        type="clear"
+                        buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
+                        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+                        />
                     </View>
                 </Overlay>
             </View>

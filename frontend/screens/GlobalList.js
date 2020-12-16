@@ -168,7 +168,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
             <Button
                 iconRight={true}
                 title="Share with the group"
-                buttonStyle={{ borderColor: 'white', marginHorizontal: 30, borderRadius: 30, backgroundColor: 'white', justifyContent: 'space-between', padding: 25, paddingHorizontal: 45 }}
+                buttonStyle={{ borderColor: 'white', marginHorizontal: 30, borderRadius: 30, backgroundColor: 'white', justifyContent: 'space-between', padding: 12, paddingHorizontal: 45 }}
                 titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
                 icon={<MaterialCommunityIcons name="account-group" size={36} color="black" />}
             />

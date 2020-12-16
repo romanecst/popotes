@@ -20,10 +20,7 @@ function Group(props) {
   const [visible, setVisible] = useState(false);
 
   const [nameGroup, setNameGroup] = useState("");
-  const [tokenGroup, setTokenGroup] = useState("")
-  
-
-  const [groupExists, setGroupExists] = useState(false);
+  const [tokenGroup, setTokenGroup] = useState("");
   const [listErrorGroup, setListErrorGroup] = useState([]);
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -32,7 +29,6 @@ function Group(props) {
   const [signInEmail, setSignInEmail] = useState('')
   const [signInPassword, setSignInPassword] = useState('')
 
-  const [userExists, setUserExists] = useState(false)
   const [listErrorsSignin, setErrorsSignin] = useState([])
 
   const [visibleSignin, setVisibleSignin] = useState(false);
@@ -79,13 +75,11 @@ function Group(props) {
       setGroupList(response);
       AsyncStorage.setItem("user token", body.token);
       toggleSignin();
-      // setUserExists(true)
       
     }  else {
       setErrorsSignin(body.error)
     }
   }
-
 
   var tabErrorsSignin = listErrorsSignin.map((error,i) => {
     return(<Text>{error}</Text>)
@@ -140,7 +134,7 @@ function Group(props) {
                const response = await rawReponse.json()
               setGroupList(response);
                 }else{
-                  setVisibleSignin(true);
+                  setVisibleSignup(true);
                 }
               })
       if (Platform.OS !== "web") {
@@ -191,8 +185,8 @@ function Group(props) {
 
     if (response.result == true) {
       setTokenGroup(token);
-      setGroupExists(true);
-      AddTokenGroup(token);
+      props.AddTokenGroup(token);
+      setGroupList([...groupList, response.groupSave])
       createGroup()
     } else {
       setListErrorGroup(response.error);
@@ -202,10 +196,9 @@ function Group(props) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch(`${baseURL}/deleteGroup/:name`, {
+    var rawResponse = await fetch(`${baseURL}/deleteGroup/${nameGroup}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `groupName=${nameGroup}`,
     });
     var response = await rawResponse.json();
     console.log("test update", response);
@@ -477,7 +470,7 @@ function Group(props) {
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
           onPress={() => handleSubmitSignin()}
         />
-        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
+        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
         </View>
       </Overlay>
 
@@ -524,7 +517,7 @@ function Group(props) {
           titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
           onPress={() => {handleSubmitSignUp()}}
         />
-        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
+        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
         </View>
       </Overlay>
 

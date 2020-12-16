@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, TextInput, View, Text, Image, BorderColor, TouchableOpacity, ImageBackground, ScrollView, AsyncStorage } from "react-native";
-import { Avatar, Button, Header, Accessory, ListItem } from "react-native-elements";
+import { Avatar, Button, Header, Accessory, ListItem, Overlay, Input} from "react-native-elements";
 import { AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
 import Signin from "./Signin";
@@ -9,8 +9,10 @@ import {baseURL} from '../screens/components/adressIP'
 
 import * as ImagePicker from "expo-image-picker";
 
-function Profil({ navigation, token }) {
+function Profil(props) {
 
+  const [hasPermission, setHasPermission] = useState(null);
+  const [image, setImage] = useState(null);
 
   const [visible, setVisible] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
@@ -22,11 +24,39 @@ function Profil({ navigation, token }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  const [hasPermission, setHasPermission] = useState(null);
-  const [image, setImage] = useState(null);
+  const [signInEmail, setSignInEmail] = useState('')
+  const [signInPassword, setSignInPassword] = useState('')
+
+  const [listErrorsSignin, setErrorsSignin] = useState([])
+
+  const [visibleSignin, setVisibleSignin] = useState(false);
+  const [visibleSignup, setVisibleSignup] = useState(false);
+
+  const [signUpUsername, setSignUpUsername] = useState('');
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+
+
+  const [listErrorSignUp, setListErrorSignUp] = useState([]);
+
+  const toggleSignin = () => {
+    setVisibleSignin(!visibleSignin);
+  }
+
+  const toggleSignup = () => {
+    setVisibleSignup(!visibleSignup);
+  }
 
   useEffect(() => {
     (async () => {
+      AsyncStorage.getItem("user token", 
+              async function(error, data){
+                if(data){
+                props.addToken(data);
+                }else{
+                  setVisibleSignup(true);
+                }
+              })
       if (Platform.OS !== "web") {
         const {
           status,
@@ -39,6 +69,58 @@ function Profil({ navigation, token }) {
       }
     })();
   }, []);
+
+  var handleSubmitSignin = async () => {
+ 
+    const data = await fetch(`${baseURL}/sign-in`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
+    })
+
+    const body = await data.json()
+
+    if(body.result == true){
+      
+      console.log(body.token);
+      props.addToken(body.token);
+
+      
+      AsyncStorage.setItem("user token", body.token);
+      toggleSignin();
+      
+    }  else {
+      setErrorsSignin(body.error)
+    }
+  }
+
+  var tabErrorsSignin = listErrorsSignin.map((error,i) => {
+    return(<Text>{error}</Text>)
+  })
+
+  var handleSubmitSignUp = async () => {
+
+    const data = await fetch(`${baseURL}/sign-up`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
+    })
+
+    const body = await data.json()
+    if(body.result == true){
+      props.addToken(body.token);
+      AsyncStorage.setItem("user token", body.token);
+      toggleSignup();
+
+
+    } else {
+      setListErrorSignUp(body.error)
+    }
+  }
+
+  var tabErrorsSignup = listErrorSignUp.map((error,i) => {
+    return(<Text>{error}</Text>)
+  })
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -88,58 +170,6 @@ function Profil({ navigation, token }) {
     })
   };
 
-  var handleSubmitSignin = async () => {
- 
-    const data = await fetch(`${baseURL}/sign-in`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
-    })
-
-    const body = await data.json()
-
-    if(body.result == true){
-      
-      console.log(body.token);
-      props.addToken(body.token);
-
-      const rawReponse = await fetch(`${baseURL}/getGroups`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `token=${body.token}`
-    })
-
-      const response = await rawReponse.json()
-      setGroupList(response);
-      AsyncStorage.setItem("user token", body.token);
-      toggleSignin();
-      // setUserExists(true)
-      
-    }  else {
-      setErrorsSignin(body.error)
-    }
-  }
-
-  useEffect(() => {
-    (async () => {
-      AsyncStorage.getItem("user token", 
-              async function(error, data){
-                if(data){
-                props.addToken(data);
-                const rawReponse = await fetch(`${baseURL}/getGroups`, {
-                  method: 'POST',
-                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                  body: `token=${data}`
-                })
-
-               const response = await rawReponse.json()
-              setGroupList(response);
-                }else{
-                  setVisibleSignin(true);
-                }
-              })
-    })();
-  }, []);
 
   /* Update user */
   var updateUser = async () => {
@@ -147,7 +177,7 @@ function Profil({ navigation, token }) {
     var userRegisters = await fetch(`${baseURL}/userUpdate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
+      body: `token=${props.token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
     })
     var response = await userRegisters.json();
     console.log(response);
@@ -161,14 +191,10 @@ function Profil({ navigation, token }) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.navigate('homePage')}}/>}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {props.navigation.navigate('homePage')}}/>}
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
-        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
-
-      {/* --------------------------- OVERLAY CONNECTION ----------------------*/}
-
-      <Signin screen='Profil'/>
 
       <ScrollView>
         {/* --------------BOUTON D'AJOUT DE PHOTO " AVATAR " -----------------------*/}
@@ -300,12 +326,103 @@ function Profil({ navigation, token }) {
             title="validate"
             buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
-            onPress={() => { navigation.navigate('Profil'); updateUser() }}
+            onPress={() => { props.navigation.navigate('Profil'); updateUser() }}
 
           />
         </View>
 
       </ScrollView>
+
+      {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
+
+
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignin} >
+        
+        <View style={styles.overlay}>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
+            <Avatar
+                size="large"
+                rounded
+                title="LW"
+                activeOpacity={1}
+                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+            />
+             
+            <Input
+                containerStyle={styles.input}
+                placeholder='Email'
+                leftIcon={{ type: 'font-awesome', name: 'at' }}
+                onChangeText={(val) => setSignInEmail(val)}
+                val = {signInEmail}
+            />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+                onChangeText={(val) => setSignInPassword(val)}
+                val = {signInPassword}
+            />
+
+              {tabErrorsSignin}
+
+        <Button
+          title="Sign-in"
+          type="clear"
+          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+          onPress={() => handleSubmitSignin()}
+        />
+        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
+        </View>
+      </Overlay>
+
+
+      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignup} >
+        
+        <View style={styles.overlay}>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>
+            <Avatar
+                size="large"
+                rounded
+                title="LW"
+                activeOpacity={1}
+                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+            />
+             <Input
+                containerStyle={styles.input}
+                placeholder='Username'
+                leftIcon={{ type: 'font-awesome', name: 'user' }}
+                onChangeText={(val) => setSignUpUsername(val)}
+                val = {signUpUsername}
+            />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Email'
+                leftIcon={{ type: 'font-awesome', name: 'at' }}
+                onChangeText={(val) => setSignUpEmail(val)}
+                val = {signUpEmail}
+            />
+            <Input
+                containerStyle={styles.input}
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+                onChangeText={(val) => setSignUpPassword(val)}
+                val = {signUpPassword}
+            />
+
+            {tabErrorsSignup}
+
+        <Button
+          title="Sign-up"
+          type="clear"
+          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+          onPress={() => {handleSubmitSignUp()}}
+        />
+        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
+        </View>
+      </Overlay>
+
     </View>
 
   )
@@ -315,10 +432,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-  }, overlay: {
-    width: 290,
-    margin: 18,
-    justifyContent: 'center',
   }, prefalim: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -335,21 +448,35 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 12,
     backgroundColor: "white"
-  }
+  },
+  overlay: {
+    width: 290,
+    margin:18,
+    justifyContent: 'center',
+  },
+input:{
+    borderWidth:1,
+    borderRadius:20,
+    height:60,
+    marginBottom:20
+  }, 
 });
+
+function mapDispatchToProps(dispatch){
+  return {
+    addToken:function(token){
+      dispatch({type:'addToken',token: token})
+    }
+  }
+}
+
+
+
 
 function mapStateToProps(state) {
   return { token: state.token }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-
-    addToken: function(token){
-      dispatch({type: 'addToken', token: token})
-    }
-  };
-}
 
 export default connect(
   mapStateToProps,
