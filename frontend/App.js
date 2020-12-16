@@ -38,31 +38,22 @@ import ingredientList from './reducers/ingredientList';
 import listInfo from './reducers/listInfo';
 import list from './reducers/shoppinglist';
 
-
-
-
-
-
+import BottomTabBar from "react-navigation-selective-tab-bar";
 
 const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo, list}));
 
 
-
-
-
 var BottomNavigator = createBottomTabNavigator({
-  Favorite: Favorite,
-  Group: Group,
-  Home: homePage,
-  Profil: Profil,
-  List: {
-    screen: List,
-  //   navigationOptions:()=>{
-  //     return {
-  //       tabBarVisible:false,
-  //     };
-  //  }
-}
+  Favorite: { screen : Favorite},
+  Group: { screen : Group},
+  Home: { screen : homePage},
+  Profil: { screen : Profil},
+  List : {screen : List},
+  MesGroupes: { screen : MesGroupes},
+  MesGroupesP12: { screen :MesGroupesP12},
+  Recipe :{screen : Recipe},
+  GlobalList: {screen : GlobalList},
+
 },
 // {
 //   backBehavior: 'history', 
@@ -85,6 +76,15 @@ var BottomNavigator = createBottomTabNavigator({
       }
       return <FontAwesome name={iconName} size={25} color={tintColor} />;
     },
+    tabBarComponent: props => {
+      return (
+        <BottomTabBar
+          {...props} // Required
+          display={["Favorite", "Group", "Home", "Profil"]} // Required
+          background="black" // Optional
+        />
+      );
+    }
   }),
   tabBarOptions: {
     activeTintColor: '#5d5c5c',

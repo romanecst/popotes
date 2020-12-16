@@ -186,7 +186,7 @@ var newList = listFriends.map(function(list, i){
             title=""
             buttonStyle={{ backgroundColor: "white", borderRadius: 45 }}
             icon={<Entypo name="cross" size={24} color="black" />}
-            onPress={() => {navigation.navigate('MesGroupesP12')}}
+            onPress={() => {props.navigation.navigate('MesGroupesP12')}}
           />
           </View>
           })
