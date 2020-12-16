@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import {baseURL} from './components/adressIP'
 
 function Recipe(props) {
-    const [visible, setVisible] = useState(false);
+
     const [servings, setServings] = useState(props.recipeInfo.servings);
     const [selectedList, setSelectedList] = useState();
     const [like, setLike] = useState(false);
@@ -149,9 +149,7 @@ function Recipe(props) {
     var items = lists.map(function(el){
         return { label: el.name, value: el._id }
     });
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
+  
 // ------------------------------------------------GESTION DU LIKE DANS LE DETAIL RECETTE -------------------------------
    
 useEffect(() => {

@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 function MesGroupesP12(props) {
 
+  const [check, setCheck] = useState(false);
   const [groupName, setGroupName]= useState('');
   const [groupParticipants, setGroupParticipants]= useState([]);
   const [listName, setListName]= useState('');
@@ -106,11 +107,11 @@ function MesGroupesP12(props) {
              return  <View key={i} style={{ alignItems: 'center', marginTop: 20, flexDirection: 'row', justifyContent: 'flex-end' }}>
                 <Text style={{marginRight:40}}> {el.name} : {el.amount}</Text>
                 <CircleCheckBox
-                  checked={false}
-                  onToggle={(checked) => console.log('My state is: ', checked)}
+                  checked={check}
+                  onToggle={(checked) => {console.log('My state is: ', checked); setCheck(!check)}}
                   labelPosition={LABEL_POSITION.LEFT}
                   outerColor='black'
-                  innerColor='red'
+                  innerColor='#FFC312'
                   innerSize='20'
                   outerSize='26'
                 />

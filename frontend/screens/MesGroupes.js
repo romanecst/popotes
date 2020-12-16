@@ -82,6 +82,7 @@ function MesGroupes(props) {
   }
 
   const List = ()=>{
+    console.log('iudejbkehouhjohuurt', listID);
     if(listID){
       props.currentList({id:listID})
       props.navigation.navigate('MesGroupesP12')
@@ -121,7 +122,7 @@ useEffect(()=>{
         const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
           method: 'POST',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: `token=${tokenGroup}`
+          body: `token=${props.tokenGroup}`
         })
         const response = await rawReponse.json();
         setGroupName(response.mygroup.name);
