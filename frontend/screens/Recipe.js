@@ -11,11 +11,11 @@ import { connect } from 'react-redux';
 
 import {baseURL} from './components/adressIP'
 
-
 function Recipe(props) {
-
+    const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(props.recipeInfo.servings);
     const [selectedList, setSelectedList] = useState();
+    const [like, setLike] = useState(false);
 
     const [signInEmail, setSignInEmail] = useState('')
     const [signInPassword, setSignInPassword] = useState('')
@@ -149,6 +149,35 @@ function Recipe(props) {
     var items = lists.map(function(el){
         return { label: el.name, value: el._id }
     });
+    const toggleOverlay = () => {
+        setVisible(!visible);
+    };
+// ------------------------------------------------GESTION DU LIKE DANS LE DETAIL RECETTE -------------------------------
+   
+useEffect(() => {
+        if (like) {
+            var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
+            if (!found) {
+                props.saveRecipe(props.recipeInfo);
+            }
+        } else {
+            props.deleteRecipe(props.recipeInfo.title);
+        }
+    }, [like])
+
+    var likes = props.recipeList.find(element => element.title == props.recipeInfo.title);
+    var colorHeart;
+
+    const colorLike = () =>{
+        setLike(!like);
+    }
+
+    if (likes != undefined) {
+        colorHeart ='#FF0000'
+    } else {
+        colorHeart ='black'
+    }
+    
 
     async function toList(){
         props.currentList(selectedList); 
@@ -229,7 +258,13 @@ function Recipe(props) {
                 </View>
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginHorizontal:100, marginBottom:50}}>
                 <View style={{backgroundColor:'white', padding:15, borderRadius:30}}>
-                    <AntDesign name="heart" size={24} color="black" />
+                   <Button 
+                   buttonStyle={{ borderColor: 'white', backgroundColor: 'white' }}
+                   icon={<AntDesign 
+                    name="heart" 
+                    size={24} 
+                    color={colorHeart} 
+                    onPress={()=>colorLike()} /> } /> 
                 </View>
                 <View style={{backgroundColor:'white', padding:15, borderRadius:30}}>
                 <FontAwesome name="list" size={24} color="black" onPress={()=>toggleOverlay()} />
@@ -378,12 +413,19 @@ function mapDispatchToProps(dispatch) {
         },
         addToken: function(token){
             dispatch({type: 'addToken', token: token})
-          }
+          
+        }, 
+        saveRecipe: function (info) {
+            dispatch({ type: 'recipeList', recipeInfo: info })
+        },
+        deleteRecipe: function (info) {
+            dispatch({ type: 'recipeListDel', title: info })
+        },
     }
 }
 
 function mapStateToProps(state) {
-    return { recipeInfo: state.recipe,  list: state.list }
+    return { recipeInfo: state.recipe,  list: state.list, recipeList: state.recipeList }
 }
 
 export default connect(

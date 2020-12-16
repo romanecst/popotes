@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
 import { Header, SearchBar } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import { withNavigationFocus } from 'react-navigation';
 
-function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe}) {
+function Favorite(props) {
 
     const [searchTxt, setSearchTxt] = useState('');
 
@@ -23,7 +23,7 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
                     var recetteLocal = JSON.parse(data);
                     if(recetteLocal.length !== 0){
                         recetteLocal.forEach(element => {
-                            addRecipe(element);
+                            props.addRecipe(element);
                         });  
                     }
                 }
@@ -38,19 +38,23 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
     function updateSearch(search){
         setSearchTxt(search)}
 
-    var favourites = recipeList.map(function(recipe, i){
+    var favourites = props.recipeList.map(function(recipe, i){
         return <View key={i} style={styles.container}>
-        <Image style={styles.picture} source={{uri: recipe.image}} />
+        <TouchableOpacity onPress={() => { props.goToRecipe(recipe); props.navigation.navigate('Recipe') }}>
+        <Image 
+        style={styles.picture} 
+        source={{uri: recipe.image}} />
+        </TouchableOpacity>
         <Text style={styles.text} >{recipe.title}</Text>
         <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
-        <Entypo name="cross" size={24} color="black" onPress={()=>deleteRecipe(recipe.title)}/>
+        <Entypo name="cross" size={24} color="black" onPress={()=>props.deleteRecipe(recipe.title)}/>
         </View>
     </View>
     })
 
     useEffect(()=>{
         return async()=>{
-            await AsyncStorage.setItem("favorites", JSON.stringify(recipeList));
+            await AsyncStorage.setItem("favorites", JSON.stringify(props.recipeList));
         }
     },[]);
     
@@ -63,7 +67,7 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
             <Header
                 containerStyle={{backgroundColor:'#febf63', height:90, paddingTop:50}}
                 centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
-                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
+                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {props.navigation.navigate('List')}} />}
             />
            
            <SearchBar 
@@ -77,7 +81,9 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+                    
                     {favourites}
+                  
                 </View>
             </ScrollView>
         </View>
@@ -91,12 +97,15 @@ function mapDispatchToProps(dispatch) {
         },
         deleteRecipe: function(info) { 
             dispatch( {type: 'recipeListDel', title: info} ) 
-        }
+        }, 
+        goToRecipe: function (info) {
+            dispatch({ type: 'recipeInfo', recipeInfo: info })
+        },
     }
     }
 
 function mapStateToProps(state) {
-    return { recipeList: state.recipeList }
+    return { recipeList: state.recipeList, recipeInfo: state.recipe }
   }
     
 
