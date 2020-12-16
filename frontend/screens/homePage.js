@@ -85,10 +85,7 @@ useEffect(() => {
         
   }, []);
 
-// Romane IP: http://172.17.1.197:3000/filters
-// Leila IP: http://172.17.1.129:3000/filters ; 192.168.1.20 maison
-// Nico IP: http://172.17.1.53:3000/filters
-// Remi IP: http://172.17.1.71:3000
+
 
   var Filters = async() => {
     var rawResult = await fetch(`${baseURL}/filters`, {
@@ -153,7 +150,18 @@ useEffect(() => {
     })
 
   
-        
+         // LOCAL STORAGE ================>
+    function favoriteAlim(diet) {
+        AsyncStorage.getItem(diet, function (error, data) {
+            if (data === null || data === 'false') {
+                AsyncStorage.setItem(diet, 'true')
+            } else if(data === true){
+                AsyncStorage.removeItem(diet)
+            } else {
+                AsyncStorage.setItem(diet, 'false')
+            }
+        })
+    };  
 
    
 
@@ -274,14 +282,14 @@ useEffect(() => {
             <Text style={styles.title}>Food Preferences</Text>
             </View>
             <View style={styles.prefalim}>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setGlutenFree(!glutenFree) }}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setGlutenFree(!glutenFree);favoriteAlim('gluten free') }}>
                     <Image
                         style={gluten}
                         source={require('../assets/noGluten.png')}
                     />
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Gluten free</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegetarian(!vegetarian)}}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegetarian(!vegetarian); favoriteAlim('vegetarian')}}>
                     <Image style={vegeta}
                         source={require('../assets/noMeat.png')}
                     />
@@ -289,13 +297,13 @@ useEffect(() => {
                 </TouchableOpacity>
             </View>
             <View style={styles.prefalim}>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setLactoseFree(!lactoseFree)}}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setLactoseFree(!lactoseFree); favoriteAlim('lactose free')}}>
                     <Image style={lactose}
                         source={require('../assets/noMilk.png')}
                     />
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Lactiose free</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegan(!vegan)}}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegan(!vegan); favoriteAlim('vegan')}}>
                     <Image style={vega}
                         source={require('../assets/vegetalien.png')}
                     />

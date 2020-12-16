@@ -6,7 +6,7 @@ import {Icon} from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import { withNavigation } from 'react-navigation';
 
-import {baseURL} from '../screens/components/adressIP'
+import {baseURL} from './components/adressIP'
 
 
 
