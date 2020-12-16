@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
 import { Header, SearchBar } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -11,23 +11,22 @@ import { connect } from 'react-redux';
 
 import { withNavigationFocus } from 'react-navigation';
 
-function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe }) {
+function Favorite(props) {
 
     const [searchTxt, setSearchTxt] = useState('');
 
-    useEffect(() => {
-        async function loadData() {
-            await AsyncStorage.getItem("favorites",
-                function (error, data) {
-                    if (data !== null && data !== undefined) {
-                        var recetteLocal = JSON.parse(data);
-                        if (recetteLocal.length !== 0) {
-                            recetteLocal.forEach(element => {
-                                addRecipe(element);
-                            });
-                        }
+    useEffect(()=>{
+        async function loadData(){
+            await AsyncStorage.getItem("favorites", 
+            function(error, data){
+                if(data !== null && data !==undefined){
+                    var recetteLocal = JSON.parse(data);
+                    if(recetteLocal.length !== 0){
+                        recetteLocal.forEach(element => {
+                            props.addRecipe(element);
+                        });  
                     }
-                })
+                }})
         }
         loadData();
     }, [])
@@ -39,7 +38,7 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe }
         setSearchTxt(search)
     }
 
-    if (recipeList.length == 0) {
+    if (props.recipeList.length == 0) {
         var favourites =
         <>
          <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:150, color:'grey'}}>No favorite</Text>
@@ -48,7 +47,7 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe }
         source={require('../assets/idea.png')}/>
         </>
     } else {
-        var favourites = recipeList.map(function (recipe, i) {
+        var favourites = props.recipeList.map(function (recipe, i) {
             return <View key={i} style={styles.container}>
                 <Image style={styles.picture} source={{ uri: recipe.image }} />
                 <Text style={styles.text} >{recipe.title}</Text>
@@ -61,7 +60,7 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe }
 
     useEffect(() => {
         return async () => {
-            await AsyncStorage.setItem("favorites", JSON.stringify(recipeList));
+            await AsyncStorage.setItem("favorites", JSON.stringify(props.recipeList));
         }
     }, []);
 
@@ -72,9 +71,9 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe }
         <View style={{ flex: 1, backgroundColor: '#fff2df' }}>
 
             <Header
-                containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-                centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
-                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+                containerStyle={{backgroundColor:'#febf63', height:90, paddingTop:50}}
+                centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
+                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {props.navigation.navigate('List')}} />}
             />
 
             <SearchBar
@@ -88,7 +87,9 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe }
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+                    
                     {favourites}
+                  
                 </View>
             </ScrollView>
         </View>
@@ -100,16 +101,19 @@ function mapDispatchToProps(dispatch) {
         addRecipe: function (info) {
             dispatch({ type: 'recipeList', recipeInfo: info })
         },
-        deleteRecipe: function (info) {
-            dispatch({ type: 'recipeListDel', title: info })
-        }
+        deleteRecipe: function(info) { 
+            dispatch( {type: 'recipeListDel', title: info} ) 
+        }, 
+        goToRecipe: function (info) {
+            dispatch({ type: 'recipeInfo', recipeInfo: info })
+        },
     }
 }
 
 function mapStateToProps(state) {
-    return { recipeList: state.recipeList }
-}
-
+    return { recipeList: state.recipeList, recipeInfo: state.recipe }
+  }
+    
 
 var favScreen = connect(
     mapStateToProps,

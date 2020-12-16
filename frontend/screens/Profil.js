@@ -20,6 +20,7 @@ function Profil(props) {
   const [lactoseFree, setLactoseFree] = useState(false);
   const [vegan, setVegan] = useState(false);
 
+
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -35,7 +36,7 @@ function Profil(props) {
   const [signUpUsername, setSignUpUsername] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
-
+  const [reload, setReload] = useState(false);
 
   const [listErrorSignUp, setListErrorSignUp] = useState([]);
 
@@ -48,15 +49,34 @@ function Profil(props) {
   }
 
   useEffect(() => {
-    (async () => {
+
+    var getUserProfil =  () => {
+      console.log("tesssst")
       AsyncStorage.getItem("user token", 
               async function(error, data){
+                console.log(`DATA`,data);
                 if(data){
                 props.addToken(data);
+                const responseUser = await fetch(`${baseURL}/userProfil`,{
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body: `token=${data}`
+                })
+                
+                const responseJson = await responseUser.json()
+                console.log("test",responseJson);
+                setEmail(responseJson.email)
+                setPassword(responseJson.password)
+                setUserName(responseJson.username)
+
                 }else{
                   setVisibleSignup(true);
                 }
               })
+            }
+
+    var permission = async () => {
+      console.log("perm",permission);
       if (Platform.OS !== "web") {
         const {
           status,
@@ -67,8 +87,37 @@ function Profil(props) {
           setHasPermission(true);
         }
       }
-    })();
-  }, []);
+    }
+
+    var pref = async () =>{
+      var preferences = ['gluten free','vegetarian','lactose free','vegan'];
+
+        for (let i = 0; i<preferences.length; i++){
+          console.log("pref",preferences[i]);
+            await AsyncStorage.getItem(preferences[i], 
+            function(error, data){
+              console.log('hello',data)
+            if(data === 'true'){
+              
+                if(preferences[i]==='gluten free'){
+                    setGlutenFree(true);
+                }else if(preferences[i]==='vegetarian'){
+                    setVegetarian(true);
+                }else if(preferences[i]==='lactose free'){
+                    setLactoseFree(true);
+                }else{
+                    setVegan(true);
+                }
+              
+            }
+            })
+  
+    }}
+getUserProfil()
+permission()
+    pref()
+    setReload(false)
+  }, [reload]);
 
   var handleSubmitSignin = async () => {
  
@@ -92,6 +141,7 @@ function Profil(props) {
     }  else {
       setErrorsSignin(body.error)
     }
+    setReload(true);
   }
 
   var tabErrorsSignin = listErrorsSignin.map((error,i) => {
@@ -116,6 +166,7 @@ function Profil(props) {
     } else {
       setListErrorSignUp(body.error)
     }
+    setReload(true);
   }
 
   var tabErrorsSignup = listErrorSignUp.map((error,i) => {
@@ -160,15 +211,19 @@ function Profil(props) {
     vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
   };
 
-  function favoriteAlim(diet) {
-    AsyncStorage.getItem(diet, function (error, data) {
-      if (data === null || data === 'false') {
-        AsyncStorage.setItem(diet, 'true')
-      } else {
-        AsyncStorage.setItem(diet, 'false')
-      }
-    })
-  };
+       // LOCAL STORAGE ================>
+       function favoriteAlim(diet) {
+        AsyncStorage.getItem(diet, function (error, data) {
+            if (data === null || data === 'false') {
+                AsyncStorage.setItem(diet, 'true')
+            } else if(data === true){
+                AsyncStorage.removeItem(diet)
+            } else {
+                AsyncStorage.setItem(diet, 'false')
+            }
+        })
+        setReload(true)
+    }; 
 
 
   /* Update user */
@@ -245,6 +300,7 @@ function Profil(props) {
 
             <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>New Password :</Text>
             <TextInput
+              secureTextEntry={true}
               style={styles.text}
               placeholder="Write your password"
               onChangeText={(text) => setPassword(text)}
@@ -256,6 +312,7 @@ function Profil(props) {
             title="Update"
             buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 , marginRight:12}}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
+            onPress={()=>updateUser()}
           />
           <Button
             title="Deconnexion"
@@ -368,12 +425,12 @@ function Profil(props) {
               inputContainerStyle={{ borderBottomWidth: 0 }}
             />
             <Input
-              containerStyle={styles.input}
-              placeholder='Password'
-              leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-              onChangeText={(val) => setSignInPassword(val)}
-              val={signInPassword}
-              inputContainerStyle={{ borderBottomWidth: 0 }}
+                containerStyle={styles.input}
+                secureTextEntry={true}
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+                onChangeText={(val) => setSignInPassword(val)}
+                val = {signInPassword}
             />
 
             {tabErrorsSignin}

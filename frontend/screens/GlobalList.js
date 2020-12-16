@@ -110,15 +110,15 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
     }
 
 
-    useEffect(()=>{
-        return async()=>{
-            await fetch(`${baseURL}/addIngredients`, {
-            method: 'POST',
-            headers: {'Content-Type':'application/x-www-form-urlencoded'},
-            body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
-            });
-        }
-    }, [])
+    // useEffect(()=>{
+    //     return async()=>{
+    //         await fetch(`${baseURL}/addIngredients`, {
+    //         method: 'POST',
+    //         headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    //         body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
+    //         });
+    //     }
+    // }, [])
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF2DF' }}>

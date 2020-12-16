@@ -5,7 +5,7 @@ import { Text, Button, Overlay } from 'react-native-elements';
 
 
 export default function welcome({ navigation }) {
-
+    // AsyncStorage.clear()
     const [visible, setVisible] = useState(false);
     const [glutenFree, setGlutenFree] = useState(false);
     const [vegetarian, setVegetarian] = useState(false);
@@ -15,7 +15,7 @@ export default function welcome({ navigation }) {
 
     useEffect(()=>{
         const goToHome = async()=>{
-        var preferences = ['gluten free','vegetarian','lactose free','vegan'];
+        var preferences = ['gluten free','vegetarian','lactose free','vegan','no pref'];
         for (let i = 0; i<preferences.length; i++){
             await AsyncStorage.getItem(preferences[i], 
             function(error, data){
@@ -61,6 +61,12 @@ export default function welcome({ navigation }) {
         })
     };
 
+    function NoPref(){
+        if(!glutenFree && !vegetarian && !lactoseFree && !vegan){
+            AsyncStorage.setItem('no pref', 'true')
+        }
+    }
+
     // COULEUR APRES SELECTION  ================>
     var gluten = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
     var vegeta = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
@@ -83,7 +89,7 @@ export default function welcome({ navigation }) {
  
 
 return (
-    <ImageBackground source={require('../assets/background.jpeg')} style={{ flex: 1 }}>
+    <ImageBackground source={require('../assets/Background.jpeg')} style={{ flex: 1 }}>
         <View style={styles.container}>
             <Image style={{ width: 300, height: 300 }} source={require('../assets/logo.png')} />
             <Text h1 style={{ marginTop: 120, color: '#FFFF', fontFamily: 'Kohinoor Telugu' }}>Welcome ! </Text>
@@ -124,7 +130,7 @@ return (
                     </View>
                     <Button
                         title="Next"
-                        onPress={() => {navigation.navigate('CreateGroup'); setVisible(false)}}
+                        onPress={() => {NoPref(); navigation.navigate('CreateGroup'); setVisible(false)}}
                         type="clear"
                         buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
                         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}

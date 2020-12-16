@@ -82,6 +82,7 @@ router.post('/filters', async function (req, res, next) {
 
 /* Save recipe in BDD */
 router.get('/save', function (req, res, next) {
+
   var options = {
     method: 'GET',
     url: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random',
@@ -91,10 +92,9 @@ router.get('/save', function (req, res, next) {
       'x-rapidapi-host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com'
     }
   };
+  
   axios.request(options).then(async function (response) {
     console.log('SUCCESS');
-    console.log("RECIPE", response.data.recipes);
-    console.log('TYPE', response.data.recipes[0].dishTypes)
 
     var recipes = response.data.recipes;
     for (var i = 0; i < recipes.length; i++) {
@@ -358,15 +358,11 @@ router.post('/userUpdate', async function (req, res, next) {
 });
 
 router.post('/addList', async function (req, res, next) {
-  var result = false;
   var newList = new listModel({
     name: req.body.name
   });
   listSave = await newList.save();
-  if (listSave) {
-    result = true;
-  }
-  console.log(listSave)
+  await userModel.updateOne({token: req.body.user},{$push:{list_id: newList._id}})
   res.json(listSave)
 });
 
@@ -376,34 +372,33 @@ router.get('/list', async function (req, res, next) {
 });
 
 router.post('/getMyLists', async function (req, res, next) {
-
   var user = await userModel.findOne({token: req.body.token});
   var lists = []
   for(var i=0; i<user.list_id.length; i++){
     var listID = await listModel.findOne({_id: user.list_id[i]})
     lists.push(listID)
   }
-  console.log(lists)
-  res.json();
+  res.json(lists);
 });
 
 router.post('/deleteList', async function (req, res, next) {
-  var result = false;
+  var result = true;
   var returnDb = await listModel.deleteOne({ _id: req.body.id });
+
   if (returnDb.deletedCount == 1) {
-    result = true
+    result = true;
+    await userModel.updateOne({token: req.body.user},{$pull:{list_id: req.body.id}})
+    
   }
   res.json(result)
 });
 
 router.post('/addIngredients', async function (req, res, next) {
-  var ingredients = JSON.parse(req.body.list);
-  if (ingredients.length !== 0) {
+  console.log('hello',req.body.list ,JSON.parse(req.body.ingredients))
     var list = await listModel.updateOne(
-      { _id: req.body.listID },
-      { ingredients: ingredients }
+      { _id: req.body.list },
+      { $push:{ingredients: JSON.parse(req.body.ingredients ) }}
     );
-  }
   res.json()
 });
 
@@ -427,6 +422,12 @@ router.get('/randomCourrousel', async function(req, res, next) {
   res.json(randomRecipe);
 });
 
+/* User profil */
+router.post('/userProfil', async function(req,res,next){
+  var userProfil = await userModel.findOne({token:req.body.token});
+  console.log("findone",userProfil);
+  res.json(userProfil)
+})
 
 module.exports = router;
 

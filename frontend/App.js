@@ -24,7 +24,8 @@ import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
 import MesGroupes from './screens/MesGroupes'; 
-import MesGroupesP12 from './screens/MesGroupesP12';
+import MesGroupesP12 from './screens/MesGroupesP12'; 
+
 
 
 
@@ -50,7 +51,7 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: { screen : Profil},
   List : {screen : List},
   MesGroupes: { screen : MesGroupes},
-  MesGroupesP12: { screen :MesGroupesP12},
+  MesGroupesP12:{ screen: MesGroupesP12},
   Recipe :{screen : Recipe},
   GlobalList: {screen : GlobalList},
 
