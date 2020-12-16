@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 
 import {baseURL} from '../screens/components/adressIP'
 
-function homePage({navigation, loadList}) {
+export default function homePage({navigation, loadList}) {
     const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
     const [selectedValueCuisine, setSelectedValueCuisine] = useState("");
@@ -67,13 +67,13 @@ useEffect(() => {
 
     Preferences();
 
-    const ListInit = async() => {
-        var rawResult = await fetch(`${baseURL}/list`);
-        var result = await rawResult.json();
-        loadList(result)
-    }
+    // const ListInit = async() => {
+    //     var rawResult = await fetch(`${baseURL}/list`);
+    //     var result = await rawResult.json();
+    //     loadList(result)
+    // }
 
-    ListInit();  
+    // ListInit();  
     /* Random on Today's pick */
     var searchRandom = async ()=>{
         var randomCarrousel = await fetch(`${baseURL}/randomCourrousel`);
@@ -321,18 +321,18 @@ useEffect(() => {
         </View>
     )
 }
-function mapDispatchToProps(dispatch) {
-    return {
-        loadList: function(info) { 
-            dispatch( {type: 'loadList', list: info} ) 
-        },
-    }
-}
+// function mapDispatchToProps(dispatch) {
+//     return {
+//         loadList: function(info) { 
+//             dispatch( {type: 'loadList', list: info} ) 
+//         },
+//     }
+// }
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(homePage);
+// export default connect(
+//     null,
+//     mapDispatchToProps
+// )(homePage);
 
 const styles = StyleSheet.create({
     container: {

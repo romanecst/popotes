@@ -50,7 +50,7 @@ function MesGroupes(props) {
       }
     }
     loadInfo();
-  },[])
+  },[props.tokenGroup])
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -61,7 +61,7 @@ function MesGroupes(props) {
     const rawResponseList = await fetch(`${baseURL}/addList`, {
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `name=${text}`
+        body: `name=${text}&user=${props.token}`
     });
 
     const responseList = await rawResponseList.json()
@@ -98,6 +98,38 @@ function MesGroupes(props) {
   are bringing. ${"\n"}
   See you soon.`
 
+//   useEffect(() => {
+//     (async () => {
+//       const { status } = await Contacts.requestPermissionsAsync();
+//       if (status === 'granted') {
+//         const { data } = await Contacts.getContactsAsync({
+//           fields: [Contacts.Fields.Emails],
+//         });
+// // console.log("test data !!!!!!!", data.name)
+//         if (data.length > 0) {
+//           for (var i=0; i<data.length; i++){
+//           const contactPerso = data[i];
+//           setContact(contactPerso);}
+//           setHasPermission(true)
+//         } 
+//       }
+//     })();
+//   }, []);
+
+useEffect(()=>{
+      const loadInfo = async()=>{
+        const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `token=${tokenGroup}`
+        })
+        const response = await rawReponse.json();
+        setGroupName(response.mygroup.name);
+        setGroupParticipants(response.users)
+      }
+      loadInfo();
+    },[])
+
 
   function back() {
     setVisibleFriends(false);
@@ -126,24 +158,7 @@ function MesGroupes(props) {
       } 
     };
 
-
-var newList = listFriends.map(function(list, i){
-  return <Button
-  iconRight={true}
-  title={list}
-  key={i}
-  buttonStyle={{ backgroundColor: "white" }}
-  containerStyle={{
-    borderRadius: 45,
-    marginTop: 10,
-    marginBottom: 10,
-  }}
-  titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu", textAlign: "center" }}
-/>
-})
-
   return (
-    <ScrollView>
     <View style={{ backgroundColor: "#ADE498", flex:1 }}>
       <View
         style={{
@@ -352,7 +367,6 @@ var newList = listFriends.map(function(list, i){
     </Overlay>
 
     </View>
-    </ScrollView>
   );
 }
 

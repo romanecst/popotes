@@ -111,8 +111,8 @@ function MesGroupesP12(props) {
                   labelPosition={LABEL_POSITION.LEFT}
                   outerColor='black'
                   innerColor='red'
-                  innerSize='27'
-                  outerSize='30'
+                  innerSize='20'
+                  outerSize='26'
                 />
                 <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding: 18, borderRadius: 50 }}></Button>
               </View>
