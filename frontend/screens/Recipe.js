@@ -10,36 +10,36 @@ import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 
 
-function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
+function Recipe(props) {
     const [visible, setVisible] = useState(false);
-    const [servings, setServings] = useState(recipeInfo.servings);
+    const [servings, setServings] = useState(props.recipeInfo.servings);
     const [selectedList, setSelectedList] = useState();
     const [like, setLike] = useState(false);
 
 
-    var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
+    var instructions = props.recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
 
-    var newIngredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
-        ingredient.amount = (servings*ingredient.amount)/recipeInfo.servings;
+    var newIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, i){
+        ingredient.amount = (servings*ingredient.amount)/props.recipeInfo.servings;
         if(!Number.isInteger(ingredient.amount)){
-            ingredient.amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(1);
+            ingredient.amount = ((servings*ingredient.amount)/props.recipeInfo.servings).toFixed(1);
         }
         console.log('IDDDDD',ingredient._id)
-    return {id:ingredient.id, name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: recipeInfo.title}
+    return {id:ingredient.id, name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title}
     });
 
-    var ingredients = recipeInfo.extendedIngredients.map(function(ingredient, i){
-        var amount = (servings*ingredient.amount)/recipeInfo.servings;
+    var ingredients = props.recipeInfo.extendedIngredients.map(function(ingredient, i){
+        var amount = (servings*ingredient.amount)/props.recipeInfo.servings;
         if(!Number.isInteger(amount)){
-            amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(1);
+            amount = ((servings*ingredient.amount)/props.recipeInfo.servings).toFixed(1);
         }
     return <Text key={i} style={{ fontSize: 18 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
     });
 
-    var overlayIngredients = recipeInfo.extendedIngredients.map(function(ingredient, j){
-        ingredient.amount = (servings*ingredient.amount)/recipeInfo.servings;
+    var overlayIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, j){
+        ingredient.amount = (servings*ingredient.amount)/props.recipeInfo.servings;
         if(!Number.isInteger(ingredient.amount)){
-            ingredient.amount = ((servings*ingredient.amount)/recipeInfo.servings).toFixed(1);
+            ingredient.amount = ((servings*ingredient.amount)/props.recipeInfo.servings).toFixed(1);
         }
         return <Checking key={j} name={ingredient.name} quantity= {ingredient.amount} measure={ingredient.measures.us.unitLong}/>
     })
@@ -83,24 +83,24 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
 
             <Header
                 containerStyle={{ backgroundColor: '#ade498', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }}  />}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {props.navigation.goBack(null) }}  />}
                 centerComponent={{ text: 'RECETTE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
-                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+                rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
             />
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={styles.container}>
-                    <Image style={styles.picture} source={{ uri: recipeInfo.image }} />
+                    <Image style={styles.picture} source={{ uri: props.recipeInfo.image }} />
                 </View>
                 {/* ************* TITRE ********** */}
                 <View style={styles.container}>
                     <View style={styles.title}>
-                        <Text style={{ fontSize: 22 }}>{recipeInfo.title}</Text>
+                        <Text style={{ fontSize: 22 }}>{props.recipeInfo.title}</Text>
                     </View>
                     <View >
                         <View style={styles.detail1}>
                             {/* ************ DUREE RECETTE ************ */}
-                            <Text style={{fontSize:18}}> Préparation : {recipeInfo.readyInMinutes} </Text>
+                            <Text style={{fontSize:18}}> Préparation : {props.recipeInfo.readyInMinutes} </Text>
                         </View>
                         <View style={styles.detail1}>
                             {/* ************ NOMBRE DE PERSONNE RECETTE ************ */}
@@ -176,7 +176,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
         {/* DROP DOWN -- LIST HERE !!  */}
         <View style={{justifyContent:'center', alignItems:'center', marginVertical:10}}>
         <DropDownPicker
-          items={list.map(function(el){
+          items={props.list.map(function(el){
             return { label: el.name, value: el._id }
         })}
           defaultIndex={0}
@@ -190,7 +190,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
           title="Next  "
           buttonStyle={{ borderColor: 'white', marginHorizontal: 100, borderRadius: 30, backgroundColor: 'white', justifyContent: 'center' }}
           titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu'}}
-          onPress={() => {  currentList(selectedList); ingredientList(newIngredients); toggleOverlay(); navigation.navigate('GlobalList') }}
+          onPress={() => {  props.currentList(selectedList); props.ingredientList(newIngredients); toggleOverlay(); props.navigation.navigate('GlobalList') }}
         />
         </View>
       </Overlay>
