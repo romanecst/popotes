@@ -483,13 +483,6 @@ input:{
   }, 
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    addToken: function(token){
-      dispatch({type: 'addToken', token: token})
-    }
-  };
-}
 
 function mapStateToProps(state) {
   return { token: state.token }
