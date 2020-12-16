@@ -14,6 +14,7 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
     const [visible, setVisible] = useState(false);
     const [servings, setServings] = useState(recipeInfo.servings);
     const [selectedList, setSelectedList] = useState();
+    const [like, setLike] = useState(false);
 
 
     var instructions = recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
@@ -46,7 +47,34 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
     const toggleOverlay = () => {
         setVisible(!visible);
     };
+// ------------------------------------------------GESTION DU LIKE DANS LE DETAIL RECETTE -------------------------------
+    // useEffect(() => {
+    //     if (like) {
+    //         var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
+    //         if (!found) {
+    //             props.saveRecipe(props.recipeInfo);
+    //         }
+    //     } else {
+    //         props.deleteRecipe(props.recipeInfo.title);
+    //     }
+    // }, [like])
 
+
+    var colorHeart;
+
+    const colorLike = () =>{
+        setLike(!like);
+    }
+    
+    if (like) {
+        colorHeart = '#c0392b'
+        console.log('like')
+    } else {
+        colorHeart = '#2c3e50'
+        console.log('dislike')
+    }
+
+    
 
     return (
 
@@ -115,7 +143,13 @@ function Recipe({ navigation, recipeInfo, ingredientList, currentList, list }) {
                 </View>
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginHorizontal:100, marginBottom:50}}>
                 <View style={{backgroundColor:'white', padding:15, borderRadius:30}}>
-                    <AntDesign name="heart" size={24} color="black" />
+                   <Button 
+                   buttonStyle={{ borderColor: 'white', backgroundColor: 'white' }}
+                   icon={<AntDesign 
+                    name="heart" 
+                    size={24} 
+                    color={colorHeart} 
+                    onPress={()=>colorLike()} /> } /> 
                 </View>
                 <View style={{backgroundColor:'white', padding:15, borderRadius:30}}>
                 <FontAwesome name="list" size={24} color="black" onPress={()=>toggleOverlay()} />

@@ -50,7 +50,7 @@ var BottomNavigator = createBottomTabNavigator({
   Profil: { screen : Profil},
   List : {screen : List},
   MesGroupes: { screen : MesGroupes},
-  MesGroupesP12: { screen :MesGroupesP12},
+  
   Recipe :{screen : Recipe},
   GlobalList: {screen : GlobalList},
 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
 import { Header, SearchBar } from 'react-native-elements';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -40,7 +40,9 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
 
     var favourites = recipeList.map(function(recipe, i){
         return <View key={i} style={styles.container}>
+        <TouchableOpacity>
         <Image style={styles.picture} source={{uri: recipe.image}} />
+        </TouchableOpacity>
         <Text style={styles.text} >{recipe.title}</Text>
         <View style={{backgroundColor:'#fbfafa', paddingBottom:63, paddingTop:63, paddingRight:5}}>
         <Entypo name="cross" size={24} color="black" onPress={()=>deleteRecipe(recipe.title)}/>
@@ -77,7 +79,9 @@ function Favorite({ navigation, recipeList, isFocused, addRecipe, deleteRecipe})
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+                    
                     {favourites}
+                  
                 </View>
             </ScrollView>
         </View>
