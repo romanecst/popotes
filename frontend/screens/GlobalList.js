@@ -126,7 +126,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
             {/* ------------------------- PARGE 1 TRIER PAR INGREDIENT ------------------------- */}
             <Header
                 containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.goBack(null) }} />}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.navigate('List') }} />}
                 centerComponent={{ text: listInfo.name, style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
@@ -174,7 +174,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
             />
 
             {/* ------------------------------ OVERLAY -----------------------------------------------*/}
-            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
+            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 30, padding:10 }} isVisible={visible} onBackdropPress={toggleOverlay} >
                 <View style={styles.overlay}>
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
                     <Input placeholder='Product name'

@@ -49,11 +49,11 @@ function List({ navigation, currentList, saveList, delList, list, addingredientL
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
       />
 
-      <View style={{ alignItems: "center", marginTop: 90 }}>
-        <Text style={{ fontSize: 30 }}>Create a new list</Text>
+      <View style={{ alignItems: "center", marginTop: 10, marginBottom:20 }}>
+        <Text style={{ fontSize: 22 }}>Create a new list</Text>
 
         {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
-        <Ionicons name="ios-add-circle-outline" size={134} color="black" onPress={toggleOverlay}/>
+        <Ionicons name="ios-add-circle-outline" size={60} color="black" onPress={toggleOverlay}/>
       </View>
       <Text
         style={{

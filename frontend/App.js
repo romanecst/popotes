@@ -44,9 +44,9 @@ const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, 
 
 
 var BottomNavigator = createBottomTabNavigator({
-  Favorite: { screen : Favorite},
-  Group: { screen : Group},
   Home: { screen : homePage},
+  Group: { screen : Group},
+  Favorite: { screen : Favorite},
   Profil: { screen : Profil},
   List : {screen : List},
   MesGroupes: { screen : MesGroupes},
@@ -99,6 +99,7 @@ var BottomNavigator = createBottomTabNavigator({
 var StackNavigator = createStackNavigator({
   Welcome: Welcome,
   CreateGroup: CreateGroup,
+  homePage : homePage,
   List: List,
   Recipe: Recipe,
   GlobalList: GlobalList,

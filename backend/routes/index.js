@@ -209,6 +209,38 @@ router.post('/sign-in', async function (req, res, next) {
 
   res.json({ result, user, error, token })
 })
+// Insérer des amis 
+router.post('/friends', async function(req, res, next) {
+  var result = false;
+  var error = [];
+
+  var groupSearch = await groupModel.findOne({group_token: req.body.tokenGroupFromFront});
+  
+  var userSearch = await userModel.findOne({username: req.body.nameFriendFromFront});
+
+    console.log('test groupeSearch', groupSearch)
+    console.log('test userSearch', userSearch)
+
+    if(groupSearch && userSearch){
+  console.log('je passe par ma route /friends et mon group existe')
+  result = true
+// -----------------------Autre possibilité de modifier un tableau dans la base de données-------------------------------------
+  // groupSearch.user_id.push(userSearch.id); 
+  // console.log('test 2 groupSearch', groupSearch)
+
+  // await groupSearch.save();
+
+  var update = await groupModel.updateOne(
+    {group_token: req.body.tokenGroupFromFront},
+    {$push:{user_id:userSearch.token}})
+
+
+}else{
+  console.log('un des deux nexiste pas')
+  error.push('Ton amis n es pas encore connecté! envoi lui le lien!')
+}
+  res.json({result, error, userSearch});
+});
 
 /* Create group */
 router.post('/group', async function (req, res, next) {
@@ -290,22 +322,6 @@ router.post('/getMyGroup', async function (req, res, next) {
   res.json({mygroup, users});
 });
 
-/* Assign color a user group */
-router.post('/addUser', async function (req, res, next) {
-
-  var colorUser = ['#FFC312', '#C4E538', '#12CBC4', '#FDA7DF', '#ED4C67',
-    '#F79F1F', '#A3CB38', '#1289A7', '#D980FA', '#B53471',
-    '#EE5A24', '#009432', '#0652DD', '#9980FA', '#833471',
-    '#EA2027', '#006266', '#1B1464', '#5758BB', '#6F1E51']
-
-    var group = await groupModel.findOne({ group_token: req.body.token });
-  var userColor = [];
-
-  for (var i = 0; i < group.user_id.length; i++) {
-    userColor.push({ user: group.user_id[i], color: colorUser[i] })
-  }
-  res.json(JSON.stringify(userColor));
-})
 
 /* Deleted group */
 router.delete('/deleteGroup/:name', async function (req, res, next) {
@@ -357,6 +373,18 @@ router.post('/addList', async function (req, res, next) {
 router.get('/list', async function (req, res, next) {
   var result = await listModel.find();
   res.json(result)
+});
+
+router.post('/getMyLists', async function (req, res, next) {
+
+  var user = await userModel.findOne({token: req.body.token});
+  var lists = []
+  for(var i=0; i<user.list_id.length; i++){
+    var listID = await listModel.findOne({_id: user.list_id[i]})
+    lists.push(listID)
+  }
+  console.log(lists)
+  res.json();
 });
 
 router.post('/deleteList', async function (req, res, next) {

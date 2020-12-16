@@ -148,14 +148,24 @@ useEffect(() => {
         vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
     };
 
-    var newList = listRecipe.map(function(recipe, i){
-        return <RecipeHome key={i} image={recipe.image} title={recipe.title} recipeInfo={recipe}/>
-    })
+
+    if (listRecipe.length == 0) {
+        var newList =
+        <View>
+         <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:40, color:'grey', marginLeft:25}}>No Recipes</Text>
+         <Image
+        style={{width:150, height:150}}
+        source={require('../assets/filter.png')}/>
+        <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:8, color:'grey'}}>Try another filter</Text>
+        </View>
+        
+    } else {
+        var newList = listRecipe.map(function(recipe, i){
+            return <RecipeHome key={i} image={recipe.image} title={recipe.title} recipeInfo={recipe}/>
+        })}
+
 
   
-        
-
-   
 
 
     return (

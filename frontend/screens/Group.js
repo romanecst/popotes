@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, ScrollView, TouchableOpacity, StyleSheet, TextInput, Image, Linking, AsyncStorage} from "react-native";
+import { View, ScrollView, TouchableOpacity, StyleSheet, TextInput, Image, Linking, AsyncStorage } from "react-native";
 import { Input, Button, Overlay, Avatar, Header, Text } from "react-native-elements";
 import { Icon } from "react-native-vector-icons/FontAwesome";
 import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons } from "@expo/vector-icons";
@@ -11,7 +11,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import Signin from './Signin';
 
-import {baseURL} from '../screens/components/adressIP'
+import { baseURL } from '../screens/components/adressIP'
 
 
 
@@ -20,14 +20,12 @@ function Group(props) {
   const [visible, setVisible] = useState(false);
 
   const [nameGroup, setNameGroup] = useState("");
-  const [tokenGroup, setTokenGroup] = useState("")
-
-  const [groupExists, setGroupExists] = useState(false);
+  const [tokenGroup, setTokenGroup] = useState("");
   const [listErrorGroup, setListErrorGroup] = useState([]);
 
   const [hasPermission, setHasPermission] = useState(null);
   const [image, setImage] = useState("");
-  
+
   const [signInEmail, setSignInEmail] = useState('')
   const [signInPassword, setSignInPassword] = useState('')
 
@@ -53,50 +51,50 @@ function Group(props) {
   }
 
   var handleSubmitSignin = async () => {
- 
+
     const data = await fetch(`${baseURL}/sign-in`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
     })
 
     const body = await data.json()
 
-    if(body.result == true){
-      
+    if (body.result == true) {
+
       console.log(body.token);
       props.addToken(body.token);
 
       const rawReponse = await fetch(`${baseURL}/getGroups`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `token=${body.token}`
-    })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `token=${body.token}`
+      })
 
       const response = await rawReponse.json()
       setGroupList(response);
       AsyncStorage.setItem("user token", body.token);
       toggleSignin();
-      
-    }  else {
+
+    } else {
       setErrorsSignin(body.error)
     }
   }
 
-  var tabErrorsSignin = listErrorsSignin.map((error,i) => {
-    return(<Text>{error}</Text>)
+  var tabErrorsSignin = listErrorsSignin.map((error, i) => {
+    return (<Text>{error}</Text>)
   })
 
   var handleSubmitSignUp = async () => {
 
     const data = await fetch(`${baseURL}/sign-up`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
     })
 
     const body = await data.json()
-    if(body.result == true){
+    if (body.result == true) {
       props.addToken(body.token);
       AsyncStorage.setItem("user token", body.token);
       toggleSignup();
@@ -107,38 +105,38 @@ function Group(props) {
     }
   }
 
-  var tabErrorsSignup = listErrorSignUp.map((error,i) => {
-    return(<Text>{error}</Text>)
+  var tabErrorsSignup = listErrorSignUp.map((error, i) => {
+    return (<Text>{error}</Text>)
   })
 
 
   const text =
-      `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
+    `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
        https://popotes/app/fr.${"\n"}
       Here is the access code to the group:${tokenGroup}, please inform what you
       are bringing. ${"\n"}
       See you soon.`
-    
-  
+
+
 
   useEffect(() => {
     (async () => {
-      AsyncStorage.getItem("user token", 
-              async function(error, data){
-                if(data){
-                props.addToken(data);
-                const rawReponse = await fetch(`${baseURL}/getGroups`, {
-                  method: 'POST',
-                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                  body: `token=${data}`
-                })
+      AsyncStorage.getItem("user token",
+        async function (error, data) {
+          if (data) {
+            props.addToken(data);
+            const rawReponse = await fetch(`${baseURL}/getGroups`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: `token=${data}`
+            })
 
-               const response = await rawReponse.json()
-              setGroupList(response);
-                }else{
-                  setVisibleSignup(true);
-                }
-              })
+            const response = await rawReponse.json()
+            setGroupList(response);
+          } else {
+            setVisibleSignup(true);
+          }
+        })
       if (Platform.OS !== "web") {
         const {
           status,
@@ -198,48 +196,69 @@ function Group(props) {
   /* Deleted groupe */
   var handleClickDelete = async () => {
     console.log("click détecté");
-    var rawResponse = await fetch(`${baseURL}/deleteGroup/:name`, {
+    var rawResponse = await fetch(`${baseURL}/deleteGroup/${nameGroup}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `groupName=${nameGroup}`,
     });
     var response = await rawResponse.json();
     console.log("test update", response);
   };
+
+  if (groupList.length == 0) {
+    var groupe =
+      <>
+        <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:15, color:'grey', marginTop:50, marginLeft:115}}>No groups</Text>
+        <Image
+          style={{ width: 110, height: 110, marginLeft:50, marginLeft:90 }}
+          source={require('../assets/nopeoples.png')} />
+      </>
+
+  } else {
+    var groupe = groupList.map(function (el, i) {
+      return <TouchableOpacity key={i} onPress={() => { props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
+        <View style={styles.blocScroll}>
+          <Text>{el.name}</Text>
+          <Button
+            icon={<Entypo name="cross" size={24} color="black" />}
+            buttonStyle={{
+              backgroundColor: "#FFFFFF",
+              padding: 18,
+              borderRadius: 50,
+            }}
+          ></Button>
+        </View>
+      </TouchableOpacity>
+    })
+  }
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "#e5f8f8" }}>
       {/* -------------------------HEADER---------------------------------- */}
 
       <Header
-        containerStyle={{
-          backgroundColor: "#7FDBDA",
-          height: 90,
-          paddingTop: 50,
-        }}
-        centerComponent={{ text:'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        containerStyle={{ backgroundColor: "#7FDBDA", height: 90, paddingTop: 50 }}
+        centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         {/* ----------------------------Rejoindre un groupe grace au mots de pass------------------ */}
 
-        <Text
-          style={{
-            textAlign: "center",
-            fontFamily: "Kohinoor Telugu",
-            fontSize: 20,
-            marginTop: 20,
-          }}
-        >
-          Join an existing group
-        </Text>
-
-        <Input
-          style={styles.text}
-          inputContainerStyle={{ borderBottomWidth: 0 }}
-          placeholder="Passwords for your party"
-        />
+        <Text style={{ textAlign: "center", justifyContent: 'center', fontFamily: "Kohinoor Telugu", fontSize: 20, marginTop: 20, }}>Join a existing group :</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 50, justifyContent: 'flex-start' }}>
+          <Input
+            style={styles.text}
+            inputContainerStyle={{ borderBottomWidth: 0 }}
+            placeholder="Passwords for your party"
+            secureTextEntry='true'
+          />
+          <Button
+            title="Go !"
+            buttonStyle={styles.bouton}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
+            onPress={() => Search()} />
+        </View>
 
         {/* -------------------Acces à mes groupe precedent ----------------------- */}
 
@@ -248,33 +267,13 @@ function Group(props) {
 
         <ScrollView style={styles.scroll}>
 
-         {
-         groupList.map(function(el, i){
-           return  <TouchableOpacity key={i} onPress={() => {props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
-           <View style={styles.blocScroll}>
-             <Text>{el.name}</Text>
-             <Button
-               icon={<Entypo name="cross" size={24} color="black" />}
-               buttonStyle={{
-                 backgroundColor: "#FFFFFF",
-                 padding: 18,
-                 borderRadius: 50,
-               }}
-             ></Button>
-           </View>
-         </TouchableOpacity>
-         })
-         
-        }
-          
+          {groupe}
+
         </ScrollView>
 
         {/* -------------------------CREATION DE NOUVEAU GROUPE ---------------------------------- */}
 
-        <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 20 }}>
-          {" "}
-          Create a group{" "}
-        </Text>
+        <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 20, marginTop: 25, marginBottom: 8 }}>Create a group</Text>
 
         <Ionicons
           name="ios-add-circle-outline"
@@ -334,24 +333,24 @@ function Group(props) {
                 {image ? (
                   <Image
                     source={{ uri: image }}
-                    style={{ width: 130, height: 130 }}
+                    style={{ width: 130, height: 130, borderRadius: 60 }}
                     containerStyle={{ borderRadius: 200 }}
                   />
                 ) : (
-                  <MaterialIcons
-                    name="add-a-photo"
-                    size={30}
-                    color="black"
-                    style={{
-                      marginLeft: 40,
-                      marginTop: 10,
-                      marginBottom: 15,
-                      borderWidth: 2,
-                      borderRadius: 27,
-                      padding: 10,
-                    }}
-                  />
-                )}
+                    <MaterialIcons
+                      name="add-a-photo"
+                      size={30}
+                      color="black"
+                      style={{
+                        marginLeft: 40,
+                        marginTop: 10,
+                        marginBottom: 15,
+                        borderWidth: 2,
+                        borderRadius: 27,
+                        padding: 10,
+                      }}
+                    />
+                  )}
               </Avatar>
             </View>
 
@@ -372,6 +371,7 @@ function Group(props) {
                 placeholder="Group Name"
                 onChangeText={(value) => {
                   setNameGroup(value);
+
                 }}
                 value={nameGroup}
               />
@@ -423,6 +423,7 @@ function Group(props) {
                   backgroundColor: "#7FDBDA",
                   borderRadius: 30,
                   paddingHorizontal: 18,
+                  marginBottom:20 
                 }}
                 titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
@@ -436,92 +437,113 @@ function Group(props) {
         {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
 
 
-        <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignin} >
-        
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
-            <Avatar
-                size="large"
-                rounded
-                title="LW"
-                activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
-            />
-             
+        <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
+
+          <View style={styles.overlay}>
+          <Button
+                title="Return"
+                type="clear"
+                onPress={() => { props.navigation.goBack(null);toggleSignup() }}
+                buttonStyle={{borderColor: "#dfe6e9", justifyContent: "flex-start"}}
+                titleStyle={{
+                  color: "black",
+                  fontFamily: "Kohinoor Telugu",
+                  fontSize: 11,
+                  marginRight: 35,
+                }}
+              />
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom:20 }}>Sign-in</Text>
+            
             <Input
-                containerStyle={styles.input}
-                placeholder='Email'
-                leftIcon={{ type: 'font-awesome', name: 'at' }}
-                onChangeText={(val) => setSignInEmail(val)}
-                val = {signInEmail}
-            />
-            <Input
-                containerStyle={styles.input}
-                placeholder='Password'
-                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-                onChangeText={(val) => setSignInPassword(val)}
-                val = {signInPassword}
-            />
-
-              {tabErrorsSignin}
-
-        <Button
-          title="Sign-in"
-          type="clear"
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => handleSubmitSignin()}
-        />
-        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
-        </View>
-      </Overlay>
-
-
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignup} >
-        
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>
-            <Avatar
-                size="large"
-                rounded
-                title="LW"
-                activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
-            />
-             <Input
-                containerStyle={styles.input}
-                placeholder='Username'
-                leftIcon={{ type: 'font-awesome', name: 'user' }}
-                onChangeText={(val) => setSignUpUsername(val)}
-                val = {signUpUsername}
+              containerStyle={styles.input}
+              placeholder='Email'
+              leftIcon={{ type: 'font-awesome', name: 'at' }}
+              onChangeText={(val) => setSignInEmail(val)}
+              val={signInEmail}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
             />
             <Input
-                containerStyle={styles.input}
-                placeholder='Email'
-                leftIcon={{ type: 'font-awesome', name: 'at' }}
-                onChangeText={(val) => setSignUpEmail(val)}
-                val = {signUpEmail}
+              containerStyle={styles.input}
+              placeholder='Password'
+              leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+              onChangeText={(val) => setSignInPassword(val)}
+              val={signInPassword}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
+            />
+
+            {tabErrorsSignin}
+
+
+            <Button
+            title="Sign-in"
+            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal:80, marginBottom:50 }}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal:20 }}
+            onPress={() => handleSubmitSignin()}
+            />
+          
+            <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text style={{marginTop:10, fontStyle: 'italic'}}>Not registered yet ? <Text style={{color:"#35abd5", textDecorationLine: 'underline'}}>Create an account</Text></Text>
+
+            
+            
+            
+            </TouchableOpacity>
+          </View>
+        </Overlay>
+
+
+        <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
+
+          <View style={styles.overlay}>
+          <Button
+                title="Return"
+                type="clear"
+                onPress={() => { props.navigation.goBack(null);toggleSignup() }}
+                buttonStyle={{borderColor: "#dfe6e9", justifyContent: "flex-start"}}
+                titleStyle={{
+                  color: "black",
+                  fontFamily: "Kohinoor Telugu",
+                  fontSize: 11,
+                  marginRight: 35,
+                }}
+              />
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom:40 }}>Sign-up</Text>
+           
+            <Input
+              containerStyle={styles.input}
+              placeholder='Username'
+              leftIcon={{ type: 'font-awesome', name: 'user' }}
+              onChangeText={(val) => setSignUpUsername(val)}
+              val={signUpUsername}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
             />
             <Input
-                containerStyle={styles.input}
-                placeholder='Password'
-                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-                onChangeText={(val) => setSignUpPassword(val)}
-                val = {signUpPassword}
+              containerStyle={styles.input}
+              placeholder='Email'
+              leftIcon={{ type: 'font-awesome', name: 'at' }}
+              onChangeText={(val) => setSignUpEmail(val)}
+              val={signUpEmail}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
+            />
+            <Input
+              containerStyle={styles.input}
+              placeholder='Password'
+              leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+              onChangeText={(val) => setSignUpPassword(val)}
+              val={signUpPassword}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
             />
 
             {tabErrorsSignup}
 
-        <Button
-          title="Sign-up"
-          type="clear"
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => {handleSubmitSignUp()}}
-        />
-        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
-        </View>
-      </Overlay>
+            <Button
+            title="Sign-Up"
+            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal:70 }}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal:20 }}
+            onPress={() => { handleSubmitSignUp() }} 
+          />
+            <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{marginTop:50, fontStyle: 'italic'}}>Already have an account ? <Text style={{color:"#35abd5", textDecorationLine: 'underline'}}>Log in</Text></Text></TouchableOpacity>
+          </View>
+        </Overlay>
 
       </View>
     </View>
@@ -550,21 +572,31 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     marginTop: 10,
     borderRadius: 10,
-    marginHorizontal: 40,
     fontSize: 14,
     padding: 20,
   },
   overlay: {
     width: 290,
-    margin:18,
+    margin: 18,
     justifyContent: 'center',
   },
-input:{
-    borderWidth:1,
-    borderRadius:20,
-    height:60,
-    marginBottom:20
-  }, 
+  input: {
+    backgroundColor:"white",
+    borderRadius: 20,
+    height: 60,
+    marginBottom: 20,
+    alignItems:'center', 
+  }, bouton: {
+    borderColor: 'white',
+    backgroundColor: "#7FDBDA",
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 40,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 40,
+    padding: 14,
+    marginBottom: 13,
+    marginRight: 7
+  },
 });
 
 function mapStateToProps(state) {
@@ -579,8 +611,8 @@ function mapDispatchToProps(dispatch) {
     AddTokenGroup: function (tokenGroup) {
       dispatch({ type: "tokenGroup", tokenGroup: tokenGroup });
     },
-    addToken: function(token){
-      dispatch({type: 'addToken', token: token})
+    addToken: function (token) {
+      dispatch({ type: 'addToken', token: token })
     }
   };
 }
