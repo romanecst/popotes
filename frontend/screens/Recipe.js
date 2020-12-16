@@ -196,7 +196,7 @@ useEffect(() => {
             <Header
                 containerStyle={{ backgroundColor: '#ade498', height: 90, paddingTop: 50 }}
                 leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {props.navigation.goBack(null) }}  />}
-                centerComponent={{ text: 'RECETTE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+                centerComponent={{ text: 'RECIPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22 } }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
             />
 

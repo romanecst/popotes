@@ -19,11 +19,11 @@ import Ingredient from './components/ingredientcheck';
 import Recette from './components/recettecheck';
 import { withNavigationFocus } from 'react-navigation';
 
-import {baseURL} from '../screens/components/adressIP'
+import { baseURL } from '../screens/components/adressIP'
 
 
 
-function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo, addingredientList, isFocused, clearIngredientList}) {
+function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo, addingredientList, isFocused, clearIngredientList }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -84,20 +84,20 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
 
     var recipeCat = {};
 
-    simpleList.forEach(function(el){
-        if(!(el.recipeName in recipeCat)){
-            recipeCat[el.recipeName] = [<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure}/>];
-        }else{
-            recipeCat[el.recipeName].push(<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure}/>);
+    simpleList.forEach(function (el) {
+        if (!(el.recipeName in recipeCat)) {
+            recipeCat[el.recipeName] = [<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure} />];
+        } else {
+            recipeCat[el.recipeName].push(<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure} />);
         }
     })
 
     var recipesMap = []
 
-    for(const key in recipeCat){ 
+    for (const key in recipeCat) {
         recipesMap.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{recipeCat[key]}</View>);
     }
-    
+
     if (isEnabled) {
         var ingredient = <ScrollView style={{ height: 380 }}>{displayByCategory}</ScrollView>
         var trier = "recette"
@@ -126,8 +126,8 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
             {/* ------------------------- PARGE 1 TRIER PAR INGREDIENT ------------------------- */}
             <Header
                 containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {navigation.navigate('List') }} />}
-                centerComponent={{ text: listInfo.name, style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+                leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+                centerComponent={{ text: listInfo.name, style: { color: '#fff', fontFamily: 'Kohinoor Telugu' , fontSize:22} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
@@ -153,18 +153,18 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
                 {/* ------------------------- CATEGOEIRE / INGREDIENT / QUANTITE ou GRAMMAGE ---------------FIN---------- */}
             </View>
             <View style={{ flexDirection: 'row', marginHorizontal: 20, justifyContent: 'center' }}>
-                <TouchableOpacity onPress={() => {toggleOverlay()}}>
-                <View style={styles.ajoutListe}>
-                    <MaterialIcons name="playlist-add" size={30} color="black" />
-                </View>
+                <TouchableOpacity onPress={() => { toggleOverlay() }}>
+                    <View style={styles.ajoutListe}>
+                        <MaterialIcons name="playlist-add" size={30} color="black" />
+                    </View>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                <View style={styles.okList}>
-                    <Octicons name="checklist" size={30} color="black" onPress={()=>clearIngredientList()}/>
-                </View>
+                    <View style={styles.okList}>
+                        <Octicons name="checklist" size={30} color="black" onPress={() => clearIngredientList()} />
+                    </View>
                 </TouchableOpacity>
             </View>
-           
+
             <Button
                 iconRight={true}
                 title="Share with the group"
@@ -174,20 +174,19 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
             />
 
             {/* ------------------------------ OVERLAY -----------------------------------------------*/}
-            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 30, padding:10 }} isVisible={visible} onBackdropPress={toggleOverlay} >
+            <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 30, padding: 30 }} isVisible={visible} onBackdropPress={toggleOverlay} >
                 <View style={styles.overlay}>
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
                     <Input placeholder='Product name'
                         onChangeText={(value) => setText(value)}
                         value={text} />
                 </View>
+                
                 <Button
                     title="Confirm"
+                    buttonStyle={{ backgroundColor: '#febf63', padding: 10, borderRadius: 30, marginHorizontal: 30 }}
+                    titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
                     onPress={() => { toggleOverlay() }}
-                    type="clear"
-                    buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-                    titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
                 />
             </Overlay>
         </View>
@@ -200,11 +199,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-      clearIngredientList: function() { 
-        dispatch( {type: 'clearingredientList'} ) 
-      }
+        clearIngredientList: function () {
+            dispatch({ type: 'clearingredientList' })
+        }
     }
-  }
+}
 
 
 var globalListScreen = connect(

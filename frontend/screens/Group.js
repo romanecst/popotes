@@ -238,7 +238,7 @@ function Group(props) {
 
       <Header
         containerStyle={{ backgroundColor: "#7FDBDA", height: 90, paddingTop: 50 }}
-        centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        centerComponent={{ text: 'GROUP', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22 } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
@@ -422,8 +422,7 @@ function Group(props) {
                 buttonStyle={{
                   backgroundColor: "#7FDBDA",
                   borderRadius: 30,
-                  paddingHorizontal: 18,
-                  marginBottom:20 
+                  paddingHorizontal: 18, 
                 }}
                 titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
