@@ -4,7 +4,9 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  Image, 
+  Linking
 } from "react-native";
 import { Input, Button, Avatar, Accessory, Overlay } from "react-native-elements";
 import { TextInput } from "react-native";
@@ -23,6 +25,14 @@ function MesGroupes(props) {
   const [groupParticipants, setGroupParticipants]= useState([]);
   const [listID, setListID]= useState('');
   const [text, setText] = useState('');
+
+  const [searchGroupe, setSearchGroupe] = useState("Chercher un Groupe");
+  const [searchFriend, setSearchFriend] = useState("");
+  const [listFriends, setListFriends] = useState ([]);
+  const [visibleFriends, setVisibleFriends] = useState(false);
+  const [listErrorFriends, setListErrorFriends] = useState([]);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [contact, setContact]= useState([]);
 
   useEffect(()=>{
     const loadInfo = async()=>{
@@ -81,13 +91,63 @@ function MesGroupes(props) {
     
   }
 
+  const textMail =
+  `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
+   https://popotes/app/fr.${"\n"}
+  Here is the access code to the group:${props.tokenGroup}, please inform what you
+  are bringing. ${"\n"}
+  See you soon.`
+
+
+  function back() {
+    setVisibleFriends(false);
+  }
+  function addFriend() {
+    setVisibleFriends(!visibleFriends);
+     }
+
+     var checkNameFriends = async()=> {
+      var rawResponse = await fetch(`${baseURL}/friends`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `nameFriendFromFront=${searchFriend}&tokenGroupFromFront=${props.tokenGroup}`,
+      });
+      var response = await rawResponse.json();
+      console.log(response)
+      var userName = response.userSearch.username;
+  
+      if (response.result == true && userName) {
+      setGroupParticipants([...groupParticipants, response.userSearch])
+      setVisibleFriends(false);
+        
+      }else{
+        listErrorFriends.push(`ton ami n'est pas enregistré`)
+        return listErrorFriends
+      } 
+    };
+
+
+var newList = listFriends.map(function(list, i){
+  return <Button
+  iconRight={true}
+  title={list}
+  key={i}
+  buttonStyle={{ backgroundColor: "white" }}
+  containerStyle={{
+    borderRadius: 45,
+    marginTop: 10,
+    marginBottom: 10,
+  }}
+  titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu", textAlign: "center" }}
+/>
+})
 
   return (
+    <ScrollView>
     <View style={{ backgroundColor: "#ADE498", flex:1 }}>
       <View
         style={{
           alignItems: "center",
-          
           marginTop: 120,
         }}
       >
@@ -102,6 +162,8 @@ function MesGroupes(props) {
             }}
           />
         </View>
+        {/* <Text>NameGroup : {props.nameGroup}</Text>
+        <Text>Password: {props.tokenGroup}</Text> */}
         <View>
           <Text style={{padding: 20, fontSize: 20}}>{groupName}</Text>
         </View>
@@ -132,13 +194,143 @@ function MesGroupes(props) {
         }
 
         </ScrollView>
+    {/* <View style={{alignContent: "center"}}> 
+        {newList}
+    </View>    */}
+    
 
+      
+<TouchableOpacity>
         <Ionicons
           style={{ marginTop: 15, marginBottom: 35 }}
           name="ios-add-circle-outline"
           size={114}
           color="black"
+          onPress={() => {
+            addFriend();
+          }}
         />
+        </TouchableOpacity>
+{/* ----------------------------------------------------------OVERLAY AJOUT PARTICPANTS------------------------------------- */}
+        <View>
+        <Overlay
+          overlayStyle={{
+            backgroundColor: "#dfe6e9",
+            borderRadius: 30,
+            width: 320,
+          }}
+          isVisible={visibleFriends}
+          onBackdropPress={addFriend}
+        >
+          <ScrollView>
+         
+          
+          <View>
+            <View
+              style={{
+                alignItems: "flex-start",
+                flexDirection: "row",
+                marginBottom: 30,
+              }}
+            >
+              <Button
+                title="Return"
+                type="clear"
+                onPress={() => {
+                  back();
+                }}
+                buttonStyle={{
+                  borderColor: "#dfe6e9",
+                  justifyContent: "flex-end",
+                }}
+                titleStyle={{
+                  color: "black",
+                  fontFamily: "Kohinoor Telugu",
+                  fontSize: 11,
+                  marginRight: 35,
+                }}
+              />
+              
+            </View>
+
+            <View style={{ alignItems: "center" }}>
+              <Text style={{ fontFamily: "Kohinoor Telugu" }}>
+                Find your friends :
+              </Text>
+              <TextInput
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 30,
+                  padding: 12,
+                  width: 230,
+                  marginTop: 10,
+                  marginBottom: 50,
+                  textAlign: "center",
+                }}
+                placeholder="Friends name"
+                onChangeText={(value) => {
+                  setSearchFriend(value);
+                }}
+                value={searchFriend}
+              />
+                {/* <Text>{contact}</Text> */}
+
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 45,
+                  padding: 5,
+                  marginBottom: 50,
+                }}
+              >
+                <Image
+                  source={require("../assets/rainbow.jpg")}
+                  style={{ borderRadius: 40, width: 50, height: 50 }}
+                />
+              </TouchableOpacity>
+
+              
+
+              <Button
+                title="Go !"
+                buttonStyle={{
+                  backgroundColor: "#7FDBDA",
+                  borderRadius: 30,
+                  paddingHorizontal: 18,
+                }}
+                titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
+                onPress={() => {
+                  checkNameFriends(searchFriend)
+                }}
+              />
+
+              <Text style={{ marginBottom: 10, fontFamily: "Kohinoor Telugu" }}>
+                Invite your friends to download your app :
+              </Text>
+              <Button
+                title="share the link"
+                buttonStyle={{
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  paddingHorizontal: 18,
+                  marginBottom: 60,
+                  borderWidth: 2,
+                  borderColor: "#7FDBDA",
+                }}
+                titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
+                onPress={() => {
+                    Linking.openURL(
+                      `mailto:?subject=${props.nameGroup}&body=${textMail}`
+                    );
+                }}
+              />
+            </View>
+          </View>
+          </ScrollView>
+        </Overlay>
+
+        </View>
       </View>
 
        {/* ------------------------------ OVERLAY -----------------------------------------------*/}
@@ -160,6 +352,7 @@ function MesGroupes(props) {
     </Overlay>
 
     </View>
+    </ScrollView>
   );
 }
 
@@ -185,7 +378,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-  return { tokenGroup: state.tokenGroup, token: state.token };
+  return { tokenGroup: state.tokenGroup, token: state.token, nameGroup: state.nameGroup };
 }
 
 

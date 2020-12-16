@@ -7,8 +7,12 @@ import Signin from "./Signin";
 import {baseURL} from '../screens/components/adressIP'
 
 
-function Profil({ navigation, token }) {
+import * as ImagePicker from "expo-image-picker";
 
+function Profil(props) {
+
+  const [hasPermission, setHasPermission] = useState(null);
+  const [image, setImage] = useState(null);
 
   const [visible, setVisible] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
@@ -53,6 +57,16 @@ function Profil({ navigation, token }) {
                   setVisibleSignup(true);
                 }
               })
+      if (Platform.OS !== "web") {
+        const {
+          status,
+        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        } else {
+          setHasPermission(true);
+        }
+      }
     })();
   }, []);
 
@@ -108,6 +122,20 @@ function Profil({ navigation, token }) {
     return(<Text>{error}</Text>)
   })
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log("essai permission result", result);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
 
   // COULEUR APRES SELECTION  ================>
   var iconUser = `<AntDesign name="adduser" size={24} color="black" />`;
@@ -149,7 +177,7 @@ function Profil({ navigation, token }) {
     var userRegisters = await fetch(`${baseURL}/userUpdate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `token=${token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
+      body: `token=${props.token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
     })
     var response = await userRegisters.json();
     console.log(response);
@@ -163,8 +191,9 @@ function Profil({ navigation, token }) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {props.navigation.navigate('homePage')}}/>}
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
-        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
+        rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
       <ScrollView>
@@ -172,18 +201,27 @@ function Profil({ navigation, token }) {
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
           <TouchableOpacity
-            onPress={() => console.log("Works!")}
+            onPress={pickImage}
             activeOpacity={0.3}
             style={{ backgroundColor: 'black', borderRadius: 100, marginTop: 15, borderWidth: 1, marginBottom: 20 }}
           >
+            {image ? 
+                  <Image
+                    source={{ uri: image }}
+                    style={{ width: 130, height: 130, borderRadius:60 }}
+                    containerStyle={{ borderRadius: 200 }}
+                    
+                  />
+                   : 
 
             <Avatar
               size={130}
               rounded icon={{
-                name: 'add-a-photo', size: 65, color: 'black',
+                name: 'add-a-photo', size: 60, color: 'black',
               }}
               containerStyle={{ backgroundColor: "white" }}
             />
+            }
           </TouchableOpacity>
 
           {/* --------------------CHAMPS FORMULAIRE ------------------------------------ */}
@@ -288,7 +326,7 @@ function Profil({ navigation, token }) {
             title="validate"
             buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
-            onPress={() => { navigation.navigate('Profil'); updateUser() }}
+            onPress={() => { props.navigation.navigate('Profil'); updateUser() }}
 
           />
         </View>
@@ -424,13 +462,16 @@ input:{
   }, 
 });
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch){
   return {
-    addToken: function(token){
-      dispatch({type: 'addToken', token: token})
+    addToken:function(token){
+      dispatch({type:'addToken',token: token})
     }
-  };
+  }
 }
+
+
+
 
 function mapStateToProps(state) {
   return { token: state.token }
