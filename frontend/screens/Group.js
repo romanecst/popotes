@@ -200,6 +200,7 @@ function Group(props) {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
+    console.log("delete",rawResponse);
     var response = await rawResponse.json();
     console.log("test update", response);
   };
@@ -219,6 +220,7 @@ function Group(props) {
         <View style={styles.blocScroll}>
           <Text>{el.name}</Text>
           <Button
+            onPress={()=> handleClickDelete()}
             icon={<Entypo name="cross" size={24} color="black" />}
             buttonStyle={{
               backgroundColor: "#FFFFFF",
