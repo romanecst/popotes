@@ -1,4 +1,4 @@
-export default function(nameGroup = " ", action){
+export default function(nameGroup = {}, action){
 
     if(action.type == 'nameGroup') {
       return action.nameGroup;

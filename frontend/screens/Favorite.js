@@ -49,11 +49,13 @@ function Favorite(props) {
     } else {
         var favourites = props.recipeList.map(function (recipe, i) {
             return <View key={i} style={styles.container}>
+                <TouchableOpacity onPress={goToRecipe(recipe)}>
                 <Image style={styles.picture} source={{ uri: recipe.image }} />
                 <Text style={styles.text} >{recipe.title}</Text>
                 <View style={{ backgroundColor: '#fbfafa', paddingBottom: 63, paddingTop: 63, paddingRight: 5 }}>
                     <Entypo name="cross" size={24} color="black" onPress={() => props.deleteRecipe(recipe.title)} />
                 </View>
+                </TouchableOpacity>
             </View>
         })
     }

@@ -426,7 +426,7 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  props.checkNameGroup(nameGroup);
+                  props.checkNameGroup({name: nameGroup, image: image});
                     saveGroup(),
                     Linking.openURL(
                       `mailto:?subject=${nameGroup}&body=${text}`

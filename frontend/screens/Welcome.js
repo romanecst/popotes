@@ -130,7 +130,7 @@ return (
                     </View>
                     <Button
                         title="Next"
-                        onPress={() => {NoPref(); navigation.navigate('CreateGroup'); setVisible(false)}}
+                        onPress={() => {NoPref(); navigation.navigate('homePage'); setVisible(false)}}
                         type="clear"
                         buttonStyle={{ borderColor: 'white', justifyContent: 'flex-end' }}
                         titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
