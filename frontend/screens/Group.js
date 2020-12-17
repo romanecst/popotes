@@ -426,8 +426,9 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
+                  console.log('IMAGEGEGEGEGEG',image);
                   props.checkNameGroup({name: nameGroup, image: image});
-                    saveGroup(),
+                    saveGroup();
                     Linking.openURL(
                       `mailto:?subject=${nameGroup}&body=${text}`
                     );
@@ -444,7 +445,9 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  props.checkNameGroup(nameGroup), saveGroup();
+                  console.log('IMAGEGEGEGEGEG',image);
+                  props.checkNameGroup({name: nameGroup, image: image});
+                  saveGroup();
                 }}
               />
             </View>
