@@ -38,7 +38,8 @@ function MesGroupesP12(props) {
       setGroupParticipants(response.users)
 
       var currentUser = response.users.filter(el => el.token == props.token);
-      setUser(currentUser);
+
+      setUser(currentUser[0]);
 
       const rawReponseList= await fetch(`${baseURL}/getIngredients`, {
         method: 'POST',
@@ -46,7 +47,7 @@ function MesGroupesP12(props) {
         body: `id=${props.listInfo.id}`
       })
       const responseList = await rawReponseList.json();
-      console.log('INGRRR', responseList.ingredients)
+ 
       setListName(responseList.name)
       setIngredients(responseList.ingredients)
 
@@ -54,7 +55,6 @@ function MesGroupesP12(props) {
     }
     loadInfo();
   }, [])
-
 
 
   return (
@@ -109,7 +109,7 @@ function MesGroupesP12(props) {
             <Text>Ingredients :</Text>
 
               {ingredients.map(function(el, i){              
-             return  <IngredientGroup key={i} name={el.name} amount={el.amount} user={user}/>
+             return  <IngredientGroup key={i} ingredient={el} user={user}/>
               })
               }
 

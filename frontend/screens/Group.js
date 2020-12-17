@@ -113,7 +113,7 @@ function Group(props) {
   const text =
     `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
        https://popotes/app/fr.${"\n"}
-      Here is the access code to the group:${tokenGroup}, please inform what you
+      Here is the access code to the group:${props.tokenGroup}, please inform what you
       are bringing. ${"\n"}
       See you soon.`
 
