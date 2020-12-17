@@ -315,7 +315,7 @@ permission()
             onPress={()=>updateUser()}
           />
           <Button
-            title="Deconnexion"
+            title="Disconnection"
             buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
             onPress={() => AsyncStorage.setItem('user token', '') } 
