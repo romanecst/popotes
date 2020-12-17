@@ -174,7 +174,7 @@ function List(props) {
     
 } else {
     var listsShop = lists.map((el, i) => (
-      <View style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', borderRadius: 30 }}>
+      <View style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', borderRadius: 30 , marginBottom:12}}>
         <TouchableOpacity
           onPress={() => { props.currentList(el); props.addingredientList(el.ingredients); props.navigation.navigate('GlobalList') }}>
           <ListItem key={i} containerStyle={{ width: 280, flexDirection: 'row', alignItems: 'center', borderRadius:30 }}>
