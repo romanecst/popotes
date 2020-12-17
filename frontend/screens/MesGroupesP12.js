@@ -85,9 +85,9 @@ function MesGroupesP12(props) {
                 <View style={{ borderWidth: 10, borderColor: el.salt, borderRadius: 100, marginRight: 5 }}>
                   <Avatar
                     rounded
-                    title="Romane"
+                    title={el.username.substring(0,2)}
                     size={100}
-                    source={{ uri: "https://geeko.lesoir.be/wp-content/uploads/sites/58/2020/05/avatar.jpg" }}
+                    source={{ uri: "" }}
                   />
                 </View>
                 <Text style={{ fontFamily: 'Kohinoor Telugu' }}>{el.username}</Text>
