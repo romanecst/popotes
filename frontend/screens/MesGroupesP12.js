@@ -7,17 +7,19 @@ import CircleCheckBox, { LABEL_POSITION } from 'react-native-circle-checkbox';
 
 import { baseURL } from '../screens/components/adressIP'
 import { connect } from 'react-redux';
+import IngredientGroup from './components/ingredientGroup'
 
 
 
 function MesGroupesP12(props) {
 
-  const [groupName, setGroupName] = useState('');
-  const [groupParticipants, setGroupParticipants] = useState([]);
-  const [listName, setListName] = useState('');
-  const [ingredients, setIngredients] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const [text, setText] = useState('');
+  const [user, setUser] = useState();
+  const [groupName, setGroupName]= useState('');
+  const [groupParticipants, setGroupParticipants]= useState([]);
+  const [listName, setListName]= useState('');
+  const [ingredients, setIngredients]= useState([]);
+    const [visible, setVisible] = useState(false);
+    const [text, setText] = useState('');
 
 
   const toggleOverlay = () => {
@@ -35,20 +37,24 @@ function MesGroupesP12(props) {
       setGroupName(response.mygroup.name);
       setGroupParticipants(response.users)
 
-      const rawReponseList = await fetch(`${baseURL}/getIngredients`, {
+      var currentUser = response.users.filter(el => el.token == props.token);
+
+      setUser(currentUser[0]);
+
+      const rawReponseList= await fetch(`${baseURL}/getIngredients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `id=${props.listInfo.id}`
       })
       const responseList = await rawReponseList.json();
-      console.log('INGRRR', responseList.ingredients)
+ 
       setListName(responseList.name)
       setIngredients(responseList.ingredients)
+
 
     }
     loadInfo();
   }, [])
-
 
 
   return (
@@ -102,22 +108,10 @@ function MesGroupesP12(props) {
           <View style={styles.blocScroll}>
             <Text>Ingredients :</Text>
 
-            {ingredients.map(function (el, i) {
-              return <View key={i} style={{ alignItems: 'center', marginTop: 20, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <Text style={{ marginRight: 40 }}> {el.name} : {el.amount}</Text>
-                <CircleCheckBox
-                  checked={false}
-                  onToggle={(checked) => console.log('My state is: ', checked)}
-                  labelPosition={LABEL_POSITION.LEFT}
-                  outerColor='black'
-                  innerColor='red'
-                  innerSize='20'
-                  outerSize='26'
-                />
-                <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding: 18, borderRadius: 50 }}></Button>
-              </View>
-            })
-            }
+              {ingredients.map(function(el, i){              
+             return  <IngredientGroup key={i} ingredient={el} user={user}/>
+              })
+              }
 
           </View>
 

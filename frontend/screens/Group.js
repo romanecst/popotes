@@ -18,7 +18,7 @@ import { baseURL } from '../screens/components/adressIP'
 function Group(props) {
 
   const [visible, setVisible] = useState(false);
-
+  const [val, setVal] = useState("");
   const [nameGroup, setNameGroup] = useState("");
   const [tokenGroup, setTokenGroup] = useState("");
   const [listErrorGroup, setListErrorGroup] = useState([]);
@@ -236,6 +236,16 @@ function Group(props) {
     })
   }
 
+  async function SearchToken(){
+    var rawResponse = await fetch(`${baseURL}/addUserGroup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:`tokenGroup=${val}&token=${props.token}`
+    });
+    var response = await rawResponse.json();
+    console.log("gorup update", response);
+  }
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "#e5f8f8" }}>
@@ -256,13 +266,15 @@ function Group(props) {
             style={styles.text}
             inputContainerStyle={{ borderBottomWidth: 0 }}
             placeholder="Passwords for your party"
-            secureTextEntry='true'
+            value={val}
+            onChangeText={(value)=> setVal(value)}
+
           />
           <Button
             title="Go !"
             buttonStyle={styles.bouton}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-            onPress={() => Search()} />
+            onPress={() => SearchToken()} />
         </View>
 
         {/* -------------------Acces à mes groupe precedent ----------------------- */}

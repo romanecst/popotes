@@ -398,7 +398,7 @@ router.post('/deleteList', async function (req, res, next) {
 });
 
 router.post('/addIngredients', async function (req, res, next) {
-  console.log('hello',req.body.list ,JSON.parse(req.body.ingredients))
+ 
     var list = await listModel.updateOne(
       { _id: req.body.list },
       { $push:{ingredients: JSON.parse(req.body.ingredients ) }}
@@ -431,7 +431,32 @@ router.post('/userProfil', async function(req,res,next){
   var userProfil = await userModel.findOne({token:req.body.token});
   console.log("findone",userProfil);
   res.json(userProfil)
-})
+});
+
+router.post('/addUserGroup', async function (req, res, next) {
+  var result = false
+  var group = await groupModel.updateOne({group_token: req.body.tokenGroup}, {$push: {user_id: req.body.token}});
+  if(group.nModified == 1){
+    result = true
+    var getGroup = await groupModel.findOne({group_token: req.body.token});
+    await userModel.updateOne({token: req.body.token},{$push: {list_id: getGroup.list_id}})
+  }
+  res.json(result);
+});
+
+router.post('/sendIngredient', async function (req, res, next) {
+  var ingredient = JSON.parse(req.body.ingredient);
+  console.log('INGGRGGRVRGRG', ingredient.name)
+  await listModel.updateOne(
+    { _id: req.body.list },
+    { $pull: {ingredients: {name: ingredient.name} } } 
+  );
+  await listModel.updateOne(
+    { _id: req.body.list },
+    { $push:{ingredients: ingredient}}
+  );
+  res.json();
+});
 
 module.exports = router;
 
