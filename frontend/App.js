@@ -16,7 +16,6 @@ import homePage from './screens/homePage';
 import Profil from './screens/Profil';
 
 // STACK NAVIGATOR =============================>
-import CreateGroup from './screens/CreateGroup';
 import Welcome from './screens/Welcome';
 import List from './screens/List';
 import recipe from './reducers/recipeInfo';
@@ -99,7 +98,6 @@ var BottomNavigator = createBottomTabNavigator({
 
 var StackNavigator = createStackNavigator({
   Welcome: Welcome,
-  CreateGroup: CreateGroup,
   homePage : homePage,
   List: List,
   Recipe: Recipe,
