@@ -5,7 +5,7 @@ import { Input, Button, Avatar, Accessory, Icon, Card, ListItem, CheckBox, Text,
 import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons, Octicons } from "@expo/vector-icons";
 import CircleCheckBox, { LABEL_POSITION } from 'react-native-circle-checkbox';
 
-import {baseURL} from '../screens/components/adressIP'
+import { baseURL } from '../screens/components/adressIP'
 import { connect } from 'react-redux';
 import IngredientGroup from './components/ingredientGroup'
 
@@ -22,15 +22,15 @@ function MesGroupesP12(props) {
     const [text, setText] = useState('');
 
 
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
 
-  useEffect(()=>{
-    const loadInfo = async()=>{
-      const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
+  useEffect(() => {
+    const loadInfo = async () => {
+      const rawReponse = await fetch(`${baseURL}/getMyGroup`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `token=${props.tokenGroup}`
       })
       const response = await rawReponse.json();
@@ -42,19 +42,19 @@ function MesGroupesP12(props) {
 
       const rawReponseList= await fetch(`${baseURL}/getIngredients`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `id=${props.listInfo.id}`
       })
       const responseList = await rawReponseList.json();
-      console.log('INGRRR',responseList.ingredients)
+      console.log('INGRRR', responseList.ingredients)
       setListName(responseList.name)
       setIngredients(responseList.ingredients)
 
 
     }
     loadInfo();
-  },[])
-  
+  }, [])
+
 
 
   return (
@@ -64,8 +64,8 @@ function MesGroupesP12(props) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { props.navigation.navigate('MesGroupes') }}/>}
-        centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { props.navigation.navigate('MesGroupes') }} />}
+        centerComponent={{ text: 'GROUP', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' , fontSize:22} }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
@@ -80,74 +80,73 @@ function MesGroupesP12(props) {
 
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} style={styles.overlayH}>
           <View style={{ flexDirection: 'row' }}>
-            {groupParticipants.map(function(el, i){ 
+            {groupParticipants.map(function (el, i) {
               return <View style={{ alignItems: 'center' }}>
-              <View style={{ borderWidth: 10, borderColor: el.salt, borderRadius: 100, marginRight: 5 }}>
-                <Avatar
-                  rounded
-                  title="Romane"
-                  size={100}
-                  source={{ uri: "https://geeko.lesoir.be/wp-content/uploads/sites/58/2020/05/avatar.jpg" }}
-                />
+                <View style={{ borderWidth: 10, borderColor: el.salt, borderRadius: 100, marginRight: 5 }}>
+                  <Avatar
+                    rounded
+                    title="Romane"
+                    size={100}
+                    source={{ uri: "https://geeko.lesoir.be/wp-content/uploads/sites/58/2020/05/avatar.jpg" }}
+                  />
+                </View>
+                <Text style={{ fontFamily: 'Kohinoor Telugu' }}>{el.username}</Text>
               </View>
-              <Text style={{ fontFamily: 'Kohinoor Telugu' }}>{el.username}</Text>
-            </View>
-              })}
-              
+            })}
+
           </View>
         </ScrollView >
 
-        
+
 
         {/* ---------------Scroll des recettes  -------------- */}
 
-        <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:18}}>{listName}</Text>
+        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>{listName}</Text>
 
         <ScrollView style={styles.scroll}>
 
-            <View style={styles.blocScroll}>
-              <Text>Ingredients :</Text>
+          <View style={styles.blocScroll}>
+            <Text>Ingredients :</Text>
 
               {ingredients.map(function(el, i){              
              return  <IngredientGroup key={i} name={el.name} amount={el.amount} user={user}/>
               })
               }
 
-            </View>
+          </View>
 
         </ScrollView>
 
         <View style={{ flexDirection: 'row', marginHorizontal: 20, justifyContent: 'center' }}>
-                <TouchableOpacity onPress={() => {toggleOverlay()}}>
-                <View style={styles.ajoutListe}>
-                    <MaterialIcons name="playlist-add" size={30} color="black" />
-                </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                <View style={styles.okList}>
-                    <Octicons name="checklist" size={30} color="black" onPress={()=>clearIngredientList()}/>
-                </View>
-                </TouchableOpacity>
+          <TouchableOpacity onPress={() => { toggleOverlay() }}>
+            <View style={styles.ajoutListe}>
+              <MaterialIcons name="playlist-add" size={30} color="black" />
             </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View style={styles.okList}>
+              <Octicons name="checklist" size={30} color="black" onPress={() => clearIngredientList()} />
+            </View>
+          </TouchableOpacity>
+        </View>
 
       </View>
       {/* ------------------------------ OVERLAY -----------------------------------------------*/}
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
-                <View style={styles.overlay}>
-                    <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
-                    <Input placeholder='Product name'
-                        onChangeText={(value) => setText(value)}
-                        value={text} />
-                </View>
-                <Button
-                    title="Confirm"
-                    onPress={() => { toggleOverlay() }}
-                    type="clear"
-                    buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-                    titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-                />
-            </Overlay>
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, padding: 30 }} isVisible={visible} onBackdropPress={toggleOverlay} >
+        <View style={styles.overlay}>
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
+          <Input placeholder='Product name'
+            onChangeText={(value) => setText(value)}
+            value={text} />
+        </View>
+      
+        <Button
+          title="Confirm"
+          buttonStyle={{ backgroundColor: '#7FDBDA', padding: 10, borderRadius:30, marginHorizontal:30 }}
+          titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
+          onPress={() => { toggleOverlay() }}
+        />
+      </Overlay>
     </View>
   );
 }
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 15
-  },ajoutListe: {
+  }, ajoutListe: {
     justifyContent: "space-around",
     backgroundColor: 'white',
     alignItems: "center",
@@ -182,23 +181,23 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
     width: 164,
     marginBottom: 15,
-    marginTop:3
-}, 
-okList: {
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: 'white',
-  padding: 20,
-  borderRadius: 30,
-  borderBottomLeftRadius: 0,
-  borderBottomRightRadius: 30,
-  borderTopLeftRadius: 0,
-  borderTopRightRadius: 0,
-  width: 164,
-  marginBottom: 15,
-  marginLeft: 3,
-  marginTop:3
-}
+    marginTop: 3
+  },
+  okList: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 30,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 30,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    width: 164,
+    marginBottom: 15,
+    marginLeft: 3,
+    marginTop: 3
+  }
 });
 
 function mapStateToProps(state) {

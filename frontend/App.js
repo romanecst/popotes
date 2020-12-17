@@ -65,7 +65,7 @@ var BottomNavigator = createBottomTabNavigator({
       var iconName;
       
       if (navigation.state.routeName == 'Favorite') {
-        iconName = 'heart-o';
+        iconName = 'heart';
       } else if (navigation.state.routeName == 'Group') {
         iconName = "users";
       }else if (navigation.state.routeName == 'Home') {
@@ -88,10 +88,10 @@ var BottomNavigator = createBottomTabNavigator({
     }
   }),
   tabBarOptions: {
-    activeTintColor: '#5d5c5c',
+    activeTintColor: 'black',
     inactiveTintColor: '#ece9e9',
     style: {
-      backgroundColor: '#fbfafa',
+      backgroundColor: 'white',
     }
   }  
  

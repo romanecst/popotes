@@ -4,9 +4,9 @@ import { Button, ListItem, Header, Input, Overlay, Avatar } from "react-native-e
 
 import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import {baseURL} from '../screens/components/adressIP'
+import { baseURL } from '../screens/components/adressIP'
 
 
 function List(props) {
@@ -25,7 +25,7 @@ function List(props) {
   const [signUpUsername, setSignUpUsername] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
-  
+
 
 
   const [listErrorSignUp, setListErrorSignUp] = useState([]);
@@ -40,23 +40,23 @@ function List(props) {
 
   useEffect(() => {
     (async () => {
-      AsyncStorage.getItem("user token", 
-              async function(error, data){
-                console.log('DATAT',data)
-                if(data){
-                props.addToken(data);
-                const dataFetch = await fetch(`${baseURL}/getMyLists`, {
-                  method: 'POST',
-                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                  body: `token=${data}`
-                });
-                const body = await dataFetch.json();
-                setLists(body)
+      AsyncStorage.getItem("user token",
+        async function (error, data) {
+          console.log('DATAT', data)
+          if (data) {
+            props.addToken(data);
+            const dataFetch = await fetch(`${baseURL}/getMyLists`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: `token=${data}`
+            });
+            const body = await dataFetch.json();
+            setLists(body)
 
-                }else{
-                  setVisibleSignup(true);
-                }
-              })
+          } else {
+            setVisibleSignup(true);
+          }
+        })
       if (Platform.OS !== "web") {
         const {
           status,
@@ -71,53 +71,53 @@ function List(props) {
   }, []);
 
   var handleSubmitSignin = async () => {
- 
+
     const data = await fetch(`${baseURL}/sign-in`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
     })
 
     const body = await data.json()
 
-    if(body.result == true){
-      
+    if (body.result == true) {
+
       console.log(body.token);
       props.addToken(body.token);
       AsyncStorage.setItem("user token", body.token);
       toggleSignin();
       const dataFetch = await fetch(`${baseURL}/getMyLists`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `token=${body.token}`
       });
       const bodyFetch = await dataFetch.json();
-      setLists(bodyFetch)  
-      
-    }  else {
+      setLists(bodyFetch)
+
+    } else {
       setErrorsSignin(body.error)
     }
   }
 
-  var tabErrorsSignin = listErrorsSignin.map((error,i) => {
-    return(<Text>{error}</Text>)
+  var tabErrorsSignin = listErrorsSignin.map((error, i) => {
+    return (<Text>{error}</Text>)
   })
 
   var handleSubmitSignUp = async () => {
 
     const data = await fetch(`${baseURL}/sign-up`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
     })
 
     const body = await data.json()
-    if(body.result == true){
+    if (body.result == true) {
       props.addToken(body.token);
       AsyncStorage.setItem("user token", body.token);
       const dataFetch = await fetch(`${baseURL}/getMyLists`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `token=${body.token}`
       });
       const bodyFetch = await dataFetch.json();
@@ -130,220 +130,207 @@ function List(props) {
     }
   }
 
-  var tabErrorsSignup = listErrorSignUp.map((error,i) => {
-    return(<Text>{error}</Text>)
+  var tabErrorsSignup = listErrorSignUp.map((error, i) => {
+    return (<Text>{error}</Text>)
   })
 
-  const addList = async() => {
+  const addList = async () => {
     var rawResponse = await fetch(`${baseURL}/addList`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `name=${text}&user=${props.token}`
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `name=${text}&user=${props.token}`
     });
     var response = await rawResponse.json();
     setLists([...lists, response])
     setText('');
   }
 
-  async function DeleteList(id){
-    if(id){
+  async function DeleteList(id) {
+    if (id) {
       await fetch(`${baseURL}/deleteList`, {
         method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `id=${id}&user=${props.token}`
       });
       var newlist = lists.filter(el => el._id !== id);
       setLists(newlist);
-  }
+    }
   }
 
   const toggleOverlay = () => {
     setVisible(!visible);
-};
+  };
 
-useEffect(() => {console.log('LISTSTSTTSTSTST', lists)},[lists])
+  useEffect(() => { console.log('LISTSTSTTSTSTST', lists) }, [lists])
+
+  if (lists.length == 0) {
+    var listsShop =
+    <View>
+     <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:40, color:'grey', marginLeft:78}}>No shopping list</Text>
+     <Image
+    style={{width:150, height:150, marginLeft:78}}
+    source={require('../assets/sad.png')}/>
+    </View>
+    
+} else {
+    var listsShop = lists.map((el, i) => (
+      <View style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', borderRadius: 30 }}>
+        <TouchableOpacity
+          onPress={() => { props.currentList(el); props.addingredientList(el.ingredients); props.navigation.navigate('GlobalList') }}>
+          <ListItem key={i} containerStyle={{ width: 280, flexDirection: 'row', alignItems: 'center', borderRadius:30 }}>
+            <ListItem.Content style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', }}>
+              <Text> {el.name}</Text>
+              <View>
+                <Entypo name="cross" size={24} color="black" onPress={() => DeleteList(el._id)} />
+              </View>
+            </ListItem.Content>
+          </ListItem>
+        </TouchableOpacity>
+      </View>
+    ))
+    
+};  
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "#FFF2DF" }}>
 
       <Header
         containerStyle={{ backgroundColor: '#febf63', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {props.navigation.goBack(null) }}/>}
-        centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { props.navigation.goBack(null) }} />}
+        centerComponent={{ text: 'LIST', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22 } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
-      <View style={{ alignItems: "center", marginTop: 10, marginBottom:20 }}>
-        <Text style={{ fontSize: 22 }}>Create a new list</Text>
+      <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 10, marginBottom: 20 }}>
+
+        <Text style={{ alignItems: "center", marginTop: 10, marginBottom: 20, fontSize: 22, fontFamily: 'Kohinoor Telugu' }}> My shopping list</Text>
+
+
+        {/* ---------------------------LISTE EXISTANTE FAVORITE------------------------------------------  */}
+        <ScrollView style={{ marginTop: 10, backgroundColor: "#FFF2DF", width: 300, height: 300, borderRadius: 20}}>
+          { listsShop  }
+        </ScrollView>
+
+        {/* ------------------------------ OVERLAY -----------------------------------------------*/}
+        <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
+          <View style={styles.overlay}>
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, give a name to your list : </Text>
+            <Input placeholder='Name'
+              onChangeText={(value) => setText(value)}
+              value={text} />
+          </View>
+          <Button
+            title="Confirm"
+            onPress={() => { addList(); toggleOverlay() }}
+            type="clear"
+            buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+            titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+
+          />
+        </Overlay>
+
+
+        <Text style={{ fontSize: 22, marginTop: 40, marginBottom: 20, fontFamily: 'Kohinoor Telugu' }}>Create a new list</Text>
 
         {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
-        <Ionicons name="ios-add-circle-outline" size={60} color="black" onPress={toggleOverlay}/>
+        <Ionicons name="ios-add-circle-outline" size={60} color="black" onPress={toggleOverlay} />
       </View>
-      <Text
-        style={{
-          alignItems: "center",
-          marginLeft: 80,
-          marginTop: 40,
-          fontSize: 20,
-        }}
-      >
-        Mes Listes mes listes de course{" "}
-      </Text>
-
-      {/* ---------------------------LISTE EXISTANTE FAVORITE------------------------------------------  */}
-      <ScrollView
-        style={{
-          marginBottom: 10,
-          marginTop: 70,
-          backgroundColor: "#FFF2DF",
-          paddingLeft: 5,
-          paddingRight: 5,
-        }}
-      >
-        {lists.map((el, i) => (
-          <View style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-        }}>
-          <TouchableOpacity
-          onPress={() => {props.currentList(el); props.addingredientList(el.ingredients); props.navigation.navigate('GlobalList') }}>
-          <ListItem
-            key={i}
-            bottomDivider
-            style={{
-              borderRadius: 90,
-              marginLeft: 30,
-              marginRight: 30,
-              marginBottom: 10,
-              top: 20,
-              width: 300
-            }}
-          >
-            <ListItem.Content style={{ flex: 1 }}>
-              <Text> {el.name}</Text>
-            </ListItem.Content>
-          </ListItem>
-          </TouchableOpacity>
-          <View style={{top: 20 }}>
-                <Ionicons name="ios-trash" size={24} color="black" onPress={()=> DeleteList(el._id)} />
-          </View>
-          </View>
-        ))}
-      </ScrollView>
-
-  {/* ------------------------------ OVERLAY -----------------------------------------------*/}
-  <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visible} onBackdropPress={toggleOverlay} >
-    <View style={styles.overlay}>
-        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>First, give a name to your list : </Text>
-        <Input placeholder='Name'
-        onChangeText= {(value) => setText(value)} 
-        value={text}/>
-        </View>
-        <Button
-        title="Confirm"
-        onPress={() => {addList(); toggleOverlay()}}
-        type="clear"
-        buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-        titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-
-        />
-    </Overlay>
 
 
       {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
 
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignin} >
-        
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
+
         <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
-            <Avatar
-                size="large"
-                rounded
-                title="LW"
-                activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
-            />
-             
-            <Input
-                containerStyle={styles.input}
-                placeholder='Email'
-                leftIcon={{ type: 'font-awesome', name: 'at' }}
-                onChangeText={(val) => setSignInEmail(val)}
-                val = {signInEmail}
-            />
-            <Input
-                containerStyle={styles.input}
-                placeholder='Password'
-                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-                onChangeText={(val) => setSignInPassword(val)}
-                val = {signInPassword}
-            />
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100 }}>Sign-in{"\n"}{"\n"}</Text>
+          <Avatar
+            size="large"
+            rounded
+            title="LW"
+            activeOpacity={1}
+            containerStyle={{ backgroundColor: "red", marginBottom: 60, marginLeft: 100 }}
+          />
 
-              {tabErrorsSignin}
+          <Input
+            containerStyle={styles.input}
+            placeholder='Email'
+            leftIcon={{ type: 'font-awesome', name: 'at' }}
+            onChangeText={(val) => setSignInEmail(val)}
+            val={signInEmail}
+          />
+          <Input
+            containerStyle={styles.input}
+            placeholder='Password'
+            leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+            onChangeText={(val) => setSignInPassword(val)}
+            val={signInPassword}
+          />
 
-        <Button
-          title="Sign-in"
-          type="clear"
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => handleSubmitSignin()}
-        />
-        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
+          {tabErrorsSignin}
+
+          <Button
+            title="Sign-in"
+            type="clear"
+            buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+            titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+            onPress={() => handleSubmitSignin()}
+          />
+          <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
         </View>
       </Overlay>
 
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignup} >
-        
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
+
         <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>
-            <Avatar
-                size="large"
-                rounded
-                title="LW"
-                activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
-            />
-             <Input
-                containerStyle={styles.input}
-                placeholder='Username'
-                leftIcon={{ type: 'font-awesome', name: 'user' }}
-                onChangeText={(val) => setSignUpUsername(val)}
-                val = {signUpUsername}
-            />
-            <Input
-                containerStyle={styles.input}
-                placeholder='Email'
-                leftIcon={{ type: 'font-awesome', name: 'at' }}
-                onChangeText={(val) => setSignUpEmail(val)}
-                val = {signUpEmail}
-            />
-            <Input
-                containerStyle={styles.input}
-                placeholder='Password'
-                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-                onChangeText={(val) => setSignUpPassword(val)}
-                val = {signUpPassword}
-            />
+          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100 }}>Sign-up{"\n"}{"\n"}</Text>
+          <Avatar
+            size="large"
+            rounded
+            title="LW"
+            activeOpacity={1}
+            containerStyle={{ backgroundColor: "red", marginBottom: 60, marginLeft: 100 }}
+          />
+          <Input
+            containerStyle={styles.input}
+            placeholder='Username'
+            leftIcon={{ type: 'font-awesome', name: 'user' }}
+            onChangeText={(val) => setSignUpUsername(val)}
+            val={signUpUsername}
+          />
+          <Input
+            containerStyle={styles.input}
+            placeholder='Email'
+            leftIcon={{ type: 'font-awesome', name: 'at' }}
+            onChangeText={(val) => setSignUpEmail(val)}
+            val={signUpEmail}
+          />
+          <Input
+            containerStyle={styles.input}
+            placeholder='Password'
+            leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+            onChangeText={(val) => setSignUpPassword(val)}
+            val={signUpPassword}
+          />
 
-            {tabErrorsSignup}
+          {tabErrorsSignup}
 
-        <Button
-          title="Sign-up"
-          type="clear"
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => {handleSubmitSignUp()}}
-        />
-        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
+          <Button
+            title="Sign-up"
+            type="clear"
+            buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
+            titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
+            onPress={() => { handleSubmitSignUp() }}
+          />
+          <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text>Already have an account? Log in</Text></TouchableOpacity>
         </View>
       </Overlay>
 
       {/* ---------------------------LISTE EXISTANTE FAVORITE------------------------------------------  */}
 
-    {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+      {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
       <Text style={{ marginTop: 50, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My shop list</Text>
 
@@ -382,35 +369,35 @@ useEffect(() => {console.log('LISTSTSTTSTSTST', lists)},[lists])
 
 function mapDispatchToProps(dispatch) {
   return {
-      currentList: function(info) { 
-          dispatch( {type: 'listInfo', listInfo: info} ) 
-      },
-      saveList: function(info) { 
-        dispatch( {type: 'addList', list: info} ) 
+    currentList: function (info) {
+      dispatch({ type: 'listInfo', listInfo: info })
     },
-    delList: function(info) { 
-      dispatch( {type: 'delList', list: info} ) 
-  },
-    addingredientList: function(info) { 
-      dispatch( {type: 'ingredientList', ingredient: info} ) 
+    saveList: function (info) {
+      dispatch({ type: 'addList', list: info })
     },
-    addToken:function(token){
-      dispatch({type:'addToken',token: token})
+    delList: function (info) {
+      dispatch({ type: 'delList', list: info })
+    },
+    addingredientList: function (info) {
+      dispatch({ type: 'ingredientList', ingredient: info })
+    },
+    addToken: function (token) {
+      dispatch({ type: 'addToken', token: token })
     }
   }
 }
 
 
-  function mapStateToProps(state) {
-    return { recipeList: state.recipeList, /*list: state.list ,*/ token: state.token}
+function mapStateToProps(state) {
+  return { recipeList: state.recipeList, /*list: state.list ,*/ token: state.token }
 }
 
-      
-  
-  export default connect(
-    mapStateToProps, 
-      mapDispatchToProps
-  )(List);
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(List);
 
 const styles = StyleSheet.create({
   container: {
@@ -420,7 +407,7 @@ const styles = StyleSheet.create({
     width: 290,
     margin: 18,
     justifyContent: 'center',
-}, scroll: {
+  }, scroll: {
     marginBottom: 50,
     marginTop: 20,
     backgroundColor: "#FFF2DF",
@@ -433,12 +420,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 40,
-    justifyContent:'space-between'
+    justifyContent: 'space-between'
   },
-input:{
-    borderWidth:1,
-    borderRadius:20,
-    height:60,
-    marginBottom:20
-  }, 
+  input: {
+    borderWidth: 1,
+    borderRadius: 20,
+    height: 60,
+    marginBottom: 20
+  },
 });

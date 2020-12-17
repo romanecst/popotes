@@ -52,7 +52,7 @@ function Favorite(props) {
                 <Image style={styles.picture} source={{ uri: recipe.image }} />
                 <Text style={styles.text} >{recipe.title}</Text>
                 <View style={{ backgroundColor: '#fbfafa', paddingBottom: 63, paddingTop: 63, paddingRight: 5 }}>
-                    <Entypo name="cross" size={24} color="black" onPress={() => deleteRecipe(recipe.title)} />
+                    <Entypo name="cross" size={24} color="black" onPress={() => props.deleteRecipe(recipe.title)} />
                 </View>
             </View>
         })
@@ -72,7 +72,7 @@ function Favorite(props) {
 
             <Header
                 containerStyle={{backgroundColor:'#febf63', height:90, paddingTop:50}}
-                centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
+                centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {props.navigation.navigate('List')}} />}
             />
 

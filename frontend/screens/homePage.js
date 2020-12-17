@@ -182,7 +182,7 @@ useEffect(() => {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor:'#eefaea'}}>
             <Header
                 containerStyle={{backgroundColor:'#ade498', height:90, paddingTop:50}}
-                centerComponent={{ text: 'HOMEPAGE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu'} }}
+                centerComponent={{ text: 'HOMEPAGE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {navigation.navigate('List')}} />}
             />
             <View style={{flexDirection:'row', alignItems:'center'}}>          
