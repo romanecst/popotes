@@ -205,7 +205,7 @@ useEffect(() => {
             <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu', color:'grey'}}>Today's pick</Text>
 
             <ScrollView style={{marginTop: 8, marginBottom:15}} horizontal={true}>
-            <TouchableOpacity onPress={() => {navigation.navigate('recipeHome')}}>
+            <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
                 <Image source={{uri:source}} style={styles.image} />   
             </TouchableOpacity>
             </ScrollView>

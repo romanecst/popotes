@@ -18,7 +18,7 @@ import { baseURL } from '../screens/components/adressIP'
 function Group(props) {
 
   const [visible, setVisible] = useState(false);
-
+  const [val, setVal] = useState("");
   const [nameGroup, setNameGroup] = useState("");
   const [tokenGroup, setTokenGroup] = useState("");
   const [listErrorGroup, setListErrorGroup] = useState([]);
@@ -200,6 +200,7 @@ function Group(props) {
       method: "DELETE",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
+    console.log("delete",rawResponse);
     var response = await rawResponse.json();
     console.log("test update", response);
   };
@@ -219,6 +220,7 @@ function Group(props) {
         <View style={styles.blocScroll}>
           <Text>{el.name}</Text>
           <Button
+            onPress={()=> handleClickDelete()}
             icon={<Entypo name="cross" size={24} color="black" />}
             buttonStyle={{
               backgroundColor: "#FFFFFF",
@@ -229,6 +231,16 @@ function Group(props) {
         </View>
       </TouchableOpacity>
     })
+  }
+
+  async function SearchToken(){
+    var rawResponse = await fetch(`${baseURL}/addUserGroup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:`tokenGroup=${val}&token=${props.token}`
+    });
+    var response = await rawResponse.json();
+    console.log("gorup update", response);
   }
 
 
@@ -251,13 +263,15 @@ function Group(props) {
             style={styles.text}
             inputContainerStyle={{ borderBottomWidth: 0 }}
             placeholder="Passwords for your party"
-            secureTextEntry='true'
+            value={val}
+            onChangeText={(value)=> setVal(value)}
+
           />
           <Button
             title="Go !"
             buttonStyle={styles.bouton}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-            onPress={() => Search()} />
+            onPress={() => SearchToken()} />
         </View>
 
         {/* -------------------Acces à mes groupe precedent ----------------------- */}

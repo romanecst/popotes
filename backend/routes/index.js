@@ -427,7 +427,18 @@ router.post('/userProfil', async function(req,res,next){
   var userProfil = await userModel.findOne({token:req.body.token});
   console.log("findone",userProfil);
   res.json(userProfil)
-})
+});
+
+router.post('/addUserGroup', async function (req, res, next) {
+  var result = false
+  var group = await groupModel.updateOne({group_token: req.body.tokenGroup}, {$push: {user_id: req.body.token}});
+  if(group.nModified == 1){
+    result = true
+    var getGroup = await groupModel.findOne({group_token: req.body.token});
+    await userModel.updateOne({token: req.body.token},{$push: {list_id: getGroup.list_id}})
+  }
+  res.json(result);
+});
 
 module.exports = router;
 

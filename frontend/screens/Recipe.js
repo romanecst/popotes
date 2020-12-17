@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import {baseURL} from './components/adressIP'
 
 function Recipe(props) {
-    const [visible, setVisible] = useState(false);
+
     const [servings, setServings] = useState(props.recipeInfo.servings);
     const [selectedList, setSelectedList] = useState();
     const [like, setLike] = useState(false);
@@ -21,7 +21,8 @@ function Recipe(props) {
     const [signInPassword, setSignInPassword] = useState('')
   
     const [listErrorsSignin, setErrorsSignin] = useState([])
-  
+
+    const [visible, setVisible] = useState(false);
     const [visibleSignin, setVisibleSignin] = useState(false);
     const [visibleSignup, setVisibleSignup] = useState(false);
   
@@ -148,7 +149,7 @@ function Recipe(props) {
     var items = lists.map(function(el){
         return { label: el.name, value: el._id }
     });
-    
+  
 // ------------------------------------------------GESTION DU LIKE DANS LE DETAIL RECETTE -------------------------------
    
 useEffect(() => {

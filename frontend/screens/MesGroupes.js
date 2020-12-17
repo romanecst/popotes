@@ -89,30 +89,13 @@ function MesGroupes(props) {
   are bringing. ${"\n"}
   See you soon.`
 
-//   useEffect(() => {
-//     (async () => {
-//       const { status } = await Contacts.requestPermissionsAsync();
-//       if (status === 'granted') {
-//         const { data } = await Contacts.getContactsAsync({
-//           fields: [Contacts.Fields.Emails],
-//         });
-// // console.log("test data !!!!!!!", data.name)
-//         if (data.length > 0) {
-//           for (var i=0; i<data.length; i++){
-//           const contactPerso = data[i];
-//           setContact(contactPerso);}
-//           setHasPermission(true)
-//         } 
-//       }
-//     })();
-//   }, []);
 
 useEffect(()=>{
       const loadInfo = async()=>{
         const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
           method: 'POST',
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: `token=${tokenGroup}`
+          body: `token=${props.tokenGroup}`
         })
         const response = await rawReponse.json();
         setGroupName(response.mygroup.name);
