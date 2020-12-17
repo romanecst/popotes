@@ -323,19 +323,23 @@ router.post('/getMyGroup', async function (req, res, next) {
 });
 
 
-/* Deleted group */
-router.delete('/deleteGroup/:name', async function (req, res, next) {
-
-  var returnDb = await groupModel.deleteOne({ nameGroup: req.body.nameGroup });
-
-  var result = false;
-  if (returnDb.deletedCount == 1) {
-    result = true
-  }
-  res.json({ result })
+/* Deleted group permet la suppression des groupes et des users du groupe */
+router.post('/deleteGroup', async function (req, res, next) {
+console.log("test token",req.body.userToken);
+var group =  await groupModel.findOne({ group_token: req.body.token })
+if(group.user_id.length == 1){
+  await groupModel.deleteOne({ group_token: req.body.token })
+  var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
+}else{
+  var returnDb = await groupModel.updateOne({ group_token: req.body.token }, {$pull:{user_id: req.body.token}});
+console.log("test delete back3",returnDb);
+  var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
+  console.log("usertoken",returnGroup);
+}
+  res.json({ returnGroup })
 })
 
-/* User update */
+/* User update permet la mise à jour des données user dans la page profil */
 router.post('/userUpdate', async function (req, res, next) {
 
   var user = await userModel.findOne({ token: req.body.token })
@@ -408,7 +412,7 @@ router.post('/getIngredients', async function(req,res,next){
 });
 
 
-/* Random carrousel */
+/* Random carrousel, affichage aléatoire d une recette */
 router.get('/randomCourrousel', async function(req, res, next) {
   var recipes = await recipesModel.find();
   var idRecipe = [];
@@ -422,7 +426,7 @@ router.get('/randomCourrousel', async function(req, res, next) {
   res.json(randomRecipe);
 });
 
-/* User profil */
+/* User profil, récupération des données pour affichage dans la page profil */
 router.post('/userProfil', async function(req,res,next){
   var userProfil = await userModel.findOne({token:req.body.token});
   console.log("findone",userProfil);
