@@ -194,14 +194,16 @@ function Group(props) {
   };
 
   /* Deleted groupe */
-  var handleClickDelete = async () => {
+  var handleClickDelete = async (tokenGroup) => {
     console.log("click détecté");
-    var rawResponse = await fetch(`${baseURL}/deleteGroup/${nameGroup}`, {
-      method: "DELETE",
+    var rawResponse = await fetch(`${baseURL}/deleteGroup`, {
+      method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body:`token=${tokenGroup}&userToken=${props.token}`
     });
     console.log("delete",rawResponse);
     var response = await rawResponse.json();
+    setGroupList(response.returnGroup)
     console.log("test update", response);
   };
 
@@ -216,11 +218,12 @@ function Group(props) {
 
   } else {
     var groupe = groupList.map(function (el, i) {
+      console.log("test el",el.group_token);
       return <TouchableOpacity key={i} onPress={() => { props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
         <View style={styles.blocScroll}>
           <Text>{el.name}</Text>
           <Button
-            onPress={()=> handleClickDelete()}
+            onPress={()=> handleClickDelete(el.group_token)}
             icon={<Entypo name="cross" size={24} color="black" />}
             buttonStyle={{
               backgroundColor: "#FFFFFF",
@@ -423,11 +426,12 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  props.checkNameGroup(nameGroup),
+                  props.checkNameGroup(nameGroup);
                     saveGroup(),
                     Linking.openURL(
                       `mailto:?subject=${nameGroup}&body=${text}`
                     );
+                    setNameGroup('');
                 }}
               />
 

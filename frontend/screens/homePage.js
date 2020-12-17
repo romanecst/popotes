@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 
 import {baseURL} from '../screens/components/adressIP'
 
-export default function homePage({navigation, loadList}) {
+function homePage({navigation, goToRecipe}) {
     const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
     const [selectedValueCuisine, setSelectedValueCuisine] = useState("");
@@ -31,7 +31,7 @@ export default function homePage({navigation, loadList}) {
 
    const [searchTxt, setSearchTxt] = useState('')
    const [listRecipe, setListRecipe] = useState([])
-   const [source,setSource] = useState('')
+   const [randomRecipe,setRandomRecipe] = useState('')
    
 
 useEffect(() => {
@@ -78,7 +78,7 @@ useEffect(() => {
     var searchRandom = async ()=>{
         var randomCarrousel = await fetch(`${baseURL}/randomCourrousel`);
         var resultRandom = await randomCarrousel.json();
-        setSource(resultRandom.image);        
+        setRandomRecipe(resultRandom);        
     }
     searchRandom();
     
@@ -205,8 +205,8 @@ useEffect(() => {
             <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu', color:'grey'}}>Today's pick</Text>
 
             <ScrollView style={{marginTop: 8, marginBottom:15}} horizontal={true}>
-            <TouchableOpacity onPress={() => {navigation.navigate('Recipe')}}>
-                <Image source={{uri:source}} style={styles.image} />   
+            <TouchableOpacity onPress={() => {goToRecipe(randomRecipe); navigation.navigate('Recipe')}}>
+                <Image source={{uri:randomRecipe.image}} style={styles.image} />   
             </TouchableOpacity>
             </ScrollView>
             
@@ -332,18 +332,20 @@ useEffect(() => {
         </View>
     )
 }
-// function mapDispatchToProps(dispatch) {
-//     return {
-//         loadList: function(info) { 
-//             dispatch( {type: 'loadList', list: info} ) 
-//         },
-//     }
-// }
 
-// export default connect(
-//     null,
-//     mapDispatchToProps
-// )(homePage);
+
+function mapDispatchToProps(dispatch) {
+    return {
+        goToRecipe: function (info) {
+            dispatch({ type: 'recipeInfo', recipeInfo: info })
+        },
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(homePage);
 
 const styles = StyleSheet.create({
     container: {
