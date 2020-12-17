@@ -213,11 +213,11 @@ function Recipe(props) {
           <View >
             <View style={styles.detail1}>
               {/* ************ DUREE RECETTE ************ */}
-              <Text style={{ fontSize: 18 }}> Préparation : {props.recipeInfo.readyInMinutes} </Text>
+              <Text style={{ fontSize: 18 }}> Cooking time : {props.recipeInfo.readyInMinutes} </Text>
             </View>
             <View style={styles.detail1}>
               {/* ************ NOMBRE DE PERSONNE RECETTE ************ */}
-              <Text style={{ fontSize: 18 }}> Nombre de personne : {servings}</Text>
+              <Text style={{ fontSize: 18 }}> Servings : {servings}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
               <View style={styles.plus}>

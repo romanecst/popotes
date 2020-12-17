@@ -191,8 +191,7 @@ useEffect(()=>{
           rounded
           size={130}
           source={{
-            uri:
-              "https://geeko.lesoir.be/wp-content/uploads/sites/58/2020/05/avatar.jpg",
+            uri:props.nameGroup.image,
             justifyContent: "space-between",
           }}
         />
@@ -344,7 +343,7 @@ useEffect(()=>{
                     titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                     onPress={() => {
                       Linking.openURL(
-                        `mailto:?subject=${props.nameGroup}&body=${textMail}`
+                        `mailto:?subject=${props.nameGroup.name}&body=${textMail}`
                       );
                     }}
                   />
