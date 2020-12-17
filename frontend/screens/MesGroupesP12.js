@@ -7,12 +7,13 @@ import CircleCheckBox, { LABEL_POSITION } from 'react-native-circle-checkbox';
 
 import {baseURL} from '../screens/components/adressIP'
 import { connect } from 'react-redux';
+import IngredientGroup from './components/ingredientGroup'
 
 
 
 function MesGroupesP12(props) {
 
-  const [check, setCheck] = useState(false);
+  const [user, setUser] = useState();
   const [groupName, setGroupName]= useState('');
   const [groupParticipants, setGroupParticipants]= useState([]);
   const [listName, setListName]= useState('');
@@ -36,6 +37,9 @@ function MesGroupesP12(props) {
       setGroupName(response.mygroup.name);
       setGroupParticipants(response.users)
 
+      var currentUser = response.users.filter(el => el.token == props.token);
+      setUser(currentUser);
+
       const rawReponseList= await fetch(`${baseURL}/getIngredients`, {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -45,6 +49,7 @@ function MesGroupesP12(props) {
       console.log('INGRRR',responseList.ingredients)
       setListName(responseList.name)
       setIngredients(responseList.ingredients)
+
 
     }
     loadInfo();
@@ -59,7 +64,7 @@ function MesGroupesP12(props) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { props.navigation.goBack(null) }}/>}
+        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => { props.navigation.navigate('MesGroupes') }}/>}
         centerComponent={{ text: 'GROUPE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
@@ -96,7 +101,7 @@ function MesGroupesP12(props) {
 
         {/* ---------------Scroll des recettes  -------------- */}
 
-        <Text style={{ marginTop: 10, marginBottom: 8, fontFamily: 'Kohinoor Telugu', fontSize:18}}>{listName}</Text>
+        <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:18}}>{listName}</Text>
 
         <ScrollView style={styles.scroll}>
 
@@ -104,19 +109,7 @@ function MesGroupesP12(props) {
               <Text>Ingredients :</Text>
 
               {ingredients.map(function(el, i){              
-             return  <View key={i} style={{ alignItems: 'center', marginTop: 20, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <Text style={{marginRight:40}}> {el.name} : {el.amount}</Text>
-                <CircleCheckBox
-                  checked={check}
-                  onToggle={(checked) => {console.log('My state is: ', checked); setCheck(!check)}}
-                  labelPosition={LABEL_POSITION.LEFT}
-                  outerColor='black'
-                  innerColor='#FFC312'
-                  innerSize='20'
-                  outerSize='26'
-                />
-                <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding: 18, borderRadius: 50 }}></Button>
-              </View>
+             return  <IngredientGroup key={i} name={el.name} amount={el.amount} user={user}/>
               })
               }
 
@@ -163,7 +156,7 @@ function MesGroupesP12(props) {
 const styles = StyleSheet.create({
   overlayH: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 8,
     width: 360,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
@@ -173,7 +166,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: "#FFFFFF",
     width: 330,
-    height: 300,
+    height: 250,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 15

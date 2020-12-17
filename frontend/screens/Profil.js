@@ -20,6 +20,7 @@ function Profil(props) {
   const [lactoseFree, setLactoseFree] = useState(false);
   const [vegan, setVegan] = useState(false);
 
+
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -35,7 +36,7 @@ function Profil(props) {
   const [signUpUsername, setSignUpUsername] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
-
+  const [reload, setReload] = useState(false);
 
   const [listErrorSignUp, setListErrorSignUp] = useState([]);
 
@@ -48,15 +49,34 @@ function Profil(props) {
   }
 
   useEffect(() => {
-    (async () => {
+
+    var getUserProfil =  () => {
+      console.log("tesssst")
       AsyncStorage.getItem("user token", 
               async function(error, data){
+                console.log(`DATA`,data);
                 if(data){
                 props.addToken(data);
+                const responseUser = await fetch(`${baseURL}/userProfil`,{
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body: `token=${data}`
+                })
+                
+                const responseJson = await responseUser.json()
+                console.log("test",responseJson);
+                setEmail(responseJson.email)
+                setPassword(responseJson.password)
+                setUserName(responseJson.username)
+
                 }else{
                   setVisibleSignup(true);
                 }
               })
+            }
+
+    var permission = async () => {
+      console.log("perm",permission);
       if (Platform.OS !== "web") {
         const {
           status,
@@ -67,8 +87,37 @@ function Profil(props) {
           setHasPermission(true);
         }
       }
-    })();
-  }, []);
+    }
+
+    var pref = async () =>{
+      var preferences = ['gluten free','vegetarian','lactose free','vegan'];
+
+        for (let i = 0; i<preferences.length; i++){
+          console.log("pref",preferences[i]);
+            await AsyncStorage.getItem(preferences[i], 
+            function(error, data){
+              console.log('hello',data)
+            if(data === 'true'){
+              
+                if(preferences[i]==='gluten free'){
+                    setGlutenFree(true);
+                }else if(preferences[i]==='vegetarian'){
+                    setVegetarian(true);
+                }else if(preferences[i]==='lactose free'){
+                    setLactoseFree(true);
+                }else{
+                    setVegan(true);
+                }
+              
+            }
+            })
+  
+    }}
+getUserProfil()
+permission()
+    pref()
+    setReload(false)
+  }, [reload]);
 
   var handleSubmitSignin = async () => {
  
@@ -92,6 +141,7 @@ function Profil(props) {
     }  else {
       setErrorsSignin(body.error)
     }
+    setReload(true);
   }
 
   var tabErrorsSignin = listErrorsSignin.map((error,i) => {
@@ -116,6 +166,7 @@ function Profil(props) {
     } else {
       setListErrorSignUp(body.error)
     }
+    setReload(true);
   }
 
   var tabErrorsSignup = listErrorSignUp.map((error,i) => {
@@ -160,15 +211,19 @@ function Profil(props) {
     vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
   };
 
-  function favoriteAlim(diet) {
-    AsyncStorage.getItem(diet, function (error, data) {
-      if (data === null || data === 'false') {
-        AsyncStorage.setItem(diet, 'true')
-      } else {
-        AsyncStorage.setItem(diet, 'false')
-      }
-    })
-  };
+       // LOCAL STORAGE ================>
+       function favoriteAlim(diet) {
+        AsyncStorage.getItem(diet, function (error, data) {
+            if (data === null || data === 'false') {
+                AsyncStorage.setItem(diet, 'true')
+            } else if(data === true){
+                AsyncStorage.removeItem(diet)
+            } else {
+                AsyncStorage.setItem(diet, 'false')
+            }
+        })
+        setReload(true)
+    }; 
 
 
   /* Update user */
@@ -191,7 +246,6 @@ function Profil(props) {
 
       <Header
         containerStyle={{ backgroundColor: '#7FDBDA', height: 90, paddingTop: 50 }}
-        leftComponent={<AntDesign name="leftcircleo" size={24} color="white" onPress={() => {props.navigation.navigate('homePage')}}/>}
         centerComponent={{ text: 'PROFIL', style: { color: '#fff', fontFamily: 'Kohinoor Telugu' } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
@@ -225,10 +279,10 @@ function Profil(props) {
           </TouchableOpacity>
 
           {/* --------------------CHAMPS FORMULAIRE ------------------------------------ */}
-          <Text style={{ fontSize: 20, color: "black", fontFamily: 'Kohinoor Telugu', marginBottom: 20 }} >Sign-Up : </Text>
+          <Text style={{ fontSize: 20, color: "black", fontFamily: 'Kohinoor Telugu', marginBottom: 20 }} >Update user: </Text>
 
           <View>
-            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Name :</Text>
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}> New Name :</Text>
             <TextInput
               style={styles.text}
               placeholder="Write your Name..."
@@ -236,7 +290,7 @@ function Profil(props) {
               value={userName}
             />
 
-            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Email :</Text>
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>New Email :</Text>
             <TextInput
               style={styles.text}
               placeholder="Write your email..."
@@ -244,20 +298,29 @@ function Profil(props) {
               value={email}
             />
 
-            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Password :</Text>
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>New Password :</Text>
             <TextInput
+              secureTextEntry={true}
               style={styles.text}
               placeholder="Write your password"
               onChangeText={(text) => setPassword(text)}
               value={password}
             />
-          </View>
-
+          </View >
+          <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
           <Button
-            title="sign-up"
+            title="Update"
+            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 , marginRight:12}}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
+            onPress={()=>updateUser()}
+          />
+          <Button
+            title="Deconnexion"
             buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
+            onPress={() => AsyncStorage.setItem('user token', '') } 
           />
+          </View>
 
           {/* ---------------------------CHOIX DES PREFERENCE ALIMENTAIRE --------------------------- */}
 
@@ -336,92 +399,114 @@ function Profil(props) {
       {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
 
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignin} >
-        
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-in{"\n"}{"\n"}</Text>
-            <Avatar
-                size="large"
-                rounded
-                title="LW"
-                activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
+
+          <View style={styles.overlay}>
+          <Button
+                title="Return"
+                type="clear"
+                onPress={() => { props.navigation.goBack(null);toggleSignup() }}
+                buttonStyle={{borderColor: "#dfe6e9", justifyContent: "flex-start"}}
+                titleStyle={{
+                  color: "black",
+                  fontFamily: "Kohinoor Telugu",
+                  fontSize: 11,
+                  marginRight: 35,
+                }}
+              />
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom:20 }}>Sign-in</Text>
+            
+            <Input
+              containerStyle={styles.input}
+              placeholder='Email'
+              leftIcon={{ type: 'font-awesome', name: 'at' }}
+              onChangeText={(val) => setSignInEmail(val)}
+              val={signInEmail}
+              inputContainerStyle={{ borderBottomWidth: 0 }}
             />
-             
             <Input
                 containerStyle={styles.input}
-                placeholder='Email'
-                leftIcon={{ type: 'font-awesome', name: 'at' }}
-                onChangeText={(val) => setSignInEmail(val)}
-                val = {signInEmail}
-            />
-            <Input
-                containerStyle={styles.input}
+                secureTextEntry={true}
                 placeholder='Password'
                 leftIcon={{ type: 'font-awesome', name: 'unlock' }}
                 onChangeText={(val) => setSignInPassword(val)}
                 val = {signInPassword}
             />
 
-              {tabErrorsSignin}
-
-        <Button
-          title="Sign-in"
-          type="clear"
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => handleSubmitSignin()}
-        />
-        <TouchableOpacity onPress={()=>{toggleSignup(); toggleSignin();}}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
-        </View>
-      </Overlay>
+            {tabErrorsSignin}
 
 
-      <Overlay overlayStyle={{backgroundColor:'#dfe6e9', borderRadius: 50,}} isVisible={visibleSignup} >
-        
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft:100 }}>Sign-up{"\n"}{"\n"}</Text>
-            <Avatar
-                size="large"
-                rounded
-                title="LW"
-                activeOpacity={1}
-                containerStyle={{backgroundColor:"red",marginBottom:60,marginLeft:100}}
+            <Button
+            title="Sign-in"
+            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal:80, marginBottom:50 }}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal:20 }}
+            onPress={() => handleSubmitSignin()}
             />
-             <Input
-                containerStyle={styles.input}
-                placeholder='Username'
-                leftIcon={{ type: 'font-awesome', name: 'user' }}
-                onChangeText={(val) => setSignUpUsername(val)}
-                val = {signUpUsername}
-            />
-            <Input
-                containerStyle={styles.input}
-                placeholder='Email'
-                leftIcon={{ type: 'font-awesome', name: 'at' }}
-                onChangeText={(val) => setSignUpEmail(val)}
-                val = {signUpEmail}
-            />
-            <Input
-                containerStyle={styles.input}
-                placeholder='Password'
-                leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-                onChangeText={(val) => setSignUpPassword(val)}
-                val = {signUpPassword}
-            />
+          
+            <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text style={{marginTop:10, fontStyle: 'italic'}}>Not registered yet ? <Text style={{color:"#35abd5", textDecorationLine: 'underline'}}>Create an account</Text></Text>
 
-            {tabErrorsSignup}
+            
+            
+            
+            </TouchableOpacity>
+          </View>
+        </Overlay>
 
-        <Button
-          title="Sign-up"
-          type="clear"
-          buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-          titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-          onPress={() => {handleSubmitSignUp()}}
-        />
-        <TouchableOpacity onPress={()=>{toggleSignin(); toggleSignup();}}><Text>Already have an account? Log in</Text></TouchableOpacity> 
-        </View>
-      </Overlay>
+
+        <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
+
+<View style={styles.overlay}>
+<Button
+      title="Return"
+      type="clear"
+      onPress={() => { props.navigation.goBack(null);toggleSignup() }}
+      buttonStyle={{borderColor: "#dfe6e9", justifyContent: "flex-start"}}
+      titleStyle={{
+        color: "black",
+        fontFamily: "Kohinoor Telugu",
+        fontSize: 11,
+        marginRight: 35,
+      }}
+    />
+  <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom:40 }}>Sign-up</Text>
+ 
+  <Input
+    containerStyle={styles.input}
+    placeholder='Username'
+    leftIcon={{ type: 'font-awesome', name: 'user' }}
+    onChangeText={(val) => setSignUpUsername(val)}
+    val={signUpUsername}
+    inputContainerStyle={{ borderBottomWidth: 0 }}
+  />
+  <Input
+    containerStyle={styles.input}
+    placeholder='Email'
+    leftIcon={{ type: 'font-awesome', name: 'at' }}
+    onChangeText={(val) => setSignUpEmail(val)}
+    val={signUpEmail}
+    inputContainerStyle={{ borderBottomWidth: 0 }}
+  />
+  <Input
+    containerStyle={styles.input}
+    placeholder='Password'
+    leftIcon={{ type: 'font-awesome', name: 'unlock' }}
+    onChangeText={(val) => setSignUpPassword(val)}
+    val={signUpPassword}
+    inputContainerStyle={{ borderBottomWidth: 0 }}
+  />
+
+  {tabErrorsSignup}
+
+  <Button
+  title="Sign-Up"
+  buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal:70 }}
+  titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal:20 }}
+  onPress={() => { handleSubmitSignUp() }} 
+/>
+  <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{marginTop:50, fontStyle: 'italic'}}>Already have an account ? <Text style={{color:"#35abd5", textDecorationLine: 'underline'}}>Log in</Text></Text></TouchableOpacity>
+</View>
+</Overlay>
+
 
     </View>
 

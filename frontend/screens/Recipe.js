@@ -21,7 +21,8 @@ function Recipe(props) {
     const [signInPassword, setSignInPassword] = useState('')
   
     const [listErrorsSignin, setErrorsSignin] = useState([])
-  
+
+    const [visible, setVisible] = useState(false);
     const [visibleSignin, setVisibleSignin] = useState(false);
     const [visibleSignup, setVisibleSignup] = useState(false);
   
@@ -31,7 +32,6 @@ function Recipe(props) {
   
   
     const [listErrorSignUp, setListErrorSignUp] = useState([]);
-    const [visible, setVisible] = useState(false);
     const [lists, setLists] = useState([])
 
     const toggleOverlay = () => {
