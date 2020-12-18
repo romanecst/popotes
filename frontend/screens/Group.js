@@ -199,9 +199,9 @@ function Group(props) {
     var rawResponse = await fetch(`${baseURL}/deleteGroup`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body:`token=${tokenGroup}&userToken=${props.token}`
+      body: `token=${tokenGroup}&userToken=${props.token}`
     });
-    console.log("delete",rawResponse);
+    console.log("delete", rawResponse);
     var response = await rawResponse.json();
     setGroupList(response.returnGroup)
     console.log("test update", response);
@@ -210,20 +210,20 @@ function Group(props) {
   if (groupList.length == 0) {
     var groupe =
       <>
-        <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:15, color:'grey', marginTop:50, marginLeft:115}}>No groups</Text>
+        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, color: 'grey', marginTop: 50, marginLeft: 115 }}>No groups</Text>
         <Image
-          style={{ width: 110, height: 110, marginLeft:50, marginLeft:90 }}
+          style={{ width: 110, height: 110, marginLeft: 50, marginLeft: 90 }}
           source={require('../assets/nopeoples.png')} />
       </>
 
   } else {
     var groupe = groupList.map(function (el, i) {
-      console.log("test el",el.group_token);
+      console.log("test el", el.group_token);
       return <TouchableOpacity key={i} onPress={() => { props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
         <View style={styles.blocScroll}>
           <Text>{el.name}</Text>
           <Button
-            onPress={()=> handleClickDelete(el.group_token)}
+            onPress={() => handleClickDelete(el.group_token)}
             icon={<Entypo name="cross" size={24} color="black" />}
             buttonStyle={{
               backgroundColor: "#FFFFFF",
@@ -236,11 +236,11 @@ function Group(props) {
     })
   }
 
-  async function SearchToken(){
+  async function SearchToken() {
     var rawResponse = await fetch(`${baseURL}/addUserGroup`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body:`tokenGroup=${val}&token=${props.token}`
+      body: `tokenGroup=${val}&token=${props.token}`
     });
     var response = await rawResponse.json();
     console.log("gorup update", response);
@@ -253,7 +253,7 @@ function Group(props) {
 
       <Header
         containerStyle={{ backgroundColor: "#7FDBDA", height: 90, paddingTop: 50 }}
-        centerComponent={{ text: 'GROUP', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22 } }}
+        centerComponent={{ text: 'GROUP', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize: 22 } }}
         rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { props.navigation.navigate('List') }} />}
       />
 
@@ -267,7 +267,7 @@ function Group(props) {
             inputContainerStyle={{ borderBottomWidth: 0 }}
             placeholder="Passwords for your party"
             value={val}
-            onChangeText={(value)=> setVal(value)}
+            onChangeText={(value) => setVal(value)}
 
           />
           <Button
@@ -426,13 +426,13 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  console.log('IMAGEGEGEGEGEG',image);
-                  props.checkNameGroup({name: nameGroup, image: image});
-                    saveGroup();
-                    Linking.openURL(
-                      `mailto:?subject=${nameGroup}&body=${text}`
-                    );
-                    setNameGroup('');
+                  console.log('IMAGEGEGEGEGEG', image);
+                  props.checkNameGroup({ name: nameGroup, image: image });
+                  saveGroup();
+                  Linking.openURL(
+                    `mailto:?subject=${nameGroup}&body=${text}`
+                  );
+                  setNameGroup('');
                 }}
               />
 
@@ -441,12 +441,12 @@ function Group(props) {
                 buttonStyle={{
                   backgroundColor: "#7FDBDA",
                   borderRadius: 30,
-                  paddingHorizontal: 18, 
+                  paddingHorizontal: 18,
                 }}
                 titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  console.log('IMAGEGEGEGEGEG',image);
-                  props.checkNameGroup({name: nameGroup, image: image});
+                  console.log('IMAGEGEGEGEGEG', image);
+                  props.checkNameGroup({ name: nameGroup, image: image });
                   saveGroup();
                 }}
               />
@@ -460,20 +460,20 @@ function Group(props) {
         <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
 
           <View style={styles.overlay}>
-          <Button
-                title="Return"
-                type="clear"
-                onPress={() => { props.navigation.goBack(null);toggleSignup() }}
-                buttonStyle={{borderColor: "#dfe6e9", justifyContent: "flex-start"}}
-                titleStyle={{
-                  color: "black",
-                  fontFamily: "Kohinoor Telugu",
-                  fontSize: 11,
-                  marginRight: 35,
-                }}
-              />
-            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom:20 }}>Sign-in</Text>
-            
+            <Button
+              title="Return"
+              type="clear"
+              onPress={() => { props.navigation.goBack(null); toggleSignup() }}
+              buttonStyle={{ borderColor: "#dfe6e9", justifyContent: "flex-start" }}
+              titleStyle={{
+                color: "black",
+                fontFamily: "Kohinoor Telugu",
+                fontSize: 11,
+                marginRight: 35,
+              }}
+            />
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom: 20 }}>Sign-in</Text>
+
             <Input
               containerStyle={styles.input}
               placeholder='Email'
@@ -483,6 +483,7 @@ function Group(props) {
               inputContainerStyle={{ borderBottomWidth: 0 }}
             />
             <Input
+              secureTextEntry={true}
               containerStyle={styles.input}
               placeholder='Password'
               leftIcon={{ type: 'font-awesome', name: 'unlock' }}
@@ -495,17 +496,17 @@ function Group(props) {
 
 
             <Button
-            title="Sign-in"
-            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal:80, marginBottom:50 }}
-            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal:20 }}
-            onPress={() => handleSubmitSignin()}
+              title="Sign-in"
+              buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal: 80, marginBottom: 50 }}
+              titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal: 20 }}
+              onPress={() => handleSubmitSignin()}
             />
-          
-            <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text style={{marginTop:10, fontStyle: 'italic'}}>Not registered yet ? <Text style={{color:"#35abd5", textDecorationLine: 'underline'}}>Create an account</Text></Text>
 
-            
-            
-            
+            <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text style={{ marginTop: 10, fontStyle: 'italic' }}>Not registered yet ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Create an account</Text></Text>
+
+
+
+
             </TouchableOpacity>
           </View>
         </Overlay>
@@ -514,20 +515,20 @@ function Group(props) {
         <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
 
           <View style={styles.overlay}>
-          <Button
-                title="Return"
-                type="clear"
-                onPress={() => { props.navigation.goBack(null);toggleSignup() }}
-                buttonStyle={{borderColor: "#dfe6e9", justifyContent: "flex-start"}}
-                titleStyle={{
-                  color: "black",
-                  fontFamily: "Kohinoor Telugu",
-                  fontSize: 11,
-                  marginRight: 35,
-                }}
-              />
-            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom:40 }}>Sign-up</Text>
-           
+            <Button
+              title="Return"
+              type="clear"
+              onPress={() => { props.navigation.goBack(null); toggleSignup() }}
+              buttonStyle={{ borderColor: "#dfe6e9", justifyContent: "flex-start" }}
+              titleStyle={{
+                color: "black",
+                fontFamily: "Kohinoor Telugu",
+                fontSize: 11,
+                marginRight: 35,
+              }}
+            />
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom: 40 }}>Sign-up</Text>
+
             <Input
               containerStyle={styles.input}
               placeholder='Username'
@@ -545,6 +546,7 @@ function Group(props) {
               inputContainerStyle={{ borderBottomWidth: 0 }}
             />
             <Input
+              secureTextEntry={true}
               containerStyle={styles.input}
               placeholder='Password'
               leftIcon={{ type: 'font-awesome', name: 'unlock' }}
@@ -556,12 +558,12 @@ function Group(props) {
             {tabErrorsSignup}
 
             <Button
-            title="Sign-Up"
-            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal:70 }}
-            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal:20 }}
-            onPress={() => { handleSubmitSignUp() }} 
-          />
-            <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{marginTop:50, fontStyle: 'italic'}}>Already have an account ? <Text style={{color:"#35abd5", textDecorationLine: 'underline'}}>Log in</Text></Text></TouchableOpacity>
+              title="Sign-Up"
+              buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal: 70 }}
+              titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal: 20 }}
+              onPress={() => { handleSubmitSignUp() }}
+            />
+            <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{ marginTop: 50, fontStyle: 'italic' }}>Already have an account ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Log in</Text></Text></TouchableOpacity>
           </View>
         </Overlay>
 
@@ -601,11 +603,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    backgroundColor:"white",
+    backgroundColor: "white",
     borderRadius: 20,
     height: 60,
     marginBottom: 20,
-    alignItems:'center', 
+    alignItems: 'center',
   }, bouton: {
     borderColor: 'white',
     backgroundColor: "#7FDBDA",
