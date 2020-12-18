@@ -110,12 +110,7 @@ function Group(props) {
   })
 
 
-  const text =
-    `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
-       https://popotes/app/fr.${"\n"}
-      Here is the access code to the group:${props.tokenGroup}, please inform what you
-      are bringing. ${"\n"}
-      See you soon.`
+  
 
 
 
@@ -181,13 +176,22 @@ function Group(props) {
       body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}&userID=${props.token}`
     });
     var response = await rawResponse.json();
+    console.log(response)
     var token = response.groupSave.group_token;
 
     if (response.result == true) {
       setTokenGroup(token);
       props.AddTokenGroup(token);
-      setGroupList([...groupList, response.groupSave])
-      createGroup()
+      setGroupList([...groupList, response.groupSave]);
+      const text =`Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
+       https://popotes/app/fr.${"\n"}
+      Here is the access code to the group:${token}, please inform what you
+      are bringing. ${"\n"}
+      See you soon.`;
+      createGroup();
+      Linking.openURL(
+        `mailto:?subject=${nameGroup}&body=${text}`
+      );
     } else {
       setListErrorGroup(response.error);
     }
@@ -237,6 +241,7 @@ function Group(props) {
   }
 
   async function SearchToken() {
+    console.log('TOKEN',props.token,'VAL',val)
     var rawResponse = await fetch(`${baseURL}/addUserGroup`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -426,12 +431,8 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "#7FDBDA", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  console.log('IMAGEGEGEGEGEG', image);
                   props.checkNameGroup({ name: nameGroup, image: image });
                   saveGroup();
-                  Linking.openURL(
-                    `mailto:?subject=${nameGroup}&body=${text}`
-                  );
                   setNameGroup('');
                 }}
               />
