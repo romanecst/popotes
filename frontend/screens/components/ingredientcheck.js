@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button, Switch } from 'react-native';
+import { Text, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 import { Entypo } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 
+//display ingredient list by category in shopping list 
 function Ingredients (props){
 
     const [checked, setChecked] = useState();
@@ -17,6 +18,7 @@ return(
     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 12 }}> {props.amount} {props.measure}</Text>
     </View>
     <CheckBox checked={checked} checkedColor='#ADE498' onPress={() => { setChecked(!checked) }} />
+    {/*delete ingredient in redux store */}
     <Entypo name="cross" size={24} color="black" onPress={()=>{props.deleteingredientList(props.name)}}/>
 </View>
 

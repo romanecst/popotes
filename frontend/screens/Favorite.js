@@ -1,9 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
 import { Header, SearchBar } from 'react-native-elements';
-import { FontAwesome5 } from '@expo/vector-icons';
-
-import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
@@ -11,10 +8,11 @@ import { connect } from 'react-redux';
 
 import { withNavigationFocus } from 'react-navigation';
 
+//screen for favourite recipes
 function Favorite(props) {
 
     const [searchTxt, setSearchTxt] = useState('');
-
+//gets favourites from local storage and add them to redux
     useEffect(()=>{
         async function loadData(){
             await AsyncStorage.getItem("favorites", 
@@ -38,6 +36,7 @@ function Favorite(props) {
         setSearchTxt(search)
     }
 
+    //displays favourite recipes if no recipe displays no favorite
     if (props.recipeList.length == 0) {
         var favourites =
         <>
@@ -60,7 +59,7 @@ function Favorite(props) {
 
         })
     }
-
+//at component destruction store favourite recipes in local storage
     useEffect(() => {
         return async () => {
             await AsyncStorage.setItem("favorites", JSON.stringify(props.recipeList));

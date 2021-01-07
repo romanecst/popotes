@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import { baseURL } from '../screens/components/adressIP'
 
-
+//display, create, delete lists from user
 function List(props) {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
@@ -45,6 +45,7 @@ function List(props) {
           console.log('DATAT', data)
           if (data) {
             props.addToken(data);
+            //if user connected requests their shopping lists from backend
             const dataFetch = await fetch(`${baseURL}/getMyLists`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -57,16 +58,6 @@ function List(props) {
             setVisibleSignup(true);
           }
         })
-      if (Platform.OS !== "web") {
-        const {
-          status,
-        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        } else {
-          setHasPermission(true);
-        }
-      }
     })();
   }, []);
 
@@ -133,7 +124,7 @@ function List(props) {
   var tabErrorsSignup = listErrorSignUp.map((error, i) => {
     return (<Text>{error}</Text>)
   })
-
+//request backend to create a new list in the database with the name types by the user
   const addList = async () => {
     var rawResponse = await fetch(`${baseURL}/addList`, {
       method: 'POST',
@@ -142,9 +133,10 @@ function List(props) {
     });
     var response = await rawResponse.json();
     setLists([...lists, response])
+    //reset text input
     setText('');
   }
-
+//request backend to delete a specific list in the database
   async function DeleteList(id) {
     if (id) {
       await fetch(`${baseURL}/deleteList`, {
@@ -161,8 +153,7 @@ function List(props) {
     setVisible(!visible);
   };
 
-  useEffect(() => { console.log('LISTSTSTTSTSTST', lists) }, [lists])
-
+//display lists or no shooping list if user has no list
   if (lists.length == 0) {
     var listsShop =
       <View>
@@ -175,6 +166,7 @@ function List(props) {
   } else {
     var listsShop = lists.map((el, i) => (
       <View style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', borderRadius: 30, marginBottom: 12 }}>
+        {/*on click add list info to reux store and redirect to global list */}
         <TouchableOpacity
           onPress={() => { props.currentList(el); props.addingredientList(el.ingredients); props.navigation.navigate('GlobalList') }}>
           <ListItem key={i} containerStyle={{ width: 280, flexDirection: 'row', alignItems: 'center', borderRadius: 30 }}>
@@ -354,43 +346,6 @@ function List(props) {
   <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{ marginTop: 50, fontStyle: 'italic' }}>Already have an account ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Log in</Text></Text></TouchableOpacity>
 </View>
 </Overlay>
-
-
-      {/* ---------------------------LISTE EXISTANTE FAVORITE------------------------------------------  */}
-
-      {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-
-      <Text style={{ marginTop: 50, fontSize: 20, fontFamily: "Kohinoor Telugu" }}>My shop list</Text>
-
-      <ScrollView style={styles.scroll}>
-
-        {list.map((l, i) => (
-          <TouchableOpacity onPress={() => { navigation.navigate('GlobalList') }} >
-            <View style={styles.blocScroll}>
-              <Text> {l.name}</Text>
-              <Text>{l.subtitle}</Text>
-
-
-              <Button icon={<Entypo name="cross" size={24} color="black" />} buttonStyle={{ backgroundColor: '#FFFFFF', padding:18, borderRadius:50}}>
-              </Button>
-            </View>
-
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View> */}
-
-      {/* --------------BOUTON CREATION D'UNE LISTE DE FAVORI -----------------------------------------------*/}
-
-      {/* <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 15 }}>
-
-
-        <Text style={{ fontSize: 20, fontFamily: "Kohinoor Telugu" }}>Creat a liste</Text>
-        <Button
-          icon={<Ionicons name="ios-add-circle-outline" size={60} color="black" />}
-          buttonStyle={{ backgroundColor: '#FFF2DF' }}
-        />
-      </View> */}
     </View>
   );
 }

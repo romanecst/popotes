@@ -14,7 +14,7 @@ import Signin from './Signin';
 import { baseURL } from '../screens/components/adressIP'
 
 
-
+//displays different groups to which the user belongs
 function Group(props) {
 
   const [visible, setVisible] = useState(false);
@@ -64,7 +64,7 @@ function Group(props) {
 
       console.log(body.token);
       props.addToken(body.token);
-
+//if user is connected request user's group from backend
       const rawReponse = await fetch(`${baseURL}/getGroups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -166,9 +166,7 @@ function Group(props) {
     setVisible(false);
   }
 
-  //192.168.1.20 IP Leila Maison
-
-  /* Create group */
+  /* request backend to Create group in db and add current user's token */
   var saveGroup = async function save() {
     var rawResponse = await fetch(`${baseURL}/group`, {
       method: 'POST',
@@ -178,11 +176,12 @@ function Group(props) {
     var response = await rawResponse.json();
     console.log(response)
     var token = response.groupSave.group_token;
-
+//save group token in redux
     if (response.result == true) {
       setTokenGroup(token);
       props.AddTokenGroup(token);
       setGroupList([...groupList, response.groupSave]);
+      //if user shares to friends sen email
       const text =`Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
        https://popotes/app/fr.${"\n"}
       Here is the access code to the group:${token}, please inform what you
@@ -197,7 +196,7 @@ function Group(props) {
     }
   };
 
-  /* Deleted groupe */
+  /* Deleted groupe from db */
   var handleClickDelete = async (tokenGroup) => {
     console.log("click détecté");
     var rawResponse = await fetch(`${baseURL}/deleteGroup`, {
@@ -210,7 +209,7 @@ function Group(props) {
     setGroupList(response.returnGroup)
     console.log("test update", response);
   };
-
+//display groups
   if (groupList.length == 0) {
     var groupe =
       <>
@@ -239,7 +238,8 @@ function Group(props) {
       </TouchableOpacity>
     })
   }
-
+//user enters the group token that was sent to them to joint the group
+//add user token to this group in db
   async function SearchToken() {
     console.log('TOKEN',props.token,'VAL',val)
     var rawResponse = await fetch(`${baseURL}/addUserGroup`, {

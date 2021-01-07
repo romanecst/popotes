@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, Switch } from 'react-native';
+import { Text, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
-
-import { Entypo } from '@expo/vector-icons';
 import {connect} from 'react-redux';
 
+//ingredient checklist
 function Ingredients (props){
 
     const [checked, setChecked] = useState();
-
+//if ingredient is checked it is stored in redux otherwise it is deleted from redux
     useEffect(()=>{
         if(checked){
             var found = props.checkList.find(element => element.title === props.name)

@@ -7,10 +7,11 @@ import { Entypo } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import { baseURL } from './adressIP'
 
+//display ingredient list in the group shopping list
 function IngredientGroup (props){
 
   const [checked, setChecked] = useState(false);
-
+//if igredient has a buyer display buyer's colour
   useEffect(()=>{
     if(props.ingredient.buyer){
         setChecked(true)}
@@ -21,7 +22,7 @@ function IngredientGroup (props){
   }else{
     var color = props.user.salt;
   }  
-  
+  //if user select ingredient add user as buyer for this ingredient
   async function sendIngredient(){
     setChecked(!checked);
     props.ingredient.buyer = props.user.salt;
@@ -31,7 +32,7 @@ function IngredientGroup (props){
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: `ingredient=${JSON.stringify(props.ingredient)}&list=${props.listInfo.id}`
     })
-    const response = await rawReponse.json();
+    
   }
 
 return(
@@ -50,14 +51,6 @@ return(
               </View>
 
 )}
-
-// function mapDispatchToProps(dispatch) {
-//     return {
-//       deleteingredientList: function(info) { 
-//         dispatch( {type: 'delingredientList', name: info} ) 
-//       }
-//     }
-//   }
 
 function mapStateToProps(state) {
   return { tokenGroup: state.tokenGroup, token: state.token, listInfo: state.listInfo };

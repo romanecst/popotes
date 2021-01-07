@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import { baseURL } from '../screens/components/adressIP'
 
-
+//display info of a specific group
 function MesGroupes(props) {
 
   const [visible, setVisible] = useState(false);
@@ -25,6 +25,7 @@ function MesGroupes(props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [contact, setContact] = useState([]);
 
+  //gets group info from backend with token stored in redux 
   useEffect(() => {
     const loadInfo = async () => {
       const rawReponse = await fetch(`${baseURL}/getMyGroup`, {
@@ -43,11 +44,12 @@ function MesGroupes(props) {
     loadInfo();
   }, [])
 
+
   const toggleOverlay = () => {
     setVisible(!visible);
   }
 
-
+//create a shopping list for the group
   const addList = async () => {
     const rawResponseList = await fetch(`${baseURL}/addList`, {
         method: 'POST',
@@ -57,7 +59,7 @@ function MesGroupes(props) {
 
     const responseList = await rawResponseList.json()
 
-
+//adds list ID to group in db
     const rawResponseGroup = await fetch(`${baseURL}/updateGroup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -72,6 +74,7 @@ function MesGroupes(props) {
 
   }
 
+  //on click list is saved in redux and user is redirected to the group shopping list
   const List = () => {
     if (listID) {
       props.currentList({ id: listID })
@@ -82,6 +85,7 @@ function MesGroupes(props) {
 
   }
 
+  //text for the email sent to friends
   const textMail =
     `Hello,${"\n"} I'm making the shopping list for our next party, join thegroup by connecting to :${"\n"}
    https://popotes/app/fr.${"\n"}
@@ -90,19 +94,6 @@ function MesGroupes(props) {
   See you soon.`
 
 
-useEffect(()=>{
-      const loadInfo = async()=>{
-        const rawReponse= await fetch(`${baseURL}/getMyGroup`, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: `token=${props.tokenGroup}`
-        })
-        const response = await rawReponse.json();
-        setGroupName(response.mygroup.name);
-        setGroupParticipants(response.users)
-      }
-      loadInfo();
-    },[])
 
 
   function back() {
@@ -112,6 +103,7 @@ useEffect(()=>{
     setVisibleFriends(!visibleFriends);
   }
 
+  //add user to group by username
   var checkNameFriends = async () => {
     var rawResponse = await fetch(`${baseURL}/friends`, {
       method: "POST",
@@ -132,23 +124,7 @@ useEffect(()=>{
     }
   };
 
-
-  var newList = listFriends.map(function (list, i) {
-    return <Button
-      iconRight={true}
-      title={list}
-      key={i}
-      buttonStyle={{ backgroundColor: "white" }}
-      containerStyle={{
-        borderRadius: 45,
-        marginTop: 10,
-        marginBottom: 10,
-      }}
-      titleStyle={{ color: "black", fontFamily: "Kohinoor Telugu", textAlign: "center" }}
-    />
-  })
-
-//  IF PARTICIPANT OU NO PARTICIPANT => OVERLAY PLEINS OU VIDE 
+//  display PARTICIPANTs username
 
   if (groupParticipants.length == 0) {
     var participants =
@@ -215,9 +191,6 @@ useEffect(()=>{
         <ScrollView style={{width:200, height:170}}>
           {participants}
         </ScrollView>
-        {/* <View style={{alignContent: "center"}}> 
-        {newList}
-    </View>    */}
 
 
         <Text style={{ marginTop: 10, fontSize: 22, fontFamily: "Kohinoor Telugu"}}>Add Peoples :</Text>

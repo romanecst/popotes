@@ -15,7 +15,9 @@ import { connect } from 'react-redux';
 
 import {baseURL} from '../screens/components/adressIP'
 
-function homePage({navigation, goToRecipe}) {
+//Home screen of the app featuring recipes
+function homePage({navigation, goToRecipe, preferences}) {
+
     const [selectedValueDish, setSelectedValueDish] = useState("");
     const [selectedValueTime, setSelectedValueTime] = useState("");
     const [selectedValueCuisine, setSelectedValueCuisine] = useState("");
@@ -26,55 +28,52 @@ function homePage({navigation, goToRecipe}) {
     const [vegetarian, setVegetarian] = useState(false);
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
-
     const [pref, setPref] = useState(false);
+    const [searchTxt, setSearchTxt] = useState('');
+    const [listRecipe, setListRecipe] = useState([]);
+    const [randomRecipe,setRandomRecipe] = useState('');
 
-   const [searchTxt, setSearchTxt] = useState('')
-   const [listRecipe, setListRecipe] = useState([])
-   const [randomRecipe,setRandomRecipe] = useState('')
+   const toggleOverlay = () => {
+    setVisible(!visible);
+};
    
 
 useEffect(() => {
 
-    const Preferences = async()=>{
-        var preferences = ['gluten free','vegetarian','lactose free','vegan'];
-        var ifTrue = false;
-        for (let i = 0; i<preferences.length; i++){
-            await AsyncStorage.getItem(preferences[i], 
-            function(error, data){
-            if(data === 'true'){
-                ifTrue = true;
-                if(preferences[i]==='gluten free'){
-                    setGlutenFree(true);
-                }else if(preferences[i]==='vegetarian'){
-                    setVegetarian(true);
-                }else if(preferences[i]==='lactose free'){
-                    setLactoseFree(true);
-                }else{
-                    setVegan(true);
-                }
-            }
-            })
-        };
-        if(ifTrue){
-            setPref(true);
-        }else{
+ // get preferences from redux store and saves them in states
+ //if no preferences requests all recipes form backend
+  //else send request to backend to filter recipe result according to preferences 
+    const RecipesInit = async()=>{
+        if(Object.keys(preferences).length === 0){
             var rawReponse = await fetch(`${baseURL}/find`);
             var response= await rawReponse.json();
             setListRecipe(response);
+        }else{
+            if(preferences['gluten free']){
+                setGlutenFree(true);
+            };
+            if(preferences['vegetarian']){
+                setVegetarian(true);
+            };
+            if(preferences['lactose free']){
+                setLactoseFree(true);
+            };
+            if(preferences['vegan']){
+                setVegan(true);
+            }
+            var rawResult = await fetch(`${baseURL}/filters`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `time=&cuisine=&price=&healthy=&gluten=${preferences['gluten free']}&vegetarian=${preferences['vegetarian']}&lactose=${preferences['lactose free']}&vegan=${preferences['vegan']}&type=`
+            });
+            var result = await rawResult.json();
+            setListRecipe(result);
         }
     };
 
-    Preferences();
+    RecipesInit(); 
 
-    // const ListInit = async() => {
-    //     var rawResult = await fetch(`${baseURL}/list`);
-    //     var result = await rawResult.json();
-    //     loadList(result)
-    // }
-
-    // ListInit();  
-    /* Random on Today's pick */
+    /* Requests from backend a random recipe for Today's pick */
     var searchRandom = async ()=>{
         var randomCarrousel = await fetch(`${baseURL}/randomCourrousel`);
         var resultRandom = await randomCarrousel.json();
@@ -85,7 +84,7 @@ useEffect(() => {
         
   }, []);
 
-
+  //request to backend to filter recipes according to user's choices
 
   var Filters = async() => {
     var rawResult = await fetch(`${baseURL}/filters`, {
@@ -97,9 +96,8 @@ useEffect(() => {
     setListRecipe(result);
 }
 
-    function updateSearch(search){
-        setSearchTxt(search)
-    }
+    //request to backend to search recipes by name/ ingredients types by user
+
     var Search = async() => {
         var rawResult = await fetch(`${baseURL}/search`, {
             method: 'POST',
@@ -110,41 +108,30 @@ useEffect(() => {
         setListRecipe(result);
     }
 
-    useEffect(()=>{
-        if(glutenFree === true || vegetarian === true || lactoseFree === true || vegan === true ){
-            Filters();
-        }  
-    },[pref])
 
-    useEffect(()=>{
-        if(searchTxt === '' && pref){
-            Filters();
-        }  
-    },[searchTxt])
-
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
-
-
-    var gluten = {backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100 };
-    var vegeta = { backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100  };
-    var lactose = {backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100  };
-    var vega = { backgroundColor: '#FFFFFF',borderRadius: 400, width: 100, height: 100  };
-
+    // change color on select  ================>
+    var greyBackground = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
+    var selectedBackground = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' };
+    
+    var gluten = greyBackground;
+    var vegeta = greyBackground;
+    var lactose = greyBackground;
+    var vega = greyBackground;
+    
     if (glutenFree) {
-        gluten = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        gluten = selectedBackground;
     };
     if (vegetarian) {
-        vegeta = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        vegeta = selectedBackground;
     };
     if (lactoseFree) {
-        lactose = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        lactose = selectedBackground;
     };
     if (vegan) {
-        vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        vega = selectedBackground;
     };
 
+    //display recipes but if no result display try another filter
 
     if (listRecipe.length == 0) {
         var newList =
@@ -160,21 +147,6 @@ useEffect(() => {
         var newList = listRecipe.map(function(recipe, i){
             return <RecipeHome key={i} image={recipe.image} title={recipe.title} recipeInfo={recipe}/>
         })}
-  
-         // LOCAL STORAGE ================>
-    function favoriteAlim(diet) {
-        AsyncStorage.getItem(diet, function (error, data) {
-            if (data === null || data === 'false') {
-                AsyncStorage.setItem(diet, 'true')
-            } else if(data === true){
-                AsyncStorage.removeItem(diet)
-            } else {
-                AsyncStorage.setItem(diet, 'false')
-            }
-        })
-    };  
-
-  
 
 
     return (
@@ -191,7 +163,8 @@ useEffect(() => {
             lightTheme={true}
             placeholder="Search"
             onChangeText= {(value) => setSearchTxt(value)} 
-            value={searchTxt}/>
+            value={searchTxt}
+            onClear={()=>Filters()}/>
             <Button 
             title="Yumi!" 
             buttonStyle={styles.bouton}
@@ -205,6 +178,8 @@ useEffect(() => {
             <Text style={{textAlign: 'center', fontSize:25, fontFamily: 'Kohinoor Telugu', color:'grey'}}>Today's pick</Text>
 
             <ScrollView style={{marginTop: 8, marginBottom:15}} horizontal={true}>
+
+                {/* on click user redirected to the detail of the recipe and all recipe information are stored in the redux store to be displayed on the recipe screen*/}
             <TouchableOpacity onPress={() => {goToRecipe(randomRecipe); navigation.navigate('Recipe')}}>
                 <Image source={{uri:randomRecipe.image}} style={styles.image} />   
             </TouchableOpacity>
@@ -293,14 +268,14 @@ useEffect(() => {
             <Text style={styles.title}>Food Preferences</Text>
             </View>
             <View style={styles.prefalim}>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setGlutenFree(!glutenFree);favoriteAlim('gluten free') }}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setGlutenFree(!glutenFree) }}>
                     <Image
                         style={gluten}
                         source={require('../assets/noGluten.png')}
                     />
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Gluten free</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegetarian(!vegetarian); favoriteAlim('vegetarian')}}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegetarian(!vegetarian)}}>
                     <Image style={vegeta}
                         source={require('../assets/noMeat.png')}
                     />
@@ -308,13 +283,13 @@ useEffect(() => {
                 </TouchableOpacity>
             </View>
             <View style={styles.prefalim}>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setLactoseFree(!lactoseFree); favoriteAlim('lactose free')}}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() => { setLactoseFree(!lactoseFree)}}>
                     <Image style={lactose}
                         source={require('../assets/noMilk.png')}
                     />
                     <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 11 }}>Lactiose free</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegan(!vegan); favoriteAlim('vegan')}}>
+                <TouchableOpacity style={styles.picto} activeOpacity={0.3} onPress={() =>{ setVegan(!vegan)}}>
                     <Image style={vega}
                         source={require('../assets/vegetalien.png')}
                     />
@@ -342,8 +317,13 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
+function mapStateToProps(state) {
+    return { preferences: state.preferences}
+}
+
+
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(homePage);
 

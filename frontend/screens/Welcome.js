@@ -3,15 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Text, Button, Overlay } from 'react-native-elements';
 
+import { connect } from 'react-redux';
 
-export default function welcome({ navigation }) {
-    // AsyncStorage.clear()
+//Welcome page of the app, asks for dietery preferences only the firs time the user opens the app
+function Welcome({ navigation, savePreferences, delPreferences }) {
+
     const [visible, setVisible] = useState(false);
     const [glutenFree, setGlutenFree] = useState(false);
     const [vegetarian, setVegetarian] = useState(false);
     const [lactoseFree, setLactoseFree] = useState(false);
     const [vegan, setVegan] = useState(false);
-    const [ifTrue, setIfTrue] = useState(false);
+    const [prefStored, setPrefStored] = useState(false);
+
+    const toggleOverlay = () => {
+        setVisible(!visible);
+    };
+
+    // get preferences from local storage and send to redux store
 
     useEffect(()=>{
         const goToHome = async()=>{
@@ -19,20 +27,27 @@ export default function welcome({ navigation }) {
         for (let i = 0; i<preferences.length; i++){
             await AsyncStorage.getItem(preferences[i], 
             function(error, data){
-            if(data !== null){
-                setIfTrue(true);
+            if(data){
+                if(!prefStored){
+                    setPrefStored(true);
+                }
+                if(data === 'true'){
+                    savePreferences(preferences[i])
+                }else{
+                    delPreferences(preferences[i])
+                }
+            }else{
+                delPreferences(preferences[i])
             }
             })
         };
     }
     goToHome();
     },[])
+    
+//if preferences in local storage go to home page else ask for preferences
 
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
-
-    if(!ifTrue){
+    if(!prefStored){
         var next = <Button 
         title="Next"
         type="outline"
@@ -46,17 +61,19 @@ export default function welcome({ navigation }) {
         type="outline"
         buttonStyle={{ borderColor: 'white', marginTop: 200, padding: 5 }}
         titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', fontSize: 20 }}
-        onPress={() => {navigation.navigate('Home'); setVisible(false)}}
+        onPress={() => {navigation.navigate('Home')}}
         />
     }
 
-    // LOCAL STORAGE ================>
+    // save preferences in LOCAL STORAGE and redux store ================>
     function favoriteAlim(diet) {
         AsyncStorage.getItem(diet, function (error, data) {
             if (data === null || data === 'false') {
-                AsyncStorage.setItem(diet, 'true')
+                AsyncStorage.setItem(diet, 'true');
+                savePreferences(diet);
             } else {
-                AsyncStorage.setItem(diet, 'false')
+                AsyncStorage.setItem(diet, 'false');
+                delPreferences(diet);
             }
         })
     };
@@ -67,24 +84,26 @@ export default function welcome({ navigation }) {
         }
     }
 
-    // COULEUR APRES SELECTION  ================>
-    var gluten = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
-    var vegeta = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
-    var lactose = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
-    var vega = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
-    var noP = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
-
+    // change color on select  ================>
+    var greyBackground = { backgroundColor: '#FFFFFF', borderRadius: 400, width: 100, height: 100 };
+    var selectedBackground = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' };
+    
+    var gluten = greyBackground;
+    var vegeta = greyBackground;
+    var lactose = greyBackground;
+    var vega = greyBackground;
+    
     if (glutenFree) {
-        gluten = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        gluten = selectedBackground;
     };
     if (vegetarian) {
-        vegeta = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        vegeta = selectedBackground;
     };
     if (lactoseFree) {
-        lactose = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        lactose = selectedBackground;
     };
     if (vegan) {
-        vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
+        vega = selectedBackground;
     };
  
 
@@ -142,6 +161,24 @@ return (
         </ImageBackground>
     );
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        savePreferences: function (info) {
+            dispatch({ type: 'addpref', pref: info })
+        },
+        delPreferences: function (info) {
+            dispatch({ type: 'delpref', pref: info })
+        },
+    }
+}
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(Welcome);
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

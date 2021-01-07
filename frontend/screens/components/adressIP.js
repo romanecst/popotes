@@ -1,4 +1,5 @@
-const baseURL = "https://lespopotes.herokuapp.com"
+//url stored in variable for easier use in components 
+const baseURL = "http://192.168.1.87:3000"
 
 export { baseURL }
 

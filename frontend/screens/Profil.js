@@ -47,7 +47,7 @@ function Profil(props) {
   const toggleSignup = () => {
     setVisibleSignup(!visibleSignup);
   }
-
+//if user is connected request user deteils from back
   useEffect(() => {
 
     var getUserProfil = () => {
@@ -74,7 +74,7 @@ function Profil(props) {
           }
         })
     }
-
+//permission to access picture library to add an avatar
     var permission = async () => {
       console.log("perm", permission);
       if (Platform.OS !== "web") {
@@ -89,6 +89,7 @@ function Profil(props) {
       }
     }
 
+    //get dietary prefetrences from async storage
     var pref = async () => {
       var preferences = ['gluten free', 'vegetarian', 'lactose free', 'vegan'];
 
@@ -212,7 +213,7 @@ function Profil(props) {
     vega = { backgroundColor: '#ADE498', width: 100, height: 100, borderRadius: 400, borderColor: 'black' }
   };
 
-  // LOCAL STORAGE ================>
+  // change preferences in LOCAL STORAGE ================>
   function favoriteAlim(diet) {
     AsyncStorage.getItem(diet, function (error, data) {
       if (data === null || data === 'false') {
@@ -227,7 +228,7 @@ function Profil(props) {
   };
 
 
-  /* Update user */
+  /* send Updated user info to be stored in database */
   var updateUser = async () => {
 
     var userRegisters = await fetch(`${baseURL}/userUpdate`, {

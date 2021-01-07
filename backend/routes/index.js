@@ -11,11 +11,6 @@ const userModel = require('../models/users');
 const groupModel = require('../models/group');
 const listModel = require('../models/list')
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
 
 router.post('/search', async function (req, res, next) {
   var regex = `${req.body.search}.*`

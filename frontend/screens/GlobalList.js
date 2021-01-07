@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
-import { ListItem, Header, Button, Overlay, Input } from "react-native-elements";
-import { CheckBox } from 'react-native-elements';
+import { Header, Button, Overlay, Input } from "react-native-elements";
 
 
 import { AntDesign } from "@expo/vector-icons";
@@ -13,17 +12,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { connect } from 'react-redux';
 
-import { Ionicons } from '@expo/vector-icons';
 
 import Ingredient from './components/ingredientcheck';
 import Recette from './components/recettecheck';
 import { withNavigationFocus } from 'react-navigation';
 
-import { baseURL } from '../screens/components/adressIP'
 
 
-
-function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInfo, addingredientList, isFocused, clearIngredientList }) {
+//display shopping list with ingredients displayed by recipe or by ingredient type
+function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngredientList }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -34,14 +31,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
     const toggleOverlay = () => {
         setVisible(!visible);
     };
-
-    // useEffect(()=>{
-    //     async function load(){
-
-    //     };
-    //     load();
-    // },[])
-
+//only keeps ingredient from recipes which were not checked in the ingredient checklist (items the user already has)
     var filteredIngredients = [];
     for (var s = 0; s < ingredientList.length; s++) {
         var list = ingredientList[s].filter(function (el) {
@@ -49,7 +39,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
         });
         filteredIngredients.push(list);
     }
-
+//converts an array of array into a simple array for an easier processing
     var simpleList = [];
     filteredIngredients.forEach((elem) => {
         elem.forEach(function (el) {
@@ -58,7 +48,7 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
     })
 
     var category = {};
-
+//sort ingredient by category 
     simpleList.forEach(function (el) {
         if (!(el.aisle in category) && !('Others' in category)) {
             if (el.aisle !== null && el.aisle !== '?') {
@@ -77,13 +67,13 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
 
 
     var displayByCategory = [];
-
+//display ingredient by category
     for (const key in category) {
         displayByCategory.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{category[key]}</View>);
     }
 
     var recipeCat = {};
-
+//sort ingredients by recipe
     simpleList.forEach(function (el) {
         if (!(el.recipeName in recipeCat)) {
             recipeCat[el.recipeName] = [<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure} />];
@@ -93,11 +83,11 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
     })
 
     var recipesMap = []
-
+//displays ingredient by recipe
     for (const key in recipeCat) {
         recipesMap.push(<View><Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 15, marginBottom: 5 }}>{key}</Text>{recipeCat[key]}</View>);
     }
-
+//if display by recipe is chosen then displays by recipe and conversely
     if (isEnabled) {
         var ingredient = <ScrollView style={{ height: 380 }}>{displayByCategory}</ScrollView>
         var trier = "recette"
@@ -108,17 +98,6 @@ function GlobalList({ navigation, ingredientList, checkList, recipeInfo, listInf
         var trier = "ingredient"
 
     }
-
-
-    // useEffect(()=>{
-    //     return async()=>{
-    //         await fetch(`${baseURL}/addIngredients`, {
-    //         method: 'POST',
-    //         headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    //         body: `list=${JSON.stringify(simpleList)}&listID=${listInfo._id}`
-    //         });
-    //     }
-    // }, [])
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF2DF' }}>

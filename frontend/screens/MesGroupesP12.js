@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, StyleSheet, Alert, TextInput } from "react-native";
-import { Input, Button, Avatar, Accessory, Icon, Card, ListItem, CheckBox, Text, Header, Overlay } from "react-native-elements";
+import { View, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { Input, Button, Avatar, Text, Header, Overlay } from "react-native-elements";
 // import { Icon } from "react-native-vector-icons/FontAwesome";
-import { Ionicons, Entypo, AntDesign, Fontisto, MaterialIcons, Octicons } from "@expo/vector-icons";
-import CircleCheckBox, { LABEL_POSITION } from 'react-native-circle-checkbox';
+import { AntDesign, Fontisto, MaterialIcons, Octicons } from "@expo/vector-icons";
+
 
 import { baseURL } from '../screens/components/adressIP'
 import { connect } from 'react-redux';
 import IngredientGroup from './components/ingredientGroup'
 
 
-
+//display shopping list from group
 function MesGroupesP12(props) {
 
   const [user, setUser] = useState();
@@ -25,7 +25,7 @@ function MesGroupesP12(props) {
   const toggleOverlay = () => {
     setVisible(!visible);
   };
-
+//get group info from back 
   useEffect(() => {
     const loadInfo = async () => {
       const rawReponse = await fetch(`${baseURL}/getMyGroup`, {
@@ -40,7 +40,7 @@ function MesGroupesP12(props) {
       var currentUser = response.users.filter(el => el.token == props.token);
 
       setUser(currentUser[0]);
-
+//get ingredients from group list
       const rawReponseList= await fetch(`${baseURL}/getIngredients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

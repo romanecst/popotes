@@ -1,12 +1,8 @@
 import React from 'react';
 
 import {createAppContainer } from 'react-navigation';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
-import {createStackNavigator} from 'react-navigation-stack';
-import { FontAwesome } from '@expo/vector-icons';
 
-import {Provider} from 'react-redux';
-import {createStore, combineReducers}  from 'redux';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 // BOTTOM NAVIGATOR =============================>
@@ -14,21 +10,23 @@ import Favorite from './screens/Favorite';
 import Group from './screens/Group';
 import homePage from './screens/homePage';
 import Profil from './screens/Profil';
+import BottomTabBar from "react-navigation-selective-tab-bar";
+import {createBottomTabNavigator} from 'react-navigation-tabs';
 
 // STACK NAVIGATOR =============================>
 import Welcome from './screens/Welcome';
 import List from './screens/List';
-import recipe from './reducers/recipeInfo';
 import Recipe from './screens/Recipe';
 import GlobalList from './screens/GlobalList';
 import RecipeHome from './screens/components/recipeHome';
 import MesGroupes from './screens/MesGroupes'; 
 import MesGroupesP12 from './screens/MesGroupesP12'; 
+import {createStackNavigator} from 'react-navigation-stack';
 
 
-
-
-// import OverlayCheck from './screens/overlayCheckIngredient'
+// Redux store
+import preferences from './reducers/preferences';
+import recipe from './reducers/recipeInfo';
 import token from './reducers/token'
 import checkList from './reducers/checkList';
 import nameGroup from './reducers/nameGroup';
@@ -37,10 +35,11 @@ import recipeList from './reducers/recipeList';
 import ingredientList from './reducers/ingredientList';
 import listInfo from './reducers/listInfo';
 import list from './reducers/shoppinglist';
+import {Provider} from 'react-redux';
+import {createStore, combineReducers}  from 'redux';
 
-import BottomTabBar from "react-navigation-selective-tab-bar";
 
-const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo, list}));
+const store = createStore(combineReducers({recipe, nameGroup,tokenGroup, token, recipeList, checkList, ingredientList, listInfo, list, preferences}));
 
 
 var BottomNavigator = createBottomTabNavigator({
@@ -55,9 +54,6 @@ var BottomNavigator = createBottomTabNavigator({
   GlobalList: {screen : GlobalList},
 
 },
-// {
-//   backBehavior: 'history', 
-// }, 
 {
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ tintColor }) => {

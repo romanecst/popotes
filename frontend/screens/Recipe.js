@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 
 import { baseURL } from './components/adressIP'
 
+//display recipe information
 function Recipe(props) {
 
   const [servings, setServings] = useState(props.recipeInfo.servings);
@@ -34,6 +35,11 @@ function Recipe(props) {
   const [listErrorSignUp, setListErrorSignUp] = useState([]);
   const [lists, setLists] = useState([])
 
+  //sign in/up of the user on click on the add to list button
+    //ingredient overlay 
+  //checks if the user is connected 
+  //if user connected token stored in redux store and request of the user shopping lists to backend to display their name and open ingredient overlay
+  //else sign up overlay opens
   const toggleOverlay = () => {
     setVisible(!visible);
     if (!visible) {
@@ -67,7 +73,7 @@ function Recipe(props) {
 
 
   var handleSubmitSignin = async () => {
-
+  //send to backend user info to be verified in database
     const data = await fetch(`${baseURL}/sign-in`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -77,9 +83,10 @@ function Recipe(props) {
     const body = await data.json()
 
     if (body.result == true) {
-
+ //if user is successfully verified, storage of their token in redux store
       console.log(body.token);
       props.addToken(body.token);
+      //user token saved in async storage and overlay closes
       AsyncStorage.setItem("user token", body.token);
       toggleSignin();
       toggleOverlay();
@@ -88,13 +95,13 @@ function Recipe(props) {
       setErrorsSignin(body.error)
     }
   }
-
+    //displays errors
   var tabErrorsSignin = listErrorsSignin.map((error, i) => {
     return (<Text>{error}</Text>)
   })
 
   var handleSubmitSignUp = async () => {
-
+   //send to backend user info to be stored in database
     const data = await fetch(`${baseURL}/sign-up`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -103,7 +110,9 @@ function Recipe(props) {
 
     const body = await data.json()
     if (body.result == true) {
+          //if registration of the user is successful, storage of their token in redux store
       props.addToken(body.token);
+                //user token saved in async storage and overlay closes
       AsyncStorage.setItem("user token", body.token);
       toggleSignup();
       toggleOverlay();
@@ -113,14 +122,15 @@ function Recipe(props) {
       setListErrorSignUp(body.error)
     }
   }
-
+  //displays errors
   var tabErrorsSignup = listErrorSignUp.map((error, i) => {
     return (<Text>{error}</Text>)
   })
 
-
+//remove html tags from instructions
   var instructions = props.recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
 
+//create an array of object with the ingredients in the current recipe to be sent on the global list screen with changeable amount
   var newIngredients = props.recipeInfo.extendedIngredients.map(function (ingredient, i) {
     ingredient.amount = (servings * ingredient.amount) / props.recipeInfo.servings;
     if (!Number.isInteger(ingredient.amount)) {
@@ -130,6 +140,7 @@ function Recipe(props) {
     return { id: ingredient.id, name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title }
   });
 
+    //displays current recipes ingredients in the recipe information with changeable amount
   var ingredients = props.recipeInfo.extendedIngredients.map(function (ingredient, i) {
     var amount = (servings * ingredient.amount) / props.recipeInfo.servings;
     if (!Number.isInteger(amount)) {
@@ -138,6 +149,7 @@ function Recipe(props) {
     return <Text key={i} style={{ fontSize: 18 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
   });
 
+  //displays current recipes ingredients in the overlay with changeable amount
   var overlayIngredients = props.recipeInfo.extendedIngredients.map(function (ingredient, j) {
     ingredient.amount = (servings * ingredient.amount) / props.recipeInfo.servings;
     if (!Number.isInteger(ingredient.amount)) {
@@ -146,12 +158,14 @@ function Recipe(props) {
     return <Checking key={j} name={ingredient.name} quantity={ingredient.amount} measure={ingredient.measures.us.unitLong} />
   })
 
+  //display names of user's shopping lists
   var items = lists.map(function (el) {
     return { label: el.name, value: el._id }
   });
 
-  // ------------------------------------------------GESTION DU LIKE DANS LE DETAIL RECETTE -------------------------------
-
+  
+//if recipe is liked it is stored in the redux store if it isn't already in it
+//if recipe in unliked it is deleted from the redux store
   useEffect(() => {
     if (like) {
       var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
@@ -163,6 +177,8 @@ function Recipe(props) {
     }
   }, [like])
 
+  //recipeInfo is the current recipe and recipeList is the array of recipe stored in favourite recipes 
+//if they matched then the recipe is likes otherwise it isn't liked
   var likes = props.recipeList.find(element => element.title == props.recipeInfo.title);
   var colorHeart;
 
@@ -176,7 +192,9 @@ function Recipe(props) {
     colorHeart = 'black'
   }
 
-
+ //once the ingredient are validated by the user request to backend to store them in the selsected in list of the user in the database
+  //the array created above is stored in redux 
+  //user is then redirected to global list srcreen which is the shopping list
   async function toList() {
     props.currentList(selectedList);
     await fetch(`${baseURL}/addIngredients`, {
@@ -221,7 +239,7 @@ function Recipe(props) {
             </View>
             <View style={{ flexDirection: 'row' }}>
               <View style={styles.plus}>
-                {/* ************BOUTON + ************ */}
+                {/* ************BOUTON + //adds a person and increases ingredient amount ************ */}
                 <Button
                   title="+"
                   onPress={() => setServings(servings + 1)}
@@ -231,7 +249,7 @@ function Recipe(props) {
                 />
               </View>
               <View style={styles.moin}>
-                {/* ************BOUTON - ************ */}
+                {/* ************BOUTON -    //removes a person and decreases ingredient amount************ */}
                 <Button
                   title="-"
                   onPress={() => { if (servings > 1) { setServings(servings - 1) } }}
