@@ -21,7 +21,6 @@ router.post('/search', async function (req, res, next) {
 });
 
 
-/* Recipe filter */
 router.get('/find', async function (req, res, next) {
   //limit à enlever pour recevoir toute la bdd
   var recipes = await recipesModel.find().limit(50);
@@ -245,17 +244,7 @@ router.post('/group', async function (req, res, next) {
   var result = false;
   var groupSave;
   var token;
-  var groupSearch;
 
-
-  groupSearch = await groupModel.findOne({
-    name: req.body.nameGroupFromFront
-  })
-
-  if (groupSearch != null) {
-    error.push('Group already exists'),
-      console.log('test différent de null')
-  }
 
   if (req.body.nameGroupFromFront == '') {
     result = false,
@@ -363,11 +352,6 @@ router.post('/addList', async function (req, res, next) {
   listSave = await newList.save();
   await userModel.updateOne({token: req.body.user},{$push:{list_id: newList._id}})
   res.json(listSave)
-});
-
-router.get('/list', async function (req, res, next) {
-  var result = await listModel.find();
-  res.json(result)
 });
 
 router.post('/getMyLists', async function (req, res, next) {

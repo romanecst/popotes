@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const URI = require('./URI');
 
 var options = {
     connectTimeoutMS: 5000,
@@ -6,7 +7,7 @@ var options = {
     useNewUrlParser: true,
 }
 
-mongoose.connect('mongodb+srv://team:team@cluster-forget-me-not.37dbs.mongodb.net/popotes?retryWrites=true&w=majority',
+mongoose.connect(URI,
     options,
     function(err){
         console.log(err);
