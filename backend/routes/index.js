@@ -88,7 +88,6 @@ router.get('/save', function (req, res, next) {
   };
   
   axios.request(options).then(async function (response) {
-    console.log('SUCCESS');
 
     var recipes = response.data.recipes;
     for (var i = 0; i < recipes.length; i++) {
@@ -191,7 +190,6 @@ router.post('/sign-in', async function (req, res, next) {
       if (passwordEncrypt == user.password) {
         result = true
         token = user.token
-        console.log(token);
       } else {
         result = false
         error.push('Incorrect password')
@@ -212,15 +210,11 @@ router.post('/friends', async function(req, res, next) {
   
   var userSearch = await userModel.findOne({username: req.body.nameFriendFromFront});
 
-    console.log('test groupeSearch', groupSearch)
-    console.log('test userSearch', userSearch)
-
     if(groupSearch && userSearch){
-  console.log('je passe par ma route /friends et mon group existe')
+
   result = true
 // -----------------------Autre possibilité de modifier un tableau dans la base de données-------------------------------------
   // groupSearch.user_id.push(userSearch.id); 
-  // console.log('test 2 groupSearch', groupSearch)
 
   // await groupSearch.save();
 
@@ -230,7 +224,6 @@ router.post('/friends', async function(req, res, next) {
 
 
 }else{
-  console.log('un des deux nexiste pas')
   error.push('Ton amis n es pas encore connecté! envoi lui le lien!')
 }
   res.json({result, error, userSearch});
@@ -238,7 +231,6 @@ router.post('/friends', async function(req, res, next) {
 
 /* Create group */
 router.post('/group', async function (req, res, next) {
-  console.log('je passe par ma route ')
 
   var error = [];
   var result = false;
@@ -247,9 +239,8 @@ router.post('/group', async function (req, res, next) {
 
 
   if (req.body.nameGroupFromFront == '') {
-    result = false,
-      error.push('Empty fields'),
-      console.log('test si champ name vide')
+    result = false;
+    error.push('Empty fields');
   }
   if (error.length == 0) {
 
@@ -261,13 +252,13 @@ router.post('/group', async function (req, res, next) {
     });
 
     groupSave = await newGroup.save();
-    console.log("test groupeSave", groupSave)
+
   }
 
   if (groupSave) {
-    result = true,
-      token = groupSave.group_token,
-      console.log('tout est ok')
+    result = true;
+    token = groupSave.group_token;
+
   };
 
 
@@ -285,7 +276,7 @@ router.post('/updateGroup', async function (req, res, next) {
 
 router.post('/getGroups', async function (req, res, next) {
   var groups = await groupModel.find({user_id: { $all: [`${req.body.token}`] }});
-  console.log(groups)
+
   res.json(groups);
 });
 
@@ -309,16 +300,16 @@ router.post('/getMyGroup', async function (req, res, next) {
 
 /* Deleted group permet la suppression des groupes et des users du groupe */
 router.post('/deleteGroup', async function (req, res, next) {
-console.log("test token",req.body.userToken);
+
 var group =  await groupModel.findOne({ group_token: req.body.token })
 if(group.user_id.length == 1){
   await groupModel.deleteOne({ group_token: req.body.token })
   var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
 }else{
   var returnDb = await groupModel.updateOne({ group_token: req.body.token }, {$pull:{user_id: req.body.token}});
-console.log("test delete back3",returnDb);
+
   var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
-  console.log("usertoken",returnGroup);
+
 }
   res.json({ returnGroup })
 })
@@ -327,8 +318,6 @@ console.log("test delete back3",returnDb);
 router.post('/userUpdate', async function (req, res, next) {
 
   var user = await userModel.findOne({ token: req.body.token })
-  console.log("dede", req.body.token);
-  console.log("edesas", user);
 
   const passwordEncrypt = SHA256(req.body.passwordFromFront + user.salt).toString(encBase64);
 
@@ -408,7 +397,7 @@ router.get('/randomCourrousel', async function(req, res, next) {
 /* User profil, récupération des données pour affichage dans la page profil */
 router.post('/userProfil', async function(req,res,next){
   var userProfil = await userModel.findOne({token:req.body.token});
-  console.log("findone",userProfil);
+
   res.json(userProfil)
 });
 
@@ -425,7 +414,7 @@ router.post('/addUserGroup', async function (req, res, next) {
 
 router.post('/sendIngredient', async function (req, res, next) {
   var ingredient = JSON.parse(req.body.ingredient);
-  console.log('INGGRGGRVRGRG', ingredient.name)
+
   await listModel.updateOne(
     { _id: req.body.list },
     { $pull: {ingredients: {name: ingredient.name} } } 
