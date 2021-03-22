@@ -82,7 +82,7 @@ router.get('/save', function (req, res, next) {
     url: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/random',
     params: { number: '45' },
     headers: {
-      'x-rapidapi-key': '4267f086a5msh5279f0cd7ea484ap11e19djsnbb7a043890d4',
+      'x-rapidapi-key': process.env.API_KEY,
       'x-rapidapi-host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com'
     }
   };

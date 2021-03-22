@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-const URI = require('./URI');
 
 var options = {
     connectTimeoutMS: 5000,
@@ -7,7 +6,7 @@ var options = {
     useNewUrlParser: true,
 }
 
-mongoose.connect(URI,
+mongoose.connect(process.env.DB_URL,
     options,
     function(err){
         console.log(err);
