@@ -127,13 +127,8 @@ function MesGroupes(props) {
 //  display PARTICIPANTs username
 
   if (groupParticipants.length == 0) {
-    var participants =
-    <>
-     <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:15, color:'grey', marginTop:30, marginLeft:60}}>No peoples</Text>
-     <Image
-    style={{width:90, height:90, marginLeft:50}}
-    source={require('../assets/nopeoples.png')}/>
-    </>
+    var participants =<Text style={{fontFamily: 'Kohinoor Telugu', fontSize:15, color:'grey', marginTop:30, marginLeft:60}}>No peoples</Text>
+
 } else {
   var participants = groupParticipants.map(function (el, i) {
     return <View style={{ width: 200, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', marginBottom: 5, borderRadius: 45 }}>

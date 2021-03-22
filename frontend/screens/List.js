@@ -7,123 +7,47 @@ import { Ionicons, AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
 
 import { baseURL } from '../screens/components/adressIP'
-
+import Sign from './Sign';
 //display, create, delete lists from user
 function List(props) {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
-  const [lists, setLists] = useState([])
+  const [lists, setLists] = useState([]);
+  const [sign, setSign] = useState(false);
 
-  const [signInEmail, setSignInEmail] = useState('')
-  const [signInPassword, setSignInPassword] = useState('')
+  const listInit = async () => {
+    AsyncStorage.getItem("user token",
+      async function (error, data) {
+        console.log('DATAT', data)
+        if (data) {
+          props.addToken(data);
+          //if user connected requests their shopping lists from backend
+          const dataFetch = await fetch(`${baseURL}/getMyLists`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `token=${data}`
+          });
+          const body = await dataFetch.json();
+          setLists(body)
 
-  const [listErrorsSignin, setErrorsSignin] = useState([])
-
-  const [visibleSignin, setVisibleSignin] = useState(false);
-  const [visibleSignup, setVisibleSignup] = useState(false);
-
-  const [signUpUsername, setSignUpUsername] = useState('');
-  const [signUpEmail, setSignUpEmail] = useState('');
-  const [signUpPassword, setSignUpPassword] = useState('');
-
-
-
-  const [listErrorSignUp, setListErrorSignUp] = useState([]);
-
-  const toggleSignin = () => {
-    setVisibleSignin(!visibleSignin);
-  }
-
-  const toggleSignup = () => {
-    setVisibleSignup(!visibleSignup);
+        } else {
+          setSign(true);
+        }
+      })
   }
 
   useEffect(() => {
-    (async () => {
-      AsyncStorage.getItem("user token",
-        async function (error, data) {
-          console.log('DATAT', data)
-          if (data) {
-            props.addToken(data);
-            //if user connected requests their shopping lists from backend
-            const dataFetch = await fetch(`${baseURL}/getMyLists`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `token=${data}`
-            });
-            const body = await dataFetch.json();
-            setLists(body)
-
-          } else {
-            setVisibleSignup(true);
-          }
-        })
-    })();
+  listInit();
   }, []);
 
-  var handleSubmitSignin = async () => {
 
-    const data = await fetch(`${baseURL}/sign-in`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
-    })
-
-    const body = await data.json()
-
-    if (body.result == true) {
-
-      console.log(body.token);
-      props.addToken(body.token);
-      AsyncStorage.setItem("user token", body.token);
-      toggleSignin();
-      const dataFetch = await fetch(`${baseURL}/getMyLists`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `token=${body.token}`
-      });
-      const bodyFetch = await dataFetch.json();
-      setLists(bodyFetch)
-
-    } else {
-      setErrorsSignin(body.error)
-    }
-  }
-
-  var tabErrorsSignin = listErrorsSignin.map((error, i) => {
-    return (<Text>{error}</Text>)
-  })
-
-  var handleSubmitSignUp = async () => {
-
-    const data = await fetch(`${baseURL}/sign-up`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
-    })
-
-    const body = await data.json()
-    if (body.result == true) {
-      props.addToken(body.token);
-      AsyncStorage.setItem("user token", body.token);
-      const dataFetch = await fetch(`${baseURL}/getMyLists`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `token=${body.token}`
-      });
-      const bodyFetch = await dataFetch.json();
-      setLists(bodyFetch)
-      toggleSignup();
+  if(props.token && sign){
+    listInit();
+    setSign(false);
+   }
 
 
-    } else {
-      setListErrorSignUp(body.error)
-    }
-  }
-
-  var tabErrorsSignup = listErrorSignUp.map((error, i) => {
-    return (<Text>{error}</Text>)
-  })
+  
 //request backend to create a new list in the database with the name types by the user
   const addList = async () => {
     var rawResponse = await fetch(`${baseURL}/addList`, {
@@ -155,13 +79,8 @@ function List(props) {
 
 //display lists or no shooping list if user has no list
   if (lists.length == 0) {
-    var listsShop =
-      <View>
-        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 20, marginTop: 40, color: 'grey', marginLeft: 78 }}>No shopping list</Text>
-        <Image
-          style={{ width: 150, height: 150, marginLeft: 78 }}
-          source={require('../assets/sad.png')} />
-      </View>
+    var listsShop =<Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 20, marginTop: 40, color: 'grey', marginLeft: 78 }}>No shopping list</Text>
+
 
   } else {
     var listsShop = lists.map((el, i) => (
@@ -195,7 +114,7 @@ function List(props) {
       />
 
       <View style={{ alignItems: "center", justifyContent: 'center', marginTop: 10, marginBottom: 20 }}>
-
+      {sign && <Sign/>}
         <Text style={{ alignItems: "center", marginTop: 10, marginBottom: 20, fontSize: 22, fontFamily: 'Kohinoor Telugu' }}> My shopping list</Text>
 
 
@@ -234,118 +153,6 @@ function List(props) {
         <Ionicons name="ios-add-circle-outline" size={60} color="black" onPress={toggleOverlay} />
       </View>
 
-
-      {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
-
-
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
-
-<View style={styles.overlay}>
-  <Button
-    title="Return"
-    type="clear"
-    onPress={() => { props.navigation.goBack(null); toggleSignup() }}
-    buttonStyle={{ borderColor: "#dfe6e9", justifyContent: "flex-start" }}
-    titleStyle={{
-      color: "black",
-      fontFamily: "Kohinoor Telugu",
-      fontSize: 11,
-      marginRight: 35,
-    }}
-  />
-  <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom: 20 }}>Sign-in</Text>
-
-  <Input
-    containerStyle={styles.input}
-    placeholder='Email'
-    leftIcon={{ type: 'font-awesome', name: 'at' }}
-    onChangeText={(val) => setSignInEmail(val)}
-    val={signInEmail}
-    inputContainerStyle={{ borderBottomWidth: 0 }}
-  />
-  <Input
-    containerStyle={styles.input}
-    secureTextEntry={true}
-    placeholder='Password'
-    leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-    onChangeText={(val) => setSignInPassword(val)}
-    val={signInPassword}
-  />
-
-  {tabErrorsSignin}
-
-
-  <Button
-    title="Sign-in"
-    buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal: 80, marginBottom: 50 }}
-    titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal: 20 }}
-    onPress={() => handleSubmitSignin()}
-  />
-
-  <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text style={{ marginTop: 10, fontStyle: 'italic' }}>Not registered yet ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Create an account</Text></Text>
-
-
-
-
-  </TouchableOpacity>
-</View>
-</Overlay>
-
-
-<Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
-
-<View style={styles.overlay}>
-  <Button
-    title="Return"
-    type="clear"
-    onPress={() => { props.navigation.goBack(null); toggleSignup() }}
-    buttonStyle={{ borderColor: "#dfe6e9", justifyContent: "flex-start" }}
-    titleStyle={{
-      color: "black",
-      fontFamily: "Kohinoor Telugu",
-      fontSize: 11,
-      marginRight: 35,
-    }}
-  />
-  <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom: 40 }}>Sign-up</Text>
-
-  <Input
-    containerStyle={styles.input}
-    placeholder='Username'
-    leftIcon={{ type: 'font-awesome', name: 'user' }}
-    onChangeText={(val) => setSignUpUsername(val)}
-    val={signUpUsername}
-    inputContainerStyle={{ borderBottomWidth: 0 }}
-  />
-  <Input
-    containerStyle={styles.input}
-    placeholder='Email'
-    leftIcon={{ type: 'font-awesome', name: 'at' }}
-    onChangeText={(val) => setSignUpEmail(val)}
-    val={signUpEmail}
-    inputContainerStyle={{ borderBottomWidth: 0 }}
-  />
-  <Input
-    secureTextEntry={true}
-    containerStyle={styles.input}
-    placeholder='Password'
-    leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-    onChangeText={(val) => setSignUpPassword(val)}
-    val={signUpPassword}
-    inputContainerStyle={{ borderBottomWidth: 0 }}
-  />
-
-  {tabErrorsSignup}
-
-  <Button
-    title="Sign-Up"
-    buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal: 70 }}
-    titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal: 20 }}
-    onPress={() => { handleSubmitSignUp() }}
-  />
-  <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{ marginTop: 50, fontStyle: 'italic' }}>Already have an account ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Log in</Text></Text></TouchableOpacity>
-</View>
-</Overlay>
     </View>
   );
 }

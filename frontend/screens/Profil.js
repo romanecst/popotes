@@ -3,9 +3,9 @@ import { StyleSheet, TextInput, View, Text, Image, BorderColor, TouchableOpacity
 import { Avatar, Button, Header, Accessory, ListItem, Overlay, Input } from "react-native-elements";
 import { AntDesign, Fontisto, Entypo } from "@expo/vector-icons";
 import { connect } from 'react-redux';
-import Signin from "./Signin";
-import { baseURL } from '../screens/components/adressIP'
 
+import { baseURL } from '../screens/components/adressIP'
+import Sign from './Sign';
 
 import * as ImagePicker from "expo-image-picker";
 
@@ -13,67 +13,42 @@ function Profil(props) {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [image, setImage] = useState(null);
-
-  const [visible, setVisible] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
   const [vegetarian, setVegetarian] = useState(false);
   const [lactoseFree, setLactoseFree] = useState(false);
   const [vegan, setVegan] = useState(false);
-
-
   const [userName, setUserName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [sign, setSign] = useState(false);
 
-  const [signInEmail, setSignInEmail] = useState('')
-  const [signInPassword, setSignInPassword] = useState('')
 
-  const [listErrorsSignin, setErrorsSignin] = useState([])
-
-  const [visibleSignin, setVisibleSignin] = useState(false);
-  const [visibleSignup, setVisibleSignup] = useState(false);
-
-  const [signUpUsername, setSignUpUsername] = useState('');
-  const [signUpEmail, setSignUpEmail] = useState('');
-  const [signUpPassword, setSignUpPassword] = useState('');
-  const [reload, setReload] = useState(false);
-
-  const [listErrorSignUp, setListErrorSignUp] = useState([]);
-
-  const toggleSignin = () => {
-    setVisibleSignin(!visibleSignin);
-  }
-
-  const toggleSignup = () => {
-    setVisibleSignup(!visibleSignup);
-  }
 //if user is connected request user deteils from back
+var getUserProfil = () => {
+  AsyncStorage.getItem("user token",
+    async function (error, data) {
+      console.log(`DATA`, data);
+      if (data) {
+        props.addToken(data);
+        const responseUser = await fetch(`${baseURL}/userProfil`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `token=${data}`
+        })
+
+        const responseJson = await responseUser.json()
+        console.log("test", responseJson);
+        setEmail(responseJson.email)
+        setUserName(responseJson.username)
+
+      } else {
+        setSign(true);
+      }
+    })
+}
+
   useEffect(() => {
 
-    var getUserProfil = () => {
-      console.log("tesssst")
-      AsyncStorage.getItem("user token",
-        async function (error, data) {
-          console.log(`DATA`, data);
-          if (data) {
-            props.addToken(data);
-            const responseUser = await fetch(`${baseURL}/userProfil`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `token=${data}`
-            })
-
-            const responseJson = await responseUser.json()
-            console.log("test", responseJson);
-            setEmail(responseJson.email)
-            setPassword(responseJson.password)
-            setUserName(responseJson.username)
-
-          } else {
-            setVisibleSignup(true);
-          }
-        })
-    }
 //permission to access picture library to add an avatar
     var permission = async () => {
       console.log("perm", permission);
@@ -118,62 +93,12 @@ function Profil(props) {
     getUserProfil()
     permission()
     pref()
-    setReload(false)
-  }, [reload]);
+  }, []);
 
-  var handleSubmitSignin = async () => {
-
-    const data = await fetch(`${baseURL}/sign-in`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
-    })
-
-    const body = await data.json()
-
-    if (body.result == true) {
-
-      console.log(body.token);
-      props.addToken(body.token);
-
-
-      AsyncStorage.setItem("user token", body.token);
-      toggleSignin();
-
-    } else {
-      setErrorsSignin(body.error)
-    }
-    setReload(true);
-  }
-
-  var tabErrorsSignin = listErrorsSignin.map((error, i) => {
-    return (<Text>{error}</Text>)
-  })
-
-  var handleSubmitSignUp = async () => {
-
-    const data = await fetch(`${baseURL}/sign-up`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
-    })
-
-    const body = await data.json()
-    if (body.result == true) {
-      props.addToken(body.token);
-      AsyncStorage.setItem("user token", body.token);
-      toggleSignup();
-
-
-    } else {
-      setListErrorSignUp(body.error)
-    }
-    setReload(true);
-  }
-
-  var tabErrorsSignup = listErrorSignUp.map((error, i) => {
-    return (<Text>{error}</Text>)
-  })
+if(props.token && sign){
+ getUserProfil();
+ setSign(false);
+}
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -224,7 +149,6 @@ function Profil(props) {
         AsyncStorage.setItem(diet, 'false')
       }
     })
-    setReload(true)
   };
 
 
@@ -256,6 +180,8 @@ function Profil(props) {
         {/* --------------BOUTON D'AJOUT DE PHOTO " AVATAR " -----------------------*/}
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
+        {sign && <Sign/>}
+
           <TouchableOpacity
             onPress={pickImage}
             activeOpacity={0.3}
@@ -284,7 +210,7 @@ function Profil(props) {
           <Text style={{ fontSize: 20, color: "black", fontFamily: 'Kohinoor Telugu', marginBottom: 20 }} >Update user: </Text>
 
           <View>
-            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}> New Name :</Text>
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}> Name :</Text>
             <TextInput
               style={styles.text}
               placeholder="Write your Name..."
@@ -292,7 +218,7 @@ function Profil(props) {
               value={userName}
             />
 
-            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>New Email :</Text>
+            <Text style={{ fontFamily: "Kohinoor Telugu", fontSize: 12, paddingLeft: 15, marginBottom: 3 }}>Email :</Text>
             <TextInput
               style={styles.text}
               placeholder="Write your email..."
@@ -317,10 +243,16 @@ function Profil(props) {
               onPress={() => updateUser()}
             />
             <Button
-              title="Disconnection"
+              title="Disconnect"
               buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30 }}
               titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', paddingHorizontal: 8 }}
-              onPress={() => AsyncStorage.setItem('user token', '')}
+              onPress={() =>{
+                 AsyncStorage.setItem('user token', '');
+                 props.addToken('');
+                 setUserName('');
+                 setEmail('');
+                 setPassword('');
+                }}
             />
           </View>
 
@@ -397,119 +329,6 @@ function Profil(props) {
         </View>
 
       </ScrollView>
-
-      {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
-
-
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
-
-        <View style={styles.overlay}>
-          <Button
-            title="Return"
-            type="clear"
-            onPress={() => { props.navigation.goBack(null); toggleSignup() }}
-            buttonStyle={{ borderColor: "#dfe6e9", justifyContent: "flex-start" }}
-            titleStyle={{
-              color: "black",
-              fontFamily: "Kohinoor Telugu",
-              fontSize: 11,
-              marginRight: 35,
-            }}
-          />
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom: 20 }}>Sign-in</Text>
-
-          <Input
-            containerStyle={styles.input}
-            placeholder='Email'
-            leftIcon={{ type: 'font-awesome', name: 'at' }}
-            onChangeText={(val) => setSignInEmail(val)}
-            val={signInEmail}
-            inputContainerStyle={{ borderBottomWidth: 0 }}
-          />
-          <Input
-            containerStyle={styles.input}
-            secureTextEntry={true}
-            placeholder='Password'
-            leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-            onChangeText={(val) => setSignInPassword(val)}
-            val={signInPassword}
-          />
-
-          {tabErrorsSignin}
-
-
-          <Button
-            title="Sign-in"
-            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal: 80, marginBottom: 50 }}
-            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal: 20 }}
-            onPress={() => handleSubmitSignin()}
-          />
-
-          <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text style={{ marginTop: 10, fontStyle: 'italic' }}>Not registered yet ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Create an account</Text></Text>
-
-
-
-
-          </TouchableOpacity>
-        </View>
-      </Overlay>
-
-
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
-
-        <View style={styles.overlay}>
-          <Button
-            title="Return"
-            type="clear"
-            onPress={() => { props.navigation.goBack(null); toggleSignup() }}
-            buttonStyle={{ borderColor: "#dfe6e9", justifyContent: "flex-start" }}
-            titleStyle={{
-              color: "black",
-              fontFamily: "Kohinoor Telugu",
-              fontSize: 11,
-              marginRight: 35,
-            }}
-          />
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100, marginBottom: 40 }}>Sign-up</Text>
-
-          <Input
-            containerStyle={styles.input}
-            placeholder='Username'
-            leftIcon={{ type: 'font-awesome', name: 'user' }}
-            onChangeText={(val) => setSignUpUsername(val)}
-            val={signUpUsername}
-            inputContainerStyle={{ borderBottomWidth: 0 }}
-          />
-          <Input
-            containerStyle={styles.input}
-            placeholder='Email'
-            leftIcon={{ type: 'font-awesome', name: 'at' }}
-            onChangeText={(val) => setSignUpEmail(val)}
-            val={signUpEmail}
-            inputContainerStyle={{ borderBottomWidth: 0 }}
-          />
-          <Input
-            secureTextEntry={true}
-            containerStyle={styles.input}
-            placeholder='Password'
-            leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-            onChangeText={(val) => setSignUpPassword(val)}
-            val={signUpPassword}
-            inputContainerStyle={{ borderBottomWidth: 0 }}
-          />
-
-          {tabErrorsSignup}
-
-          <Button
-            title="Sign-Up"
-            buttonStyle={{ backgroundColor: '#7FDBDA', borderRadius: 30, marginHorizontal: 70 }}
-            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu', marginHorizontal: 20 }}
-            onPress={() => { handleSubmitSignUp() }}
-          />
-          <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text style={{ marginTop: 50, fontStyle: 'italic' }}>Already have an account ? <Text style={{ color: "#35abd5", textDecorationLine: 'underline' }}>Log in</Text></Text></TouchableOpacity>
-        </View>
-      </Overlay>
-
 
     </View>
 

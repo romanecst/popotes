@@ -38,13 +38,8 @@ function Favorite(props) {
 
     //displays favourite recipes if no recipe displays no favorite
     if (props.recipeList.length == 0) {
-        var favourites =
-        <>
-         <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:150, color:'grey'}}>No favorite</Text>
-         <Image
-        style={{width:150, height:150}}
-        source={require('../assets/idea.png')}/>
-        </>
+        var favourites =<Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:150, color:'grey'}}>No favorite</Text>
+
     } else {
         var favourites = props.recipeList.map(function (recipe, i) {
             return <TouchableOpacity onPress={()=>{props.goToRecipe(recipe); props.navigation.navigate('Recipe')}}>

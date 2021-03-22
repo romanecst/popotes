@@ -134,14 +134,8 @@ useEffect(() => {
     //display recipes but if no result display try another filter
 
     if (listRecipe.length == 0) {
-        var newList =
-        <View>
-         <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:40, color:'grey', marginLeft:25}}>No Recipes</Text>
-         <Image
-        style={{width:150, height:150}}
-        source={require('../assets/filter.png')}/>
-        <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:8, color:'grey'}}>Try another filter</Text>
-        </View>
+        var newList =<Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:40, color:'grey', marginLeft:25}}>No Recipes</Text>
+ 
         
     } else {
         var newList = listRecipe.map(function(recipe, i){
