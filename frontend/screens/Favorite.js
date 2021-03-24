@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, AsyncStorage, TouchableOpacity} from 'react-native';
-import { Header, SearchBar } from 'react-native-elements';
+import { Header, SearchBar, Button } from 'react-native-elements';
 import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
@@ -8,16 +8,18 @@ import { connect } from 'react-redux';
 
 import { withNavigationFocus } from 'react-navigation';
 
+
 //screen for favourite recipes
 function Favorite(props) {
-
-    const [searchTxt, setSearchTxt] = useState('');
+const [searchTxt, setSearchTxt] = useState('');
+const [searchResult, setSearchResult] = useState([]);
+const [clicked, setClicked] = useState(false);
 //gets favourites from local storage and add them to redux
     useEffect(()=>{
         async function loadData(){
             await AsyncStorage.getItem("favorites", 
             function(error, data){
-                if(data !== null && data !==undefined){
+                if(data){
                     var recetteLocal = JSON.parse(data);
                     if(recetteLocal.length !== 0){
                         recetteLocal.forEach(element => {
@@ -29,38 +31,64 @@ function Favorite(props) {
         loadData();
     }, [])
 
-
-
-
-    function updateSearch(search) {
-        setSearchTxt(search)
+    const Search = ()=>{
+        setClicked(clicked=>!clicked);
+        let regex = `${searchTxt}.*`;
+        let res = [];
+        props.recipeList.forEach(element => {
+            if(element.title.search(regex)!= -1){
+                res.push(element);
+            }
+        });
+        setSearchResult(res)
     }
 
     //displays favourite recipes if no recipe displays no favorite
-    if (props.recipeList.length == 0) {
-        var favourites =<Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:150, color:'grey'}}>No favorite</Text>
+    if(searchResult.length == 0 && searchTxt == '' || !clicked){
+        if (props.recipeList.length == 0) {
+            var favourites =<Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:150, color:'grey'}}>No favorite</Text>
 
-    } else {
-        var favourites = props.recipeList.map(function (recipe, i) {
-            return <TouchableOpacity onPress={()=>{props.goToRecipe(recipe); props.navigation.navigate('Recipe')}}>
-                <View key={i} style={styles.container}>
-                <Image style={styles.picture} source={{ uri: recipe.image }} />
-                <Text style={styles.text} >{recipe.title}</Text>
-                <View style={{ backgroundColor: '#fbfafa', paddingBottom: 63, paddingTop: 63, paddingRight: 5 }}>
-                    <Entypo name="cross" size={24} color="black" onPress={() => props.deleteRecipe(recipe.title)} />
-                </View>  
-                 </View>
-                 </TouchableOpacity>
+        } else {
+            var favourites = props.recipeList.map(function (recipe, i) {
+                return <TouchableOpacity key={i} onPress={()=>{props.goToRecipe(recipe); props.navigation.navigate('Recipe')}}>
+                    <View style={styles.container}>
+                    <Image style={styles.picture} source={{ uri: recipe.image }} />
+                    <Text style={styles.text} >{recipe.title}</Text>
+                    <View style={{ backgroundColor: '#fbfafa', paddingBottom: 63, paddingTop: 63, paddingRight: 5 }}>
+                        <Entypo name="cross" size={24} color="black" onPress={() => props.deleteRecipe(recipe.title)} />
+                    </View>  
+                    </View>
+                    </TouchableOpacity>
 
-        })
-    }
-//at component destruction store favourite recipes in local storage
-    useEffect(() => {
-        return async () => {
-            await AsyncStorage.setItem("favorites", JSON.stringify(props.recipeList));
+            })
         }
-    }, []);
+    }else{
+        if(searchResult.length != 0){
+            var favourites = searchResult.map(function (recipe, i) {
+                return <TouchableOpacity key={i} onPress={()=>{props.goToRecipe(recipe); props.navigation.navigate('Recipe')}}>
+                    <View style={styles.container}>
+                    <Image style={styles.picture} source={{ uri: recipe.image }} />
+                    <Text style={styles.text} >{recipe.title}</Text>
+                    <View style={{ backgroundColor: '#fbfafa', paddingBottom: 63, paddingTop: 63, paddingRight: 5 }}>
+                        <Entypo name="cross" size={24} color="black" onPress={() => {
+                            props.deleteRecipe(recipe.title);
+                            let newArray = searchResult.filter(e => e.title !== recipe.title);
+                            setSearchResult(newArray);
+                            }} />
+                    </View>  
+                    </View>
+                    </TouchableOpacity>
+            });
+        }else{
+            var favourites = <Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:150, color:'grey'}}>No result</Text>
+        }
+    }
 
+    useEffect(()=>{
+        if(props.recipeList){
+            AsyncStorage.setItem("favorites", JSON.stringify(props.recipeList));
+        }
+    },[props.recipeList])
 
     return (
 
@@ -72,15 +100,23 @@ function Favorite(props) {
                 centerComponent={{ text: 'FAVORITE', style: { color: '#fff', fontFamily: 'Kohinoor Telugu', fontSize:22} }}
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => {props.navigation.navigate('List')}} />}
             />
-
-            <SearchBar
-                // backgroundColor="white"
-                containerStyle={{ width: "70%", borderRadius: 20, backgroundColor: '#fff2df', borderTopColor: '#fff2df', borderBottomColor: '#fff2df', marginLeft: 59, marginTop: 10 }}
-                inputContainerStyle={{ borderRadius: 50, backgroundColor: "white" }}
-                lightTheme={true}
-                placeholder="Search"
-                onChangeText={updateSearch}
-                value={searchTxt} />
+            <View style={{flexDirection:'row', alignItems:'center', marginTop: 10}}>   
+                <SearchBar
+                    onClear={()=>{setSearchResult([]); setClicked(false)}}
+                    clearIcon={true}
+                    containerStyle={{ width: "70%", borderRadius: 20, backgroundColor: '#fff2df', borderTopColor: '#fff2df', borderBottomColor: '#fff2df', marginLeft: 30 }}
+                    inputContainerStyle={{ borderRadius: 50, backgroundColor: "white" }}
+                    lightTheme={true}
+                    placeholder="Search"
+                    onChangeText={(value)=>setSearchTxt(value)}
+                    value={searchTxt} />
+                
+                <Button 
+                title="Yumi!" 
+                buttonStyle={styles.bouton}
+                titleStyle={{color:'white',fontFamily: 'Kohinoor Telugu', paddingBottom:3, paddingTop:3}}
+                onPress={()=>Search()}/>
+            </View>
 
             <ScrollView style={{ flex: 1, marginTop: 10 }}>
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
@@ -141,5 +177,12 @@ const styles = StyleSheet.create({
         fontSize: 15,
         paddingTop: 66,
         paddingLeft: 15
+    }, bouton: {
+        borderColor:'white', 
+        backgroundColor:'#febf63', 
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 40,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 40,
     }
 });

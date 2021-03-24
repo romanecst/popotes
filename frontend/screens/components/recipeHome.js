@@ -130,16 +130,17 @@ function RecipeHome(props) {
                 </View>
             </View>
             <View style={styles.bouton}>
-                <View>
-                    <Button
-                        buttonStyle={styles.coeur}
-                        icon={<IconFontAwesome
-                            name="heart"
-                            size={20}
-                            style={colorHeart}
-                            onPress={() => { colorLike() }} />} />
-                </View>
-                <View>
+
+                <Button
+                    buttonStyle={styles.coeur}
+                    onPress={() => colorLike()}
+                    icon={<IconFontAwesome
+                        name="heart"
+                        size={20}
+                        style={colorHeart}
+                            />} />
+
+
                 <Button
                   buttonStyle={styles.list}
                   onPress={() => toggleOverlay()}
@@ -148,7 +149,7 @@ function RecipeHome(props) {
                       size={20}
                       color="#1e272e"
                   />} />
-                </View>
+  
             </View>
         
 
