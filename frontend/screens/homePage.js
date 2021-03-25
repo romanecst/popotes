@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image} from 'react-native';
+import { AsyncStorage, StyleSheet, Text, View, Picker, ScrollView, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
 import {Button, Overlay, Card, SearchBar, Header} from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -61,6 +61,7 @@ useEffect(() => {
             if(preferences['vegan']){
                 setVegan(true);
             }
+            setListRecipe(['pending']);
             var rawResult = await fetch(`${baseURL}/filters`, {
                 method: 'POST',
                 headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -137,7 +138,9 @@ useEffect(() => {
         var newList =<Text style={{fontFamily: 'Kohinoor Telugu', fontSize:20, marginTop:40, color:'grey', marginLeft:25}}>No Recipes</Text>
  
         
-    } else {
+    } else if(listRecipe[0]=='pending'){
+        var newList = <ActivityIndicator style={{marginTop:100}} size='large' color='grey'/>
+    }else {
         var newList = listRecipe.map(function(recipe, i){
             return <RecipeHome key={i} image={recipe.image} title={recipe.title} recipeInfo={recipe}/>
         })}

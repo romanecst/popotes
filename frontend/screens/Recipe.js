@@ -8,7 +8,7 @@ import Checking from './components/checkingOverlay';
 import { AntDesign, FontAwesome, Fontisto, Entypo } from '@expo/vector-icons';
 
 import { connect } from 'react-redux';
-
+import Sign from './Sign';
 import { baseURL } from './components/adressIP'
 
 //display recipe information
@@ -18,114 +18,45 @@ function Recipe(props) {
   const [selectedList, setSelectedList] = useState();
   const [like, setLike] = useState(false);
 
-  const [signInEmail, setSignInEmail] = useState('')
-  const [signInPassword, setSignInPassword] = useState('')
-
-  const [listErrorsSignin, setErrorsSignin] = useState([])
-
   const [visible, setVisible] = useState(false);
-  const [visibleSignin, setVisibleSignin] = useState(false);
-  const [visibleSignup, setVisibleSignup] = useState(false);
+  const [sign, setSign] = useState(false);
 
-  const [signUpUsername, setSignUpUsername] = useState('');
-  const [signUpEmail, setSignUpEmail] = useState('');
-  const [signUpPassword, setSignUpPassword] = useState('');
-
-
-  const [listErrorSignUp, setListErrorSignUp] = useState([]);
   const [lists, setLists] = useState([])
+
+  function back(){
+    setVisible(false)
+  }
 
   //sign in/up of the user on click on the add to list button
     //ingredient overlay 
   //checks if the user is connected 
   //if user connected token stored in redux store and request of the user shopping lists to backend to display their name and open ingredient overlay
   //else sign up overlay opens
-  const toggleOverlay = () => {
-    setVisible(!visible);
-    if (!visible) {
-      AsyncStorage.getItem("user token",
-        async function (error, data) {
-          console.log('DATAT', data)
-          if (data) {
-            props.addToken(data);
-            const dataFetch = await fetch(`${baseURL}/getMyLists`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `token=${data}`
-            });
-            const body = await dataFetch.json();
-            setLists(body)
+  const homeInit = async()=>{
+    AsyncStorage.getItem("user token", 
+    async function(error, data){
+      if(data){
+      props.addToken(data);
+      const dataFetch = await fetch(`${baseURL}/getMyLists`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `token=${data}`
+      });
+      const body = await dataFetch.json();
+      setLists(body);
+      setVisible(true);
+      }else{
+        setSign(true);
+      }
+    })
+  }
 
-          } else {
-            setVisibleSignup(true);
-          }
-        })
+  const toggleOverlay = () => {
+    if(!visible){
+      homeInit();
     }
   };
-
-  const toggleSignin = () => {
-    setVisibleSignin(!visibleSignin);
-  }
-
-  const toggleSignup = () => {
-    setVisibleSignup(!visibleSignup);
-  }
-
-
-  var handleSubmitSignin = async () => {
-  //send to backend user info to be verified in database
-    const data = await fetch(`${baseURL}/sign-in`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `emailFromFront=${signInEmail}&passwordFromFront=${signInPassword}`
-    })
-
-    const body = await data.json()
-
-    if (body.result == true) {
- //if user is successfully verified, storage of their token in redux store
-      console.log(body.token);
-      props.addToken(body.token);
-      //user token saved in async storage and overlay closes
-      AsyncStorage.setItem("user token", body.token);
-      toggleSignin();
-      toggleOverlay();
-
-    } else {
-      setErrorsSignin(body.error)
-    }
-  }
-    //displays errors
-  var tabErrorsSignin = listErrorsSignin.map((error, i) => {
-    return (<Text>{error}</Text>)
-  })
-
-  var handleSubmitSignUp = async () => {
-   //send to backend user info to be stored in database
-    const data = await fetch(`${baseURL}/sign-up`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `usernameFromFront=${signUpUsername}&emailFromFront=${signUpEmail}&passwordFromFront=${signUpPassword}`
-    })
-
-    const body = await data.json()
-    if (body.result == true) {
-          //if registration of the user is successful, storage of their token in redux store
-      props.addToken(body.token);
-                //user token saved in async storage and overlay closes
-      AsyncStorage.setItem("user token", body.token);
-      toggleSignup();
-      toggleOverlay();
-
-
-    } else {
-      setListErrorSignUp(body.error)
-    }
-  }
-  //displays errors
-  var tabErrorsSignup = listErrorSignUp.map((error, i) => {
-    return (<Text>{error}</Text>)
-  })
+ 
 
 //remove html tags from instructions
   var instructions = props.recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
@@ -159,9 +90,13 @@ function Recipe(props) {
   })
 
   //display names of user's shopping lists
-  var items = lists.map(function (el) {
-    return { label: el.name, value: el._id }
-  });
+  if(lists.length == 0){
+    var items = [{label: 'Create a New List'}]
+  }else{
+    var items = lists.map(function(el){
+        return { label: el.name, value: el._id }
+    });
+}
 
   
 //if recipe is liked it is stored in the redux store if it isn't already in it
@@ -195,17 +130,24 @@ function Recipe(props) {
  //once the ingredient are validated by the user request to backend to store them in the selsected in list of the user in the database
   //the array created above is stored in redux 
   //user is then redirected to global list srcreen which is the shopping list
-  async function toList() {
-    props.currentList(selectedList);
-    await fetch(`${baseURL}/addIngredients`, {
+  async function toList(){
+    props.currentList(selectedList); 
+    props.ingredientList(newIngredients); 
+    setVisible(false);
+    const dataFetch = await fetch(`${baseURL}/findGroupList`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `list=${selectedList._id}&ingredients=${JSON.stringify(newIngredients)}`
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `token=${props.token}&list=${selectedList._id}`
     });
-    props.ingredientList(newIngredients);
-    toggleOverlay();
-    props.navigation.navigate('GlobalList')
-  }
+    const body = await dataFetch.json();
+    if(body){
+      props.AddTokenGroup(body);
+      props.navigation.navigate('MesGroupesP12') 
+    }else{
+      props.navigation.navigate('GlobalList') 
+    }
+    }
+
 
   return (
 
@@ -221,6 +163,7 @@ function Recipe(props) {
 
       <ScrollView style={{ flex: 1, marginTop: 10 }}>
         <View style={styles.container}>
+        {sign && <Sign/>}
           <Image style={styles.picture} source={{ uri: props.recipeInfo.image }} />
         </View>
         {/* ************* TITRE ********** */}
@@ -314,7 +257,13 @@ function Recipe(props) {
             defaultNull placeholder="Select an list"
             containerStyle={{ width: 150, height: 70 }}
             style={{ marginBottom: 10 }}
-            onChangeItem={item => setSelectedList({ _id: item.value, name: item.label })}
+            onChangeItem={item => {
+              if(item.label == 'Create a New List'){
+                setVisible(false);  
+                props.navigation.navigate('List');
+              }else{
+                setSelectedList({_id: item.value, name: item.label});
+          }}}
           />
           <Button
             iconRight={true}
@@ -323,97 +272,6 @@ function Recipe(props) {
             titleStyle={{ color: 'black', fontFamily: 'Kohinoor Telugu' }}
             onPress={() => toList()}
           />
-        </View>
-      </Overlay>
-
-
-      {/* -------------------------OVERLAY ----- SIGN IN/UP ---------------------------------- */}
-
-
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignin} >
-
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100 }}>Sign-in{"\n"}{"\n"}</Text>
-          <Avatar
-            size="large"
-            rounded
-            title="LW"
-            activeOpacity={1}
-            containerStyle={{ backgroundColor: "red", marginBottom: 60, marginLeft: 100 }}
-          />
-
-          <Input
-            containerStyle={styles.input}
-            placeholder='Email'
-            leftIcon={{ type: 'font-awesome', name: 'at' }}
-            onChangeText={(val) => setSignInEmail(val)}
-            val={signInEmail}
-          />
-          <Input
-            containerStyle={styles.input}
-            placeholder='Password'
-            leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-            onChangeText={(val) => setSignInPassword(val)}
-            val={signInPassword}
-          />
-
-          {tabErrorsSignin}
-
-          <Button
-            title="Sign-in"
-            type="clear"
-            buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-            titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-            onPress={() => handleSubmitSignin()}
-          />
-          <TouchableOpacity onPress={() => { toggleSignup(); toggleSignin(); }}><Text>Not registered yet? Create an account</Text></TouchableOpacity>
-        </View>
-      </Overlay>
-
-
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, }} isVisible={visibleSignup} >
-
-        <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 25, marginLeft: 100 }}>Sign-up{"\n"}{"\n"}</Text>
-          <Avatar
-            size="large"
-            rounded
-            title="LW"
-            activeOpacity={1}
-            containerStyle={{ backgroundColor: "red", marginBottom: 60, marginLeft: 100 }}
-          />
-          <Input
-            containerStyle={styles.input}
-            placeholder='Username'
-            leftIcon={{ type: 'font-awesome', name: 'user' }}
-            onChangeText={(val) => setSignUpUsername(val)}
-            val={signUpUsername}
-          />
-          <Input
-            containerStyle={styles.input}
-            placeholder='Email'
-            leftIcon={{ type: 'font-awesome', name: 'at' }}
-            onChangeText={(val) => setSignUpEmail(val)}
-            val={signUpEmail}
-          />
-          <Input
-            containerStyle={styles.input}
-            placeholder='Password'
-            leftIcon={{ type: 'font-awesome', name: 'unlock' }}
-            onChangeText={(val) => setSignUpPassword(val)}
-            val={signUpPassword}
-          />
-
-          {tabErrorsSignup}
-
-          <Button
-            title="Sign-up"
-            type="clear"
-            buttonStyle={{ borderColor: 'white', justifyContent: 'center' }}
-            titleStyle={{ color: 'red', fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingTop: 30 }}
-            onPress={() => { handleSubmitSignUp() }}
-          />
-          <TouchableOpacity onPress={() => { toggleSignin(); toggleSignup(); }}><Text>Already have an account? Log in</Text></TouchableOpacity>
         </View>
       </Overlay>
 

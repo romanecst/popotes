@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Switch, ScrollView, TouchableOpacity } from 'react-native';
 import { Header, Button, Overlay, Input } from "react-native-elements";
 
@@ -12,6 +12,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { connect } from 'react-redux';
 
+import { baseURL } from './components/adressIP'
 
 import Ingredient from './components/ingredientcheck';
 import Recette from './components/recettecheck';
@@ -20,11 +21,12 @@ import { withNavigationFocus } from 'react-navigation';
 
 
 //display shopping list with ingredients displayed by recipe or by ingredient type
-function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngredientList }) {
+function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngredientList, addToList }) {
 
     const [isEnabled, setIsEnabled] = useState(false);
     const [visible, setVisible] = useState(false);
     const [text, setText] = useState('');
+    const [textAmount, setTextAmount] = useState('');
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -32,24 +34,13 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
         setVisible(!visible);
     };
 //only keeps ingredient from recipes which were not checked in the ingredient checklist (items the user already has)
-    var filteredIngredients = [];
-    for (var s = 0; s < ingredientList.length; s++) {
-        var list = ingredientList[s].filter(function (el) {
-            return !checkList.includes(el.name);
-        });
-        filteredIngredients.push(list);
-    }
-//converts an array of array into a simple array for an easier processing
-    var simpleList = [];
-    filteredIngredients.forEach((elem) => {
-        elem.forEach(function (el) {
-            simpleList.push(el)
-        })
-    })
+    let filteredIngredients= ingredientList.filter(el =>!checkList.includes(el.name));
+
+
 
     var category = {};
 //sort ingredient by category 
-    simpleList.forEach(function (el) {
+    filteredIngredients.forEach(function (el) {
         if (!(el.aisle in category) && !('Others' in category)) {
             if (el.aisle !== null && el.aisle !== '?') {
                 category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure} />];
@@ -74,7 +65,7 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
 
     var recipeCat = {};
 //sort ingredients by recipe
-    simpleList.forEach(function (el) {
+    filteredIngredients.forEach(function (el) {
         if (!(el.recipeName in recipeCat)) {
             recipeCat[el.recipeName] = [<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure} />];
         } else {
@@ -90,7 +81,7 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
 //if display by recipe is chosen then displays by recipe and conversely
     if (isEnabled) {
         var ingredient = <ScrollView style={{ height: 380 }}>{displayByCategory}</ScrollView>
-        var trier = "recette"
+        var trier = "recipe"
     } else {
         var ingredient = <ScrollView style={{ height: 380 }}>
             {recipesMap}
@@ -98,6 +89,20 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
         var trier = "ingredient"
 
     }
+     
+    async function saveToDB(){
+        await fetch(`${baseURL}/addIngredients`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `list=${listInfo._id}&ingredients=${JSON.stringify(filteredIngredients)}`
+      });}
+    
+    useEffect(()=>{
+        if(ingredientList){
+            saveToDB()
+        }
+    },[ingredientList])
+
 
     return (
         <View style={{ flex: 1, backgroundColor: '#FFF2DF' }}>
@@ -110,7 +115,7 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
                 rightComponent={<Fontisto name="shopping-basket" size={24} color="white" onPress={() => { navigation.navigate('List') }} />}
             />
             <View style={styles.container}>
-                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Trier par {trier} </Text>
+                <Text style={{ fontFamily: 'Kohinoor Telugu' }}> Sorted by {trier} </Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#febf63" }}
                     thumbColor={isEnabled ? "#FFF2DF" : "#f4f3f4"}
@@ -159,13 +164,21 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
                     <Input placeholder='Product name'
                         onChangeText={(value) => setText(value)}
                         value={text} />
+                    <Input placeholder='Product amount'
+                    onChangeText={(value) => setTextAmount(value)}
+                    value={textAmount} />
                 </View>
                 
                 <Button
                     title="Confirm"
                     buttonStyle={{ backgroundColor: '#febf63', padding: 10, borderRadius: 30, marginHorizontal: 30 }}
                     titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-                    onPress={() => { toggleOverlay() }}
+                    onPress={() => { 
+                        toggleOverlay(); 
+                        addToList({aisle: "Others", amount: textAmount, measure: "", name: text, recipeName: "Other"}); 
+                        setText(''); 
+                        setTextAmount('');
+                        }}
                 />
             </Overlay>
         </View>
@@ -180,6 +193,9 @@ function mapDispatchToProps(dispatch) {
     return {
         clearIngredientList: function () {
             dispatch({ type: 'clearingredientList' })
+        },
+        addToList: function (ingr) {
+            dispatch({ type: 'addIngr', ingr })
         }
     }
 }

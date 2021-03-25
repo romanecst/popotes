@@ -5,7 +5,7 @@ import { Input, Button, Avatar, Text, Header, Overlay } from "react-native-eleme
 import { AntDesign, Fontisto, MaterialIcons, Octicons } from "@expo/vector-icons";
 
 
-import { baseURL } from '../screens/components/adressIP'
+import { baseURL } from './components/adressIP'
 import { connect } from 'react-redux';
 import IngredientGroup from './components/ingredientGroup'
 
@@ -16,10 +16,11 @@ function MesGroupesP12(props) {
   const [user, setUser] = useState();
   const [groupName, setGroupName]= useState('');
   const [groupParticipants, setGroupParticipants]= useState([]);
-  const [listName, setListName]= useState('');
+  const [list, setList]= useState({});
   const [ingredients, setIngredients]= useState([]);
-    const [visible, setVisible] = useState(false);
-    const [text, setText] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [text, setText] = useState('');
+  const [textAmount, setTextAmount] = useState('');
 
 
   const toggleOverlay = () => {
@@ -44,17 +45,35 @@ function MesGroupesP12(props) {
       const rawReponseList= await fetch(`${baseURL}/getIngredients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `id=${props.listInfo.id}`
+        body: `id=${response.mygroup.list_id}`
       })
       const responseList = await rawReponseList.json();
- 
-      setListName(responseList.name)
-      setIngredients(responseList.ingredients)
 
+      setList(responseList);
+      setIngredients(responseList.ingredients);
 
     }
     loadInfo();
-  }, [])
+  }, [props.listInfo]);
+
+
+  function delIngredient(name){
+    setIngredients(ingredients.filter(e => e.name != name));
+
+  }
+
+  async function saveToDB(){
+    await fetch(`${baseURL}/addIngredients`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `list=${list._id}&ingredients=${JSON.stringify(ingredients)}`
+  });}
+
+  useEffect(()=>{
+      if(ingredients){ 
+          saveToDB();
+      }
+  },[ingredients])
 
 
   return (
@@ -101,17 +120,16 @@ function MesGroupesP12(props) {
 
         {/* ---------------Scroll des recettes  -------------- */}
 
-        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>{listName}</Text>
+        <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18 }}>{list.name}</Text>
 
         <ScrollView style={styles.scroll}>
 
-          <View style={styles.blocScroll}>
+          <View style={{padding:10, paddingTop:20, paddingLeft:20}}>
             <Text>Ingredients :</Text>
 
               {ingredients.map(function(el, i){              
-             return  <IngredientGroup key={i} ingredient={el} user={user}/>
-              })
-              }
+              return  <IngredientGroup key={i} ingredient={el} user={user} list={list._id} deletefromparent={delIngredient}/>
+              })}
 
           </View>
 
@@ -125,27 +143,35 @@ function MesGroupesP12(props) {
           </TouchableOpacity>
           <TouchableOpacity>
             <View style={styles.okList}>
-              <Octicons name="checklist" size={30} color="black" onPress={() => clearIngredientList()} />
+              <Octicons name="checklist" size={30} color="black" onPress={() => setIngredients([])} />
             </View>
           </TouchableOpacity>
         </View>
 
       </View>
       {/* ------------------------------ OVERLAY -----------------------------------------------*/}
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, padding: 30 }} isVisible={visible} onBackdropPress={toggleOverlay} >
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 30, padding: 30 }} isVisible={visible} onBackdropPress={toggleOverlay} >
         <View style={styles.overlay}>
-          <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
-          <Input placeholder='Product name'
-            onChangeText={(value) => setText(value)}
-            value={text} />
+            <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, paddingBottom: 30 }}>Add a product to your list : </Text>
+            <Input placeholder='Product name'
+                onChangeText={(value) => setText(value)}
+                value={text} />
+            <Input placeholder='Product amount'
+            onChangeText={(value) => setTextAmount(value)}
+            value={textAmount} />
         </View>
-      
+        
         <Button
-          title="Confirm"
-          buttonStyle={{ backgroundColor: '#7FDBDA', padding: 10, borderRadius:30, marginHorizontal:30 }}
-          titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-          onPress={() => { toggleOverlay() }}
-        />
+            title="Confirm"
+            buttonStyle={{ backgroundColor: '#febf63', padding: 10, borderRadius: 30, marginHorizontal: 30 }}
+            titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
+            onPress={() => { 
+                toggleOverlay(); 
+                setIngredients([...ingredients, {aisle: "Others", amount: textAmount, measure: "", name: text, recipeName: "Other"}])
+                setText(''); 
+                setTextAmount('');
+                }}
+          />
       </Overlay>
     </View>
   );
@@ -168,7 +194,6 @@ const styles = StyleSheet.create({
     height: 250,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    padding: 15
   }, ajoutListe: {
     justifyContent: "space-around",
     backgroundColor: 'white',
@@ -200,8 +225,20 @@ const styles = StyleSheet.create({
   }
 });
 
+// function mapDispatchToProps(dispatch) {
+//   return {
+//       clearIngredientList: function () {
+//           dispatch({ type: 'clearingredientList' })
+//       },
+//       addToList: function (ingr) {
+//           dispatch({ type: 'addIngr', ingr })
+//       }
+//   }
+// }
+
+
 function mapStateToProps(state) {
-  return { tokenGroup: state.tokenGroup, token: state.token, listInfo: state.listInfo };
+  return { tokenGroup: state.tokenGroup, token: state.token, listInfo: state.listInfo , ingredientList: state.ingredientList};
 }
 
 

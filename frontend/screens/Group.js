@@ -82,12 +82,10 @@ function Group(props) {
     }
   };
 
-  function createGroup() {
+  function toggleOverlay() {
     setVisible(!visible);
   }
-  function back() {
-    setVisible(false);
-  }
+
 
   /* request backend to Create group in db and add current user's token */
   var saveGroup = async function save() {
@@ -110,7 +108,7 @@ function Group(props) {
       Here is the access code to the group:${token}, please inform what you
       are bringing. ${"\n"}
       See you soon.`;
-      createGroup();
+      toggleOverlay();
       Linking.openURL(
         `mailto:?subject=${nameGroup}&body=${text}`
       );
@@ -139,7 +137,6 @@ function Group(props) {
 
   } else {
     var groupe = groupList.map(function (el, i) {
-      console.log("test el", el.group_token);
       return <TouchableOpacity key={i} onPress={() => { props.AddTokenGroup(el.group_token); props.navigation.navigate('MesGroupes') }} >
         <View style={styles.blocScroll}>
           <Text>{el.name}</Text>
@@ -159,14 +156,15 @@ function Group(props) {
 //user enters the group token that was sent to them to joint the group
 //add user token to this group in db
   async function SearchToken() {
-    console.log('TOKEN',props.token,'VAL',val)
     var rawResponse = await fetch(`${baseURL}/addUserGroup`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `tokenGroup=${val}&token=${props.token}`
     });
     var response = await rawResponse.json();
-    console.log("gorup update", response);
+    if(response.result){
+      setGroupList([...groupList, response.getGroup])
+    }
   }
 
 
@@ -221,7 +219,7 @@ function Group(props) {
           size={60}
           color="black"
           onPress={() => {
-            createGroup();
+            toggleOverlay();
           }}
         />
 
@@ -234,7 +232,7 @@ function Group(props) {
             width: 320,
           }}
           isVisible={visible}
-          onBackdropPress={createGroup}
+          onBackdropPress={toggleOverlay}
         >
           <View>
             <View
@@ -248,7 +246,7 @@ function Group(props) {
                 title="Return"
                 type="clear"
                 onPress={() => {
-                  back();
+                  toggleOverlay();
                 }}
                 buttonStyle={{
                   borderColor: "#dfe6e9",

@@ -2,18 +2,21 @@ export default function(ingredientList = [], action) {
 
     if(action.type == 'ingredientList') {
         var newList = [...ingredientList];
-        newList.push(action.ingredient);
+        action.ingredient.forEach(element => {
+          newList.push(element);
+        });
       return newList;
 
     }else if(action.type == 'delingredientList'){
-      var newList = [];
-      for(var i=0; i<ingredientList.length; i++){
-        var list = ingredientList[i].filter( el => el.name !== action.name);
-        newList.push(list)
-      }
+      var newList = ingredientList.filter( el => el.name !== action.name);
       return newList;
+
     }else if(action.type == 'clearingredientList'){
       var newList = [];
+      return newList;
+    }else if(action.type == 'addIngr'){
+      var newList = [...ingredientList];
+      newList.push(action.ingr);
       return newList;
     }else {
       return ingredientList;

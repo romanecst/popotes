@@ -39,10 +39,15 @@ function MesGroupes(props) {
 
       if (response.mygroup.list_id) {
         setListID(response.mygroup.list_id)
+      }else{
+        setListID()
       }
     }
-    loadInfo();
-  }, [])
+    if(props.tokenGroup){
+      console.log('hello')
+      loadInfo();
+    }
+  }, [props.tokenGroup])
 
 
   const toggleOverlay = () => {
@@ -77,7 +82,6 @@ function MesGroupes(props) {
   //on click list is saved in redux and user is redirected to the group shopping list
   const List = () => {
     if (listID) {
-      props.currentList({ id: listID })
       props.navigation.navigate('MesGroupesP12')
     } else {
       toggleOverlay();

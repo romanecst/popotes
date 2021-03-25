@@ -1,10 +1,9 @@
-console.disableYellowBox = true;
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Image, ImageBackground, TouchableOpacity, AsyncStorage, LogBox } from 'react-native';
 import { Text, Button, Overlay } from 'react-native-elements';
-
 import { connect } from 'react-redux';
 
+LogBox.ignoreAllLogs(true);
 //Welcome page of the app, asks for dietery preferences only the firs time the user opens the app
 function Welcome({ navigation, savePreferences, delPreferences }) {
 

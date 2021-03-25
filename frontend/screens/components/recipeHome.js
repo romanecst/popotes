@@ -23,28 +23,27 @@ function RecipeHome(props) {
     const [lists, setLists] = useState([]);
     const [sign, setSign] = useState(false);
 
-
     function back(){
       setVisible(false)
     }
 
     const homeInit = async()=>{
-      AsyncStorage.getItem("user token", 
-      async function(error, data){
+        AsyncStorage.getItem("user token", 
+        async function(error, data){
         if(data){
         props.addToken(data);
         const dataFetch = await fetch(`${baseURL}/getMyLists`, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: `token=${data}`
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `token=${data}`
         });
         const body = await dataFetch.json();
         setLists(body);
         setVisible(true);
         }else{
-          setSign(true);
+            setSign(true);
         }
-      })
+        })
     }
 
 //on click heart changes color and item is added/ deleted from favourites
@@ -92,9 +91,13 @@ function RecipeHome(props) {
     });
 
 //display names of user's shopping lists
-    var items = lists.map(function(el){
-        return { label: el.name, value: el._id }
-    });
+    if(lists.length == 0){
+        var items = [{label: 'Create a New List'}]
+    }else{
+        var items = lists.map(function(el){
+            return { label: el.name, value: el._id }
+        });
+    }
 
  //create an array of object with the ingredients in the current recipe to be sent on the global list screen
     var newIngredients = props.recipeInfo.extendedIngredients.map(function(ingredient, i){
@@ -106,14 +109,20 @@ function RecipeHome(props) {
   //user is then redirected to global list srcreen which is the shopping list
     async function toList(){
       props.currentList(selectedList); 
-      await fetch(`${baseURL}/addIngredients`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `list=${selectedList._id}&ingredients=${JSON.stringify(newIngredients)}`
-      });
       props.ingredientList(newIngredients); 
       setVisible(false);
-      props.navigation.navigate('GlobalList') 
+      const dataFetch = await fetch(`${baseURL}/findGroupList`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `token=${props.token}&list=${selectedList._id}`
+      });
+      const body = await dataFetch.json();
+      if(body){
+        props.AddTokenGroup(body);
+        props.navigation.navigate('MesGroupesP12') 
+      }else{
+        props.navigation.navigate('GlobalList') 
+      }
       }
 
 
@@ -177,7 +186,13 @@ function RecipeHome(props) {
           defaultNull placeholder="Select a list"
           containerStyle={{width: 150, height: 70}} 
           style={{marginBottom:10}}
-          onChangeItem={item => setSelectedList({_id: item.value, name: item.label})}
+          onChangeItem={item => {
+              if(item.label == 'Create a New List'){
+                setVisible(false);  
+                props.navigation.navigate('List');
+              }else{
+                setSelectedList({_id: item.value, name: item.label});
+          }}}
         />
         <Button
           iconRight={true}
@@ -216,13 +231,16 @@ function mapDispatchToProps(dispatch) {
         },
         addToken: function(token){
             dispatch({type: 'addToken', token: token})
-          }
+        },
+        AddTokenGroup: function (tokenGroup) {
+            dispatch({ type: "tokenGroup", tokenGroup: tokenGroup });
+        },
     }
 }
 
 
 function mapStateToProps(state) {
-    return { recipeList: state.recipeList,  list: state.list}
+    return { recipeList: state.recipeList,  list: state.list, token: state.token}
 }
 
 

@@ -306,8 +306,8 @@ if(group.user_id.length == 1){
   await groupModel.deleteOne({ group_token: req.body.token })
   var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
 }else{
-  var returnDb = await groupModel.updateOne({ group_token: req.body.token }, {$pull:{user_id: req.body.token}});
-
+  var returnDb = await groupModel.updateOne({ group_token: req.body.token }, {$pull:{user_id: req.body.userToken}});
+  console.log(returnDb, 'del user')
   var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
 
 }
@@ -366,12 +366,13 @@ router.post('/deleteList', async function (req, res, next) {
 });
 
 router.post('/addIngredients', async function (req, res, next) {
- 
-    var list = await listModel.updateOne(
+    console.log(JSON.parse(req.body.ingredients ),'id?????????');
+    await listModel.updateOne(
       { _id: req.body.list },
-      { $push:{ingredients: JSON.parse(req.body.ingredients ) }}
+      { ingredients: JSON.parse(req.body.ingredients ) }
     );
-  res.json()
+    let result = true
+  res.json(result)
 });
 
 router.post('/getIngredients', async function(req,res,next){
@@ -405,11 +406,13 @@ router.post('/addUserGroup', async function (req, res, next) {
   var result = false
   var group = await groupModel.updateOne({group_token: req.body.tokenGroup}, {$push: {user_id: req.body.token}});
   if(group.nModified == 1){
+    var getGroup = await groupModel.findOne({group_token: req.body.tokenGroup});
+    if(getGroup.list_id){
+      await userModel.updateOne({token: req.body.token},{$push: {list_id: getGroup.list_id}})
+    }
     result = true
-    var getGroup = await groupModel.findOne({group_token: req.body.token});
-    await userModel.updateOne({token: req.body.token},{$push: {list_id: getGroup.list_id}})
   }
-  res.json(result);
+  res.json({result,getGroup});
 });
 
 router.post('/sendIngredient', async function (req, res, next) {
@@ -424,6 +427,19 @@ router.post('/sendIngredient', async function (req, res, next) {
     { $push:{ingredients: ingredient}}
   );
   res.json();
+});
+
+router.post('/findGroupList', async function (req, res, next) {
+  var groups = await groupModel.find({user_id: { $all: [`${req.body.token}`] }});
+  let tokenGroup = '';
+  for(let i = 0; i<groups.length; i++){
+    if(groups[i].list_id==req.body.list){
+      console.log(groups[i]. group_token, 'group iiiiiii token')
+      tokenGroup = groups[i].group_token
+    }
+  }
+  console.log(tokenGroup, 'group token')
+  res.json(tokenGroup);
 });
 
 module.exports = router;
