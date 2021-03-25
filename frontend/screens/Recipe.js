@@ -14,18 +14,37 @@ import { baseURL } from './components/adressIP'
 //display recipe information
 function Recipe(props) {
 
-  const [servings, setServings] = useState(props.recipeInfo.servings);
+  const [servings, setServings] = useState(1);
+  const [amount, setAmount] = useState([]);
   const [selectedList, setSelectedList] = useState();
   const [like, setLike] = useState(false);
 
   const [visible, setVisible] = useState(false);
   const [sign, setSign] = useState(false);
 
+  const [ingredients, setIngredients] = useState([])
   const [lists, setLists] = useState([])
 
   function back(){
     setVisible(false)
   }
+  
+  useEffect(() => {
+    setServings(props.recipeInfo.servings);
+    setIngredients([...props.recipeInfo.extendedIngredients]);
+  }, [props.recipeInfo])
+
+  useEffect(() => {
+    let newIngr = []
+    for(var i=0; i< ingredients.length; i++){
+      let newAmount = servings * ingredients[i].amount / props.recipeInfo.servings;
+      if (!Number.isInteger(newAmount)) {
+        newAmount = (servings * ingredients[i].amount/ props.recipeInfo.servings).toFixed(2);
+      }
+      newIngr.push(newAmount)
+    }
+    setAmount(newIngr);
+  }, [servings])
 
   //sign in/up of the user on click on the add to list button
     //ingredient overlay 
@@ -57,36 +76,24 @@ function Recipe(props) {
     }
   };
  
+  
 
 //remove html tags from instructions
   var instructions = props.recipeInfo.instructions.replace(/<li>|<ol>|<\/li>|<\/ol>/g, " ");
 
 //create an array of object with the ingredients in the current recipe to be sent on the global list screen with changeable amount
-  var newIngredients = props.recipeInfo.extendedIngredients.map(function (ingredient, i) {
-    ingredient.amount = (servings * ingredient.amount) / props.recipeInfo.servings;
-    if (!Number.isInteger(ingredient.amount)) {
-      ingredient.amount = ((servings * ingredient.amount) / props.recipeInfo.servings).toFixed(1);
-    }
-    console.log('IDDDDD', ingredient._id)
-    return { id: ingredient.id, name: ingredient.name, amount: ingredient.amount, measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title }
+  var newIngredients = ingredients.map(function (ingredient, l) {
+    return { id: ingredient.id, name: ingredient.name, amount: amount[l], measure: ingredient.measures.us.unitLong, aisle: ingredient.aisle, recipeName: props.recipeInfo.title }
   });
 
     //displays current recipes ingredients in the recipe information with changeable amount
-  var ingredients = props.recipeInfo.extendedIngredients.map(function (ingredient, i) {
-    var amount = (servings * ingredient.amount) / props.recipeInfo.servings;
-    if (!Number.isInteger(amount)) {
-      amount = ((servings * ingredient.amount) / props.recipeInfo.servings).toFixed(1);
-    }
-    return <Text key={i} style={{ fontSize: 18 }}>{ingredient.name}: {amount} {ingredient.measures.us.unitLong} {'\n'}</Text>
+  var ingredientsText = ingredients.map(function (ingredient, k) {
+    return <Text key={k} style={{ fontSize: 18 }}>{ingredient.name}: {amount[k]} {ingredient.measures.us.unitLong} {'\n'}</Text>
   });
 
   //displays current recipes ingredients in the overlay with changeable amount
-  var overlayIngredients = props.recipeInfo.extendedIngredients.map(function (ingredient, j) {
-    ingredient.amount = (servings * ingredient.amount) / props.recipeInfo.servings;
-    if (!Number.isInteger(ingredient.amount)) {
-      ingredient.amount = ((servings * ingredient.amount) / props.recipeInfo.servings).toFixed(1);
-    }
-    return <Checking key={j} name={ingredient.name} quantity={ingredient.amount} measure={ingredient.measures.us.unitLong} />
+  var overlayIngredients = ingredients.map(function (ingredient, j) {
+    return <Checking key={j} name={ingredient.name} quantity={amount[j]} measure={ingredient.measures.us.unitLong} />
   })
 
   //display names of user's shopping lists
@@ -207,7 +214,7 @@ function Recipe(props) {
 
             <Text style={{ fontSize: 22 }}>INGREDIENTS : {"\n"}</Text>
             {/* ************NOMBRE INGREDIENT *************/}
-            {ingredients}
+            {ingredientsText}
           </View>
 
           <View style={styles.title}>
@@ -234,7 +241,7 @@ function Recipe(props) {
       </ScrollView>
 
 
-      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} isVisible={visible} onBackdropPress={toggleOverlay}>
+      <Overlay overlayStyle={{ backgroundColor: '#dfe6e9', borderRadius: 50, marginHorizontal: 10 }} isVisible={visible} onBackdropPress={back}>
         <View style={styles.containerOverlay}>
           <Text style={{ fontFamily: 'Kohinoor Telugu', fontSize: 18, marginHorizontal: 15 }}>You will add the ingredients to your shopping list:{"\n"}{"\n"}</Text>
           <Text style={{ fontFamily: 'Kohinoor Telugu', color: '#636e72', marginHorizontal: 50, fontSize: 15 }}>check the ingredients you already have:</Text>
