@@ -220,7 +220,7 @@ function Recipe(props) {
           <View style={styles.title}>
             <Text style={{ fontSize: 22 }}>DESCRIPTION :{"\n"}</Text>
             {/* ************DESCRIPTION *************/}
-            <Text style={{ fontSize: 18 }}>{instructions}</Text>
+            <Text style={{ fontSize: 18, lineHeight:30 }}>{instructions}</Text>
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 100, marginBottom: 50 }}>

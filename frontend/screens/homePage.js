@@ -45,9 +45,14 @@ useEffect(() => {
   //else send request to backend to filter recipe result according to preferences 
     const RecipesInit = async()=>{
         if(Object.keys(preferences).length === 0){
-            var rawReponse = await fetch(`${baseURL}/find`);
+            var rawResult = await fetch(`${baseURL}/filters`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: `time=&cuisine=&price=&healthy=&gluten=&vegetarian=&lactose=&vegan=&type=`
+            });
             var response= await rawReponse.json();
-            setListRecipe(response);
+            setRandomRecipe(response[0]);
+            setListRecipe(response.slice(1));
         }else{
             if(preferences['gluten free']){
                 setGlutenFree(true);
@@ -68,19 +73,12 @@ useEffect(() => {
                 body: `time=&cuisine=&price=&healthy=&gluten=${preferences['gluten free']}&vegetarian=${preferences['vegetarian']}&lactose=${preferences['lactose free']}&vegan=${preferences['vegan']}&type=`
             });
             var result = await rawResult.json();
-            setListRecipe(result);
+            setRandomRecipe(result[0]);
+            setListRecipe(result.slice(1));
         }
     };
 
     RecipesInit(); 
-
-    /* Requests from backend a random recipe for Today's pick */
-    var searchRandom = async ()=>{
-        var randomCarrousel = await fetch(`${baseURL}/randomCourrousel`);
-        var resultRandom = await randomCarrousel.json();
-        setRandomRecipe(resultRandom);        
-    }
-    searchRandom();
     
         
   }, []);

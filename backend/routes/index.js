@@ -9,7 +9,7 @@ var axios = require("axios").default;
 const recipesModel = require('../models/recipes');
 const userModel = require('../models/users');
 const groupModel = require('../models/group');
-const listModel = require('../models/list')
+const listModel = require('../models/list');
 
 
 router.post('/search', async function (req, res, next) {
@@ -20,41 +20,24 @@ router.post('/search', async function (req, res, next) {
   res.json(recipes);
 });
 
-
-router.get('/find', async function (req, res, next) {
-  //limit à enlever pour recevoir toute la bdd
-  var recipes = await recipesModel.find().limit(50);
-  res.json(recipes);
-});
-
 router.post('/filters', async function (req, res, next) {
 
-  var filters;
+  var filters = {
+    readyInMinutes: '',
+    cuisines: { $all: [`${req.body.cuisine}`] },
+    cheap: req.body.price,
+    veryHealthy: req.body.healthy,
+    glutenFree: req.body.gluten,
+    vegetarian: req.body.vegetarian,
+    lactoseFree: req.body.lactose,
+    vegan: req.body.vegan,
+    dishTypes: { $all: [`${req.body.type}`] }
+  };
 
   if (req.body.time === 'quick') {
-    filters = {
-      readyInMinutes: { $lte: 30 },
-      cuisines: { $all: [`${req.body.cuisine}`] },
-      cheap: req.body.price,
-      veryHealthy: req.body.healthy,
-      glutenFree: req.body.gluten,
-      vegetarian: req.body.vegetarian,
-      lactoseFree: req.body.lactose,
-      vegan: req.body.vegan,
-      dishTypes: { $all: [`${req.body.type}`] }
-    };
-  } else {
-    filters = {
-      readyInMinutes: { $gt: 30 },
-      cuisines: { $all: [`${req.body.cuisine}`] },
-      cheap: req.body.price,
-      veryHealthy: req.body.healthy,
-      glutenFree: req.body.gluten,
-      vegetarian: req.body.vegetarian,
-      lactoseFree: req.body.lactose,
-      vegan: req.body.vegan,
-      dishTypes: { $all: [`${req.body.type}`] }
-    };
+    filters.readyInMinutes = { $lte: 35 };
+  } else if(req.body.time === 'long') {
+    filters.readyInMinutes = { $gt: 35 };
   }
 
   let len = Object.keys(req.body).length;
@@ -68,10 +51,50 @@ router.post('/filters', async function (req, res, next) {
     }
   }
 
-  var result = await recipesModel.find(empty);
+  var result = await recipesModel.find(empty).limit(51);
 
-  res.json(result);
+  let recipes = [];
+  let shuffle = 0;
+  while (result.length !== 0) {
+    shuffle = Math.round(Math.random()*result.length);
+    if(result[shuffle]){
+      recipes.push(result[shuffle]);
+    }
+    result.splice(shuffle,1);
+  }
+
+  res.json(recipes);
 });
+
+router.get('/clean', async function (req, res, next) {
+  var recipes1 = await recipesModel.find().limit(100);
+  var recipes2 = await recipesModel.find().skip(100).limit(100);
+  var recipes3 = await recipesModel.find().skip(200);
+  let allRecipes = [];
+  let recipesDuplicates = [];
+  function noDuplicates(recipes){
+    for(let i=0; i<recipes.length; i++){ 
+      if(!recipes[i].image){
+        recipesDuplicates.push({title:recipes[i].title, id:recipes[i]._id});
+      }else if(!allRecipes.includes(recipes[i].title)){
+          allRecipes.push(recipes[i].title);
+      }else{
+          recipesDuplicates.push({title:recipes[i].title, id:recipes[i]._id});
+      }
+      
+    }
+  }
+  noDuplicates(recipes1);
+  noDuplicates(recipes2);
+  noDuplicates(recipes3);
+
+  for(let j=0; j<recipesDuplicates.length; j++){
+    let del = await recipesModel.deleteOne({_id:recipesDuplicates[j].id});
+
+  }
+  res.render('index', { title: 'clean' });
+});
+
 
 
 /* Save recipe in BDD */
@@ -307,7 +330,7 @@ if(group.user_id.length == 1){
   var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
 }else{
   var returnDb = await groupModel.updateOne({ group_token: req.body.token }, {$pull:{user_id: req.body.userToken}});
-  console.log(returnDb, 'del user')
+
   var returnGroup = await groupModel.find({user_id: { $all: [`${req.body.userToken}`] }});
 
 }
@@ -366,7 +389,7 @@ router.post('/deleteList', async function (req, res, next) {
 });
 
 router.post('/addIngredients', async function (req, res, next) {
-    console.log(JSON.parse(req.body.ingredients ),'id?????????');
+
     await listModel.updateOne(
       { _id: req.body.list },
       { ingredients: JSON.parse(req.body.ingredients ) }
@@ -380,20 +403,6 @@ router.post('/getIngredients', async function(req,res,next){
   res.json(list)
 });
 
-
-/* Random carrousel, affichage aléatoire d une recette */
-router.get('/randomCourrousel', async function(req, res, next) {
-  var recipes = await recipesModel.find();
-  var idRecipe = [];
-  for(var i=0; i<recipes.length; i++){
-    idRecipe.push(recipes[i]._id)
-  }
-  var random = Math.round(Math.random() * idRecipe.length)
-  var id = idRecipe[random];
-  var randomRecipe = await recipesModel.findOne({_id:id});
-
-  res.json(randomRecipe);
-});
 
 /* User profil, récupération des données pour affichage dans la page profil */
 router.post('/userProfil', async function(req,res,next){
@@ -434,11 +443,10 @@ router.post('/findGroupList', async function (req, res, next) {
   let tokenGroup = '';
   for(let i = 0; i<groups.length; i++){
     if(groups[i].list_id==req.body.list){
-      console.log(groups[i]. group_token, 'group iiiiiii token')
       tokenGroup = groups[i].group_token
     }
   }
-  console.log(tokenGroup, 'group token')
+
   res.json(tokenGroup);
 });
 

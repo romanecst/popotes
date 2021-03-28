@@ -44,7 +44,6 @@ function MesGroupes(props) {
       }
     }
     if(props.tokenGroup){
-      console.log('hello')
       loadInfo();
     }
   }, [props.tokenGroup])
@@ -115,7 +114,6 @@ function MesGroupes(props) {
       body: `nameFriendFromFront=${searchFriend}&tokenGroupFromFront=${props.tokenGroup}`,
     });
     var response = await rawResponse.json();
-    console.log(response)
     var userName = response.userSearch.username;
 
     if (response.result == true && userName) {

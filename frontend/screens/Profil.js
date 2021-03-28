@@ -27,7 +27,6 @@ function Profil(props) {
 var getUserProfil = () => {
   AsyncStorage.getItem("user token",
     async function (error, data) {
-      console.log(`DATA`, data);
       if (data) {
         props.addToken(data);
         const responseUser = await fetch(`${baseURL}/userProfil`, {
@@ -37,7 +36,6 @@ var getUserProfil = () => {
         })
 
         const responseJson = await responseUser.json()
-        console.log("test", responseJson);
         setEmail(responseJson.email)
         setUserName(responseJson.username)
 
@@ -51,7 +49,6 @@ var getUserProfil = () => {
 
 //permission to access picture library to add an avatar
     var permission = async () => {
-      console.log("perm", permission);
       if (Platform.OS !== "web") {
         const {
           status,
@@ -69,10 +66,8 @@ var getUserProfil = () => {
       var preferences = ['gluten free', 'vegetarian', 'lactose free', 'vegan'];
 
       for (let i = 0; i < preferences.length; i++) {
-        console.log("pref", preferences[i]);
         await AsyncStorage.getItem(preferences[i],
           function (error, data) {
-            console.log('hello', data)
             if (data === 'true') {
 
               if (preferences[i] === 'gluten free') {
@@ -108,7 +103,6 @@ if(props.token && sign){
       quality: 1,
     });
 
-    console.log("essai permission result", result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -161,7 +155,6 @@ if(props.token && sign){
       body: `token=${props.token}&usernameFromFront=${userName}&emailFromFront=${email}&passwordFromFront=${password}`
     })
     var response = await userRegisters.json();
-    console.log(response);
   }
 
   return (

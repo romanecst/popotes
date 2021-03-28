@@ -32,7 +32,7 @@ function Group(props) {
     AsyncStorage.getItem("user token",
       async function (error, data) {
         if (data) {
-          console.log('token', data)
+
           props.addToken(data);
           const rawReponse = await fetch(`${baseURL}/getGroups`, {
             method: 'POST',
@@ -43,7 +43,7 @@ function Group(props) {
           const response = await rawReponse.json()
           setGroupList(response);
         } else {
-          console.log('nope');
+
           setSign(true);
         }
       })
@@ -76,7 +76,6 @@ function Group(props) {
       quality: 1,
     });
 
-    console.log("essai permission result", result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -95,7 +94,7 @@ function Group(props) {
       body: `avatarGroupFromFront=${image}&nameGroupFromFront=${nameGroup}&userID=${props.token}`
     });
     var response = await rawResponse.json();
-    console.log(response)
+
     var token = response.groupSave.group_token;
 //save group token in redux
     if (response.result == true) {
@@ -119,16 +118,16 @@ function Group(props) {
 
   /* Deleted groupe from db */
   var handleClickDelete = async (tokenGroup) => {
-    console.log("click détecté");
+
     var rawResponse = await fetch(`${baseURL}/deleteGroup`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `token=${tokenGroup}&userToken=${props.token}`
     });
-    console.log("delete", rawResponse);
+
     var response = await rawResponse.json();
     setGroupList(response.returnGroup)
-    console.log("test update", response);
+
   };
 //display groups
   if (groupList.length == 0) {
@@ -363,7 +362,6 @@ function Group(props) {
                 }}
                 titleStyle={{ color: "white", fontFamily: "Kohinoor Telugu" }}
                 onPress={() => {
-                  console.log('IMAGEGEGEGEGEG', image);
                   props.checkNameGroup({ name: nameGroup, image: image });
                   saveGroup();
                 }}

@@ -18,7 +18,7 @@ function List(props) {
   const listInit = async () => {
     AsyncStorage.getItem("user token",
       async function (error, data) {
-        console.log('DATAT', data)
+
         if (data) {
           props.addToken(data);
           //if user connected requests their shopping lists from backend
