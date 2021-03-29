@@ -64,14 +64,21 @@ function RecipeHome(props) {
 //if recipe is liked it is stored in the redux store if it isn't already in it
 //if recipe in unliked it is deleted from the redx store
     useEffect(() => {
-        if (like) {
-            var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
-            if (!found) {
-                props.saveRecipe(props.recipeInfo);
+        (async function(){
+            if (like) {
+                var found = props.recipeList.find(element => element.title === props.recipeInfo.title)
+                if (!found) {
+                    await fetch(`${baseURL}/similarRecipes`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: `recipe=${JSON.stringify(props.recipeInfo)}`
+                    });
+                    props.saveRecipe(props.recipeInfo);
+                }
+            } else {
+                props.deleteRecipe(props.recipeInfo.title);
             }
-        } else {
-            props.deleteRecipe(props.recipeInfo.title);
-        }
+        })()
     }, [like])
 
     var colorHeart;

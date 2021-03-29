@@ -207,6 +207,76 @@ router.get('/save', function (req, res, next) {
   res.render('index', { title: 'Express Save' });
 });
 
+router.get('/checkLast', async function (req, res, next) {
+  let recipes = await recipesModel.find().skip(276);
+  console.log(recipes);
+res.render('index', { title: 'Express Last' });
+});
+
+router.post('/similarRecipes', function (req, res, next) {
+  // console.log(JSON.parse(req.body.recipe));
+  let ingredients = JSON.parse(req.body.recipe).extendedIngredients;
+  const options = {
+    method: 'GET',
+    url: 'https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients',
+    params: {
+      ingredients: `${ingredients[0].name},${ingredients[1].name},${ingredients[2].name},${ingredients[3].name}`,
+      number: '3',
+      ranking: '1',
+      ignorePantry: 'true'
+    },
+    headers: {
+      'x-rapidapi-key': process.env.API_KEY,
+      'x-rapidapi-host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com'
+    }
+  };
+
+  axios.request(options).then(function (response) {
+    console.log('response similar',response.data);
+
+    for(let i=0; i<response.data.length; i++){
+      if(response.data[i].title !== JSON.parse(req.body.recipe).title){
+        let optionsInfo = {
+          method: 'GET',
+          url: `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/${response.data[i].id}/information`,
+          headers: {
+            'x-rapidapi-key': process.env.API_KEY,
+            'x-rapidapi-host': 'spoonacular-recipe-food-nutrition-v1.p.rapidapi.com'
+          }
+        };
+        
+        axios.request(optionsInfo).then(async function (response) {
+          console.log('new recipes',response.data);
+          var newRecipe = new recipesModel({
+            title: response.data.title,
+            instructions: response.data.instructions,
+            image: response.data.image,
+            vegetarian: response.data.vegetarian,
+            vegan: response.data.vegan,
+            glutenFree: response.data.glutenFree,
+            dairyFree: response.data.dairyFree,
+            veryHealthy: response.data.veryHealthy,
+            veryPopular: response.data.veryPopular,
+            cheap: response.data.cheap,
+            readyInMinutes: response.data.readyInMinutes,
+            servings: response.data.servings,
+            cuisines: response.data.cuisines,
+            extendedIngredients: response.data.extendedIngredients,
+            dishTypes: response.data.dishTypes
+          });
+          await newRecipe.save();
+        }).catch(function (error) {
+          console.error(error);
+        });
+      }
+    }
+    
+  }).catch(function (error) {
+    console.error(error);
+  });
+res.json('true');
+});
+
 
 /* Road sign-up */
 router.post('/sign-up', async function (req, res, next) {
