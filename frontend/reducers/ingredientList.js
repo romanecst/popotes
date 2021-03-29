@@ -12,8 +12,9 @@ export default function(ingredientList = [], action) {
       return newList;
 
     }else if(action.type == 'clearingredientList'){
-      var newList = [];
-      return newList;
+
+      return action.fav;
+      
     }else if(action.type == 'addIngr'){
       var newList = [...ingredientList];
       newList.push(action.ingr);

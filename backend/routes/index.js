@@ -140,7 +140,6 @@ router.get('/save', function (req, res, next) {
 });
 
 
-
 /* Road sign-up */
 router.post('/sign-up', async function (req, res, next) {
 
@@ -398,11 +397,31 @@ router.post('/addIngredients', async function (req, res, next) {
   res.json(result)
 });
 
+router.post('/favouriteIngredient', async function (req, res, next) {
+
+  await listModel.updateOne(
+    { _id: req.body.list },
+    { $push:{favorite_ingredient: JSON.parse(req.body.ingredient ) }}
+  );
+  let result = true
+res.json(result)
+});
+
+router.post('/delFavouriteIngredient', async function (req, res, next) {
+
+  await listModel.updateOne(
+    { _id: req.body.list },
+    { favorite_ingredient: JSON.parse(req.body.ingredient ) }
+  );
+  let result = true
+res.json(result)
+});
+
+
 router.post('/getIngredients', async function(req,res,next){
     var list = await listModel.findOne({_id: req.body.id});
   res.json(list)
 });
-
 
 /* User profil, récupération des données pour affichage dans la page profil */
 router.post('/userProfil', async function(req,res,next){

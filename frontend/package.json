@@ -13,6 +13,7 @@
     "@react-native-community/masked-view": "0.1.10",
     "expo": "~39.0.2",
     "expo-camera": "~9.0.0",
+    "expo-contacts": "~8.5.0",
     "expo-image-picker": "~9.1.1",
     "expo-status-bar": "~1.0.2",
     "link": "^0.1.5",
@@ -21,6 +22,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
     "react-native-check-box": "^2.1.7",
     "react-native-circle-checkbox": "^0.1.6",
+    "react-native-double-tap": "^1.0.1",
     "react-native-dropdown-picker": "^3.7.1",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-gesture-handler": "~1.7.0",
@@ -36,8 +38,7 @@
     "react-navigation-stack": "^2.10.2",
     "react-navigation-tabs": "^2.10.1",
     "react-redux": "^7.2.2",
-    "redux": "^4.0.5",
-    "expo-contacts": "~8.5.0"
+    "redux": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

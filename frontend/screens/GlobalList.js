@@ -21,37 +21,88 @@ import { withNavigationFocus } from 'react-navigation';
 
 
 //display shopping list with ingredients displayed by recipe or by ingredient type
-function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngredientList, addToList }) {
+function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngredientList, addToList, addingredientList}) {
 
     const [isEnabled, setIsEnabled] = useState(false);
     const [visible, setVisible] = useState(false);
     const [text, setText] = useState('');
     const [textAmount, setTextAmount] = useState('');
-
+    const [fav, setFav] = useState([]);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const toggleOverlay = () => {
         setVisible(!visible);
     };
+
+    const Favourite = async()=>{
+        const data = await fetch(`${baseURL}/getIngredients`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `id=${listInfo._id}`
+        });
+        const body = await data.json();
+        setFav(body.favorite_ingredient);
+        return body.favorite_ingredient;
+       
+    }
+
+    useEffect(()=>{
+        (async function(){
+        let add = await Favourite();
+        addingredientList(add);
+        })()
+    },[])
+
 //only keeps ingredient from recipes which were not checked in the ingredient checklist (items the user already has)
     let filteredIngredients= ingredientList.filter(el =>!checkList.includes(el.name));
 
+    const FavouriteIngr = async(ingr)=>{
+        let inFav = fav.filter(e=> e.name == ingr.name);
+        if(inFav.length !== 0){
+            let newArray = fav.filter(e=> e.name !== ingr.name);
+            setFav(newArray);
+            await fetch(`${baseURL}/delFavouriteIngredient`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `list=${listInfo._id}&ingredient=${JSON.stringify(newArray)}`
+            });
+        }else{
+            await fetch(`${baseURL}/favouriteIngredient`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `list=${listInfo._id}&ingredient=${JSON.stringify(ingr)}`
+            });
+            setFav([...fav, ingr])
+        }
+       
+    }
 
+    const Clear = async()=>{
+        let add = await Favourite();
+        clearIngredientList(add)
+    }
 
     var category = {};
+    let isFav;
 //sort ingredient by category 
     filteredIngredients.forEach(function (el) {
+        isFav = fav.filter(e=> e.name == el.name);
+        if(isFav.length !== 0){
+            isFav = true;
+        }else{
+            isFav = false;
+        }
         if (!(el.aisle in category) && !('Others' in category)) {
             if (el.aisle !== null && el.aisle !== '?') {
-                category[el.aisle] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure} />];
+                category[el.aisle] = [<Ingredient ingr={el} name={el.name} amount={el.amount} measure={el.measure} IngredientsSelected={FavouriteIngr} isFav={isFav}/>];
             } else {
-                category['Others'] = [<Ingredient name={el.name} amount={el.amount} measure={el.measure} />];
+                category['Others'] = [<Ingredient ingr={el} name={el.name} amount={el.amount} measure={el.measure} IngredientsSelected={FavouriteIngr} isFav={isFav}/>];
             }
         } else {
             if (el.aisle in category) {
-                category[el.aisle].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure} />)
+                category[el.aisle].push(<Ingredient ingr={el} name={el.name} amount={el.amount} measure={el.measure} IngredientsSelected={FavouriteIngr} isFav={isFav}/>)
             } else if (el.aisle === null || el.aisle === '?') {
-                category['Others'].push(<Ingredient name={el.name} amount={el.amount} measure={el.measure} />)
+                category['Others'].push(<Ingredient ingr={el} name={el.name} amount={el.amount} measure={el.measure} IngredientsSelected={FavouriteIngr} isFav={isFav}/>)
             }
         }
     })
@@ -66,10 +117,16 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
     var recipeCat = {};
 //sort ingredients by recipe
     filteredIngredients.forEach(function (el) {
+        isFav = fav.filter(e=> e.name == el.name);
+        if(isFav.length !== 0){
+            isFav = true;
+        }else{
+            isFav = false;
+        }
         if (!(el.recipeName in recipeCat)) {
-            recipeCat[el.recipeName] = [<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure} />];
+            recipeCat[el.recipeName] = [<Recette ingr={el}  id={el.id} name={el.name} amount={el.amount} measure={el.measure} IngredientsSelected={FavouriteIngr} isFav={isFav}/>];
         } else {
-            recipeCat[el.recipeName].push(<Recette id={el.id} name={el.name} amount={el.amount} measure={el.measure} />);
+            recipeCat[el.recipeName].push(<Recette ingr={el} id={el.id} name={el.name} amount={el.amount} measure={el.measure} IngredientsSelected={FavouriteIngr} isFav={isFav}/>);
         }
     })
 
@@ -81,12 +138,12 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
 //if display by recipe is chosen then displays by recipe and conversely
     if (isEnabled) {
         var ingredient = <ScrollView style={{ height: 380 }}>{displayByCategory}</ScrollView>
-        var trier = "recipe"
+        var trier = "ingredients"
     } else {
         var ingredient = <ScrollView style={{ height: 380 }}>
             {recipesMap}
         </ScrollView>
-        var trier = "ingredient"
+        var trier = "recipe"
 
     }
      
@@ -144,7 +201,7 @@ function GlobalList({ navigation, ingredientList, checkList, listInfo, clearIngr
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <View style={styles.okList}>
-                        <Octicons name="checklist" size={30} color="black" onPress={() => clearIngredientList()} />
+                        <Octicons name="checklist" size={30} color="black" onPress={() => Clear()} />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -191,12 +248,15 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        clearIngredientList: function () {
-            dispatch({ type: 'clearingredientList' })
+        clearIngredientList: function (fav) {
+            dispatch({ type: 'clearingredientList', fav })
         },
         addToList: function (ingr) {
             dispatch({ type: 'addIngr', ingr })
-        }
+        },
+        addingredientList: function (info) {
+            dispatch({ type: 'ingredientList', ingredient: info })
+          },
     }
 }
 
