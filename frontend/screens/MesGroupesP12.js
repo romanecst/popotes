@@ -62,6 +62,38 @@ function MesGroupesP12(props) {
 
   }
 
+  const addNewIngredient = async() =>{
+
+    toggleOverlay(); 
+    const data = await fetch(`${baseURL}/ingredientsDB`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `search=${text}`
+    });
+    const body = await data.json();
+
+    let splitAmount = textAmount.split('');
+    let nbr = '';
+    let str = '';
+    for(let i=0; i<splitAmount.length; i++){
+        if(!isNaN(splitAmount[i]) ||  splitAmount[i] == '.' || splitAmount[i] == ','){
+            if(splitAmount[i] == ','){
+                nbr += '.';
+            }else{
+                nbr += splitAmount[i];
+            }
+        }else{
+            str +=  splitAmount[i];
+        }
+    }
+    nbr = parseFloat(nbr);
+    
+    setIngredients([...ingredients, {aisle: body, amount: nbr, measure: str, name: text, recipeName: "Other"}])
+ 
+    setText(''); 
+    setTextAmount('');
+}
+
   async function saveToDB(){
     await fetch(`${baseURL}/addIngredients`, {
     method: 'POST',
@@ -165,12 +197,7 @@ function MesGroupesP12(props) {
             title="Confirm"
             buttonStyle={{ backgroundColor: '#febf63', padding: 10, borderRadius: 30, marginHorizontal: 30 }}
             titleStyle={{ color: 'white', fontFamily: 'Kohinoor Telugu' }}
-            onPress={() => { 
-                toggleOverlay(); 
-                setIngredients([...ingredients, {aisle: "Others", amount: textAmount, measure: "", name: text, recipeName: "Other"}])
-                setText(''); 
-                setTextAmount('');
-                }}
+            onPress={() => addNewIngredient()}
           />
       </Overlay>
     </View>
@@ -224,17 +251,6 @@ const styles = StyleSheet.create({
     marginTop: 3
   }
 });
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//       clearIngredientList: function () {
-//           dispatch({ type: 'clearingredientList' })
-//       },
-//       addToList: function (ingr) {
-//           dispatch({ type: 'addIngr', ingr })
-//       }
-//   }
-// }
 
 
 function mapStateToProps(state) {

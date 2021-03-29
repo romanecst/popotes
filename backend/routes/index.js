@@ -10,6 +10,7 @@ const recipesModel = require('../models/recipes');
 const userModel = require('../models/users');
 const groupModel = require('../models/group');
 const listModel = require('../models/list');
+const categoryModel = require('../models/category');
 
 
 router.post('/search', async function (req, res, next) {
@@ -95,7 +96,74 @@ router.get('/clean', async function (req, res, next) {
   res.render('index', { title: 'clean' });
 });
 
+router.post('/ingredientsDB', async function (req, res, next) {
+  
+  let newCat = 'Others';
+  var search = req.body.search.toLowerCase();
+  let re = new RegExp(`.*${search}`);
+  var categories = await categoryModel.find();
+  for(let i=0; i<categories.length; i++){
+    if(newCat !== 'Others'){
+      break
+    }
+    for(let j=0; j<categories[i].ingredients.length; j++){
+      if(categories[i].ingredients[j].search(re) !== -1){
+        newCat = categories[i].name;
+        break;
+      }
+    }
+  }
 
+  res.json(newCat);
+});
+
+
+router.get('/saveCategories', async function (req, res, next) {
+
+  var recipes = await recipesModel.find();
+
+  // let categories = [];
+  // for(let i=0; i<recipes.length; i++){
+  //   for(let j=0; j<recipes[i].extendedIngredients.length; j++){
+  //     if(!categories.includes(recipes[i].extendedIngredients[j].aisle) && recipes[i].extendedIngredients[j].aisle !== null && recipes[i].extendedIngredients[j].aisle !== '?'){
+  //       categories.push(recipes[i].extendedIngredients[j].aisle);
+  //       var newCategory = new categoryModel({
+  //         name: recipes[i].extendedIngredients[j].aisle,
+  //       });
+  //       await newCategory.save();
+  //     }
+  //   }
+  // }
+  
+  
+
+  var categories = await categoryModel.find();
+
+  let allIngredients = [];
+  for(let k=0; k<categories.length; k++){
+    allIngredients.push({category: categories[k].name, ingredients:[]})
+  }
+
+  for(let i=0; i<recipes.length; i++){
+    for(let j=0; j<recipes[i].extendedIngredients.length; j++){
+      for(let k=0; k<allIngredients.length; k++){
+        if(allIngredients[k].category == recipes[i].extendedIngredients[j].aisle && !allIngredients[k].ingredients.includes(recipes[i].extendedIngredients[j].name)){
+          allIngredients[k].ingredients.push(recipes[i].extendedIngredients[j].name);
+        }
+      }
+    }
+  }
+
+
+  for(let i=0; i<allIngredients.length; i++){
+    await categoryModel.updateOne(
+      {name: allIngredients[i].category},
+      {ingredients: allIngredients[i].ingredients}
+    )
+  }
+
+  res.render('index', { title: 'Express Ingredients' });
+});
 
 /* Save recipe in BDD */
 router.get('/save', function (req, res, next) {
